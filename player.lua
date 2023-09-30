@@ -10,7 +10,6 @@ player = {
     p.dx = 0
     p.dx_max = _PLAYER_MAXDX
     p.ddx = 0.2
-    p.ddx_air = 0.1
     p.dy = 1 -- give it some initial dy
     p.ddy = 0.5 -- basically gravity
     p.angle = -3
@@ -18,22 +17,24 @@ player = {
   end,
   draw = function(p)
     spr(4+flr(p.angle), p.x, p.y, 1, 1)
-    print(p.angle, p.x, p.y-12, 11)
-  end,
-  force_angle = function(p, angle)
+    print(flr(p.angle), p.x, p.y-12, 11)
   end,
   boosty = function(p, boosted_dy, y_ground)
-    p.dy = min(-2, (p.dx / _PLAYER_MAXDX) * boosted_dy)
+    p.dy = min(-1, (p.dx / _PLAYER_MAXDX) * boosted_dy)
     -- make sure we're just above ground level first
     p.y = p.y - 0.1
+    p.dx -= p.dx\3
+    -- p.dx -= min(p.dx\3, abs(p.dy)*2)
     p.state = _PLAYER_STATE_INSKY
-    printh("boosted, y,yg,dy: "..p.y..","..y_ground..","..p.dy)
+    printh("boosted,(x,y),yg,dy: ("..p.x..","..p.y.."),"..y_ground..","..p.dy)
   end,
   bouncy = function(p, boosted_dy)
     p.dy = boosted_dy
     -- make sure we're just above ground level first
     p.y = p.y - 0.1
     p.state = _PLAYER_STATE_INSKY
+    p.dx -= p.dx\3
+    printh("bounced at x: "..p.x)
   end,
   near_ground = function(p, y_ground)
    return abs(p.y - y_ground) < 1 or p.y > y_ground
@@ -42,25 +43,39 @@ player = {
     -- printh("begin update, PY: "..p.y..", YG: "..y_ground..", S: "..p.state)
 
     local friction = 0.85
+    local airres = 0.99
     -- manipulate dx value
     if btn(4) then
       if p.state == _PLAYER_STATE_ONGROUND then -- on ground, btn held
         p.dx = min(p.dx_max, p.dx + p.ddx)
-      else
-        -- air resistance if btn held
-        if p.dx > p.dx_max then
-          p.dx -= p.ddx_air
-        end
+      elseif p.state == _PLAYER_STATE_INSKY then
+        -- air resistance
+        p.dx *= airres
       end
     elseif p.state == _PLAYER_STATE_INSKY then -- in air
-      -- air resistance if btn not held
+      -- air resistance
       if p.dx > p.dx_max then
-        p.dx -= p.ddx_air
+        p.dx *= airres
       end
     else -- on ground, no btn input
       -- apply friction
       p.dx *= friction
     end
+
+    if btn(1) then
+      if p.state == _PLAYER_STATE_INSKY then
+        p.angle = min(3, p.angle + 0.3)
+      end
+    elseif btn(0) then
+      if p.state == _PLAYER_STATE_INSKY and abs(p.dy) > 2 then
+        -- extra airres, decreased grav
+        printh("extra airres")
+        p.angle = max(-3, p.angle - 0.1)
+        p.dx *= airres
+        p.dy -= (p.ddy * 0.3)
+      end
+    end
+
     -- apply velocity
     p.x += p.dx
 
@@ -82,7 +97,6 @@ player = {
     if p:get_state() == _PLAYER_STATE_INSKY then
       p.dy = min(_PLAYER_MAXDY, p.dy + p.ddy)
       p.y = min(p.y + p.dy, y_ground)
-      printh("update: "..p.y..","..p.dy..","..y_ground)
       -- bounce if we hit the ground
       -- landing from a jump
       if p:near_ground(y_ground)
@@ -122,8 +136,9 @@ player = {
     -- force angle if we're on --a ramp-- the ground
     -- ... and velocity is not negative?
     -- if p:get_state() == _PLAYER_STATE_ONGROUND then
-    if p.y >= y_ground then
+    if p.y >= y_ground and p.dy >= 0 then
       p.angle = ground_angle
+      -- printh("changed angle to "..p.angle.." at ("..p.x..","..p.y.."), YG: "..y_ground..", DY: "..p.dy)
       p.y = y_ground
       p.dy = 0
       p.state = _PLAYER_STATE_ONGROUND
@@ -164,7 +179,7 @@ player = {
 
   end,
   get_board_center = function(p)
-    return flr(p.x + 6), flr(p.y + 8)
+    return flr(p.x + 4), flr(p.y + 8)
   end,
   get_state = function(p)
     return p.state

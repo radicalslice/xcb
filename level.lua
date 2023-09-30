@@ -15,6 +15,21 @@ level = {
        end,
      },
      {
+       x_min = 256, 
+       x_max = 273,
+       f = function(r, y_base, x_curr)
+        return y_base - (x_curr - r.x_min), -3
+       end,
+     },
+     {
+       x_min = 272, 
+       x_max = 288,
+       f = function(r, y_base, x_curr)
+        return y_base - (r.x_max - x_curr), 3
+       end,
+     },
+     --[[
+     {
        x_min = 120, 
        x_max = 144,
        f = function(r, y_base, x_curr)
@@ -28,7 +43,6 @@ level = {
         return y_base - flr((r.x_max - x_curr) / 2), 2
        end,
      },
-     --[[
      {
        x_min = 164, 
        x_max = 182,
@@ -40,16 +54,21 @@ level = {
    },
    boosts = {
      {
-       x = 95,
+       x = 96,
        dy = -4.5,
        used = false,
      },
+     {
+       x = 272,
+       dy = -4.5,
+       used = false,
+     },
+     --[[
      {
        x = 144,
        dy = -3.5,
        used = false,
      },
-     --[[
      {
        x = 182,
        dy = -6.5,
@@ -81,6 +100,17 @@ function find_boost(x, level)
   for b in all(level.boosts) do
     if x >= b.x and b.used == false then
       b.used = true
+      return b.dy
+    end
+  end
+  return 0
+end
+--
+-- Int -> Level -> Int
+function find_boost2(x, level)
+  local found = false
+  for b in all(level.boosts) do
+    if x >= b.x then
       return b.dy
     end
   end
