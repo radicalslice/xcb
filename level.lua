@@ -4,28 +4,56 @@ level = {
        x_min = 80, 
        x_max = 96,
        f = function(r, y_base, x_curr)
-        return y_base - (x_curr - r.x_min), -3
+        return y_base - (x_curr - r.x_min), -2
        end,
      },
      {
        x_min = 96, 
        x_max = 112,
        f = function(r, y_base, x_curr)
-        return y_base - (r.x_max - x_curr), 3
+        return y_base - (r.x_max - x_curr), 2
        end,
      },
      {
-       x_min = 256, 
-       x_max = 273,
+       x_min = 200, 
+       x_max = 216,
        f = function(r, y_base, x_curr)
-        return y_base - (x_curr - r.x_min), -3
+        return y_base - ((x_curr - r.x_min) \ 2), -1
        end,
      },
      {
-       x_min = 272, 
-       x_max = 288,
+       x_min = 216, 
+       x_max = 232,
        f = function(r, y_base, x_curr)
-        return y_base - (r.x_max - x_curr), 3
+        return y_base - ((r.x_max - x_curr) \ 2), 1
+       end,
+     },
+     {
+       x_min = 234, 
+       x_max = 250,
+       f = function(r, y_base, x_curr)
+        return y_base - ((x_curr - r.x_min) \ 2), -1
+       end,
+     },
+     {
+       x_min = 250, 
+       x_max = 266,
+       f = function(r, y_base, x_curr)
+        return y_base - ((r.x_max - x_curr) \ 2), 1
+       end,
+     },
+     {
+       x_min = 300, 
+       x_max = 324,
+       f = function(r, y_base, x_curr)
+        return y_base - ((x_curr - r.x_min) * 1.5), -3
+       end,
+     },
+     {
+       x_min = 324, 
+       x_max = 348,
+       f = function(r, y_base, x_curr)
+        return y_base - ((r.x_max - x_curr) * 1.5), 3
        end,
      },
      --[[
@@ -59,8 +87,18 @@ level = {
        used = false,
      },
      {
-       x = 272,
+       x = 324,
        dy = -4.5,
+       used = false,
+     },
+     {
+       x = 215,
+       dy = -2.5,
+       used = false,
+     },
+     {
+       x = 250,
+       dy = -2.5,
        used = false,
      },
      --[[

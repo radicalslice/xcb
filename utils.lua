@@ -5,6 +5,15 @@ function _get_tile_from_pos(start_tile_x, start_tile_y)
   end
 end
 
+function exists(e, tbl)
+  for i=1,#tbl do
+    if tbl[i] == e then
+      return true
+    end
+  end
+  return false
+end
+
 function draw_ctrls()
   -- draw controls on screen
   print("⬅️", 96, 5, btn(0) and 11 or 7)

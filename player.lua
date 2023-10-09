@@ -2,6 +2,7 @@ _PLAYER_MAXDX = 3 -- when on the ground
 _PLAYER_MAXDY = 5
 _PLAYER_STATE_ONGROUND = 0
 _PLAYER_STATE_INSKY = 2
+_PLAYER_STATE_FALLEN = 3
 player = {
   reset = function(p)
     p.x = 0
@@ -12,10 +13,15 @@ player = {
     p.ddx = 0.2
     p.dy = 1 -- give it some initial dy
     p.ddy = 0.5 -- basically gravity
-    p.angle = -3
+    p.angle = -1
     p.state = _PLAYER_STATE_INSKY
   end,
   draw = function(p)
+    if p:get_state() == _PLAYER_STATE_FALLEN then
+      spr(8, p.x-6, p.y-10, 1, 1)
+      spr(9, p.x, p.y, 1, 1)
+      return
+    end
     spr(4+flr(p.angle), p.x, p.y, 1, 1)
     print(flr(p.angle), p.x, p.y-12, 11)
   end,
@@ -40,10 +46,25 @@ player = {
    return abs(p.y - y_ground) < 1 or p.y > y_ground
   end,
   update = function(p, y_ground, ground_angle)
-    -- printh("begin update, PY: "..p.y..", YG: "..y_ground..", S: "..p.state)
-
     local friction = 0.85
     local airres = 0.99
+
+    if btn(5) then
+      p.y = 32
+      p.dy = 1
+      p.dx = 0
+      p.angle = -1
+      p.state = _PLAYER_STATE_INSKY
+      return
+    end
+
+    if p:get_state() == _PLAYER_STATE_FALLEN then
+      -- update position only
+      p.dx *= friction
+      p.x += p.dx
+      return
+    end
+
     -- manipulate dx value
     if btn(4) then
       if p.state == _PLAYER_STATE_ONGROUND then -- on ground, btn held
@@ -79,14 +100,6 @@ player = {
     -- apply velocity
     p.x += p.dx
 
-    if btn(5) then
-      p.y = 32
-      p.dy = 1
-      p.dx = 0
-      p.angle = -3
-      p.state = _PLAYER_STATE_INSKY
-    end
-
 
     -- 0) check if we're floating!
     if p:get_state() == _PLAYER_STATE_ONGROUND and p.y < y_ground then
@@ -102,9 +115,18 @@ player = {
       if p:near_ground(y_ground)
         and flr(p.angle) != ground_angle
         and abs(p.dy) > 1 then
-        printh("hop 1: "..p.y)
-        p.angle = ground_angle
-        p:bouncy(-2)
+        -- either hop or crash
+          local rounded_angle = flr(p.angle)
+          if crash_lut[rounded_angle] != nil
+            and exists(ground_angle, crash_lut[rounded_angle]) then
+            p.state = _PLAYER_STATE_FALLEN
+            printh("crashed because: "..
+            rounded_angle..","..ground_angle)
+            return
+          end
+          printh("hop 1: "..p.y)
+          p.angle = ground_angle
+          p:bouncy(-2)
         return
       end 
     end
@@ -179,7 +201,7 @@ player = {
 
   end,
   get_board_center = function(p)
-    return flr(p.x + 4), flr(p.y + 8)
+    return flr(p.x + 6), flr(p.y + 6)
   end,
   get_state = function(p)
     return p.state
@@ -194,3 +216,14 @@ player = {
       --]]
   end
 }
+
+-- table of [player angle]: ground angles[]
+-- if we find a match, that makes player crash!
+crash_lut = {}
+crash_lut[-3] = {0}
+crash_lut[-2] = {1,2,3}
+crash_lut[-1] = {2,3}
+crash_lut[0] = {2,3}
+crash_lut[1] = {-3,-2,-1}
+crash_lut[2] = {0,-1,-2,-3}
+crash_lut[3] = {-3,-2,-1,0,1,2,3}
