@@ -1,5 +1,5 @@
 function _update_game()
-  local board_pos_x, board_pos_y = player:get_board_center()
+  local board_pos_x = player:get_board_center_x()
   local y_ground = player.y_base
   local range = find_range(board_pos_x, level)
   local angle = 0 -- assume flat ground
@@ -8,13 +8,14 @@ function _update_game()
     y_ground, angle = range:f(player.y_base, board_pos_x)
   end
 
-  player:update(y_ground, angle)
-
   -- Check for any boosts
   local boosted_dy = find_boost(board_pos_x + player.dx, level)
   if boosted_dy != 0 and player:near_ground(y_ground) then
     player:boosty(boosted_dy, y_ground)
   end
+
+  player:update(y_ground, angle)
+
 end
 
 function _draw_game()
@@ -54,6 +55,7 @@ function _draw_game()
   print("ST: "..player:get_state(), 96, 24, 10)
   print("DX: "..player.dx, 96, 30, 10)
   print("DY: "..player.dy, 96, 36, 10)
+  -- print("Y: "..player.y, 80, 42, 10)
 
   pal()
 
