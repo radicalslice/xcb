@@ -44,17 +44,17 @@ function _draw_game()
   -- draw some dang background
   for i=-32,2056 do
     if i % 4 == 0 then
-      line(i, 112, i, 114, 3)
+      line(i, 80, i, 82, 2)
     end
   end
 
   camera()
   
-  draw_ctrls()
+  draw_ctrls(12, 96)
   -- player debug stuff
-  print("ST: "..player:get_state(), 96, 24, 10)
-  print("DX: "..player.dx, 96, 30, 10)
-  print("DY: "..player.dy, 96, 36, 10)
+  -- print("ST: "..player:get_state(), 96, 24, 10)
+  -- print("DX: "..player.dx, 96, 30, 10)
+  -- print("DY: "..player.dy, 96, 36, 10)
   -- print("Y: "..player.y, 80, 42, 10)
 
   pal()

@@ -14,13 +14,13 @@ function exists(e, tbl)
   return false
 end
 
-function draw_ctrls()
+function draw_ctrls(x, y)
   -- draw controls on screen
-  print("⬅️", 96, 5, btn(0) and 11 or 7)
-  print("⬆️", 100, 0, btn(2) and 11 or 7)
-  print("➡️", 104, 5, btn(1) and 11 or 7)
-  print("⬇️", 100, 10, btn(3) and 11 or 7)
-  print("❎", 113, 8, btn(4) and 11 or 7)
-  print("🅾️", 121, 5, btn(5) and 11 or 7)
+  print("⬅️", x-4, y+5, btn(0) and 11 or 7)
+  print("⬆️", x, y, btn(2) and 11 or 7)
+  print("➡️", x+4, y+5, btn(1) and 11 or 7)
+  print("⬇️", x, y+10, btn(3) and 11 or 7)
+  print("❎", x+13, y+8, btn(4) and 11 or 7)
+  print("🅾️", x+21, y+5, btn(5) and 11 or 7)
  
 end

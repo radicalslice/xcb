@@ -44,14 +44,6 @@ player = {
     p:change_state(_PLAYER_STATE_SKYUP)
     printh("boosted,(x,y),yg,dy: ("..p.x..","..p.y.."),"..y_ground..","..p.dy)
   end,
-  bouncy = function(p, boosted_dy)
-    p.dy = boosted_dy
-    -- make sure we're just above ground level first
-    p.y = p.y - 0.1
-    p:change_state(_PLAYER_STATE_SKYUP)
-    p.dx -= p.dx\3
-    printh("bounced at x: "..p.x)
-  end,
   near_ground = function(p, y_ground)
    return abs(p.y - y_ground) < 1 or p.y > y_ground
   end,
@@ -114,9 +106,6 @@ player_state_funcs = {
     p.x += p.dx
 
     if flr(p.y) != y_ground then
-      printh("forced ground angle "..ground_angle.." in on_ground")
-      printh("because p.y "..p.y.." and y_ground "..y_ground)
-      printh("at p.x "..p:get_board_center_x())
       p.angle = ground_angle
       p.y = y_ground
     end
@@ -130,12 +119,10 @@ player_state_funcs = {
 
     -- tweak angle 
     if btn(1) then
-        printh("adjusted angle in skyup 1")
         p.angle = min(3, p.angle + 0.3)
     elseif btn(0) then
       if abs(p.dy) > 2 then
         -- extra airres, decreased grav
-        printh("adjusted angle in skyup 2")
         p.angle = max(-3, p.angle - 0.1)
         p.dx *= _airres
         p.dy -= (p.ddy * 0.3)
@@ -147,8 +134,6 @@ player_state_funcs = {
     p.y = min(p.y + p.dy, y_ground)
     if prev_dy <= 0 and p.dy > 0 then
       -- if we're switching from rise to fall, switch states
-      printh("GUILTY!")
-      printh("prev_dy: "..prev_dy..", new dy: "..p.dy)
       p:change_state(_PLAYER_STATE_SKYDOWN)
     end
   end,
@@ -161,12 +146,10 @@ player_state_funcs = {
 
     -- tweak angle
     if btn(1) then
-        printh("adjusted angle in skydown 0")
         p.angle = min(3, p.angle + 0.3)
     elseif btn(0) then
       if abs(p.dy) > 2 then
         -- extra airres, decreased grav
-        printh("adjusted angle in skydown 1")
         p.angle = max(-3, p.angle - 0.1)
         p.dx *= _airres
         p.dy -= (p.ddy * 0.3)
@@ -186,19 +169,17 @@ player_state_funcs = {
         if crash_lut[rounded_angle] != nil
         and exists(ground_angle, crash_lut[rounded_angle]) then
           p.state = _PLAYER_STATE_FALLEN
-          printh("crashed because: "..
-          rounded_angle..","..ground_angle)
         elseif abs(p.dy) > 1 then
-          printh("hop 1: "..p.y)
-
-          printh("adjusted angle in skydown 3")
           p.angle = ground_angle
-          p:bouncy(-2)
+          p.dy = -2
+          -- make sure we're just above ground level first
+          p.y = p.y - 0.1
+          p:change_state(_PLAYER_STATE_SKYUP)
+          p.dx -= p.dx\3
           p:change_state(_PLAYER_STATE_HOPUP)
         else
           -- nearing the ground slowly, so force downward
           p.y = y_ground
-          printh("adjusted angle in skydown 4")
           p.angle = ground_angle
           p:change_state(_PLAYER_STATE_ONGROUND)
         end
@@ -207,7 +188,6 @@ player_state_funcs = {
         -- angle is the same, so land
         -- nearing the ground slowly, so force downward
         p.y = y_ground
-        printh("adjusted angle in skydown 5")
         p.angle = ground_angle
         p:change_state(_PLAYER_STATE_ONGROUND)
       end
@@ -222,7 +202,6 @@ player_state_funcs = {
     p.y = min(p.y + p.dy, y_ground)
     if prev_dy <= 0 and p.dy > 0 then
       -- if we're switching from rise to fall, switch states
-      printh("hopup: prev_dy: "..prev_dy..", new dy: "..p.dy)
       p:change_state(_PLAYER_STATE_HOPDOWN)
     end
   end,
@@ -236,7 +215,6 @@ player_state_funcs = {
     -- land the hop
     if p:near_ground(y_ground) then
       p.y = y_ground
-      printh("adjusted angle in hopdown 4")
       p.angle = ground_angle
       p:change_state(_PLAYER_STATE_ONGROUND)
     end

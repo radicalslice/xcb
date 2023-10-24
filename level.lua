@@ -1,5 +1,6 @@
 level = {
    ranges = {
+     -- REGULAR RAMP
      {
        x_min = 80, 
        x_max = 96,
@@ -14,6 +15,8 @@ level = {
         return y_base - (r.x_max - x_curr), 2
        end,
      },
+     -- END REGULAR RAMP
+     -- TWO TINY RAMPS
      {
        x_min = 200, 
        x_max = 214,
@@ -42,20 +45,55 @@ level = {
         return y_base - ((r.x_max - x_curr) \ 2), 1
        end,
      },
+     -- END TWO TINY RAMPS
+     -- BIG TALL RAMP
      {
-       x_min = 300, 
-       x_max = 324,
+       x_min = 290, 
+       x_max = 314,
        f = function(r, y_base, x_curr)
         return y_base - ((x_curr - r.x_min) * 1.5), -3
        end,
      },
      {
-       x_min = 324, 
-       x_max = 348,
+       x_min = 314, 
+       x_max = 338,
        f = function(r, y_base, x_curr)
         return y_base - ((r.x_max - x_curr) * 1.5), 3
        end,
      },
+     -- END BIG TALL RAMP
+     -- REGULAR RAMP
+     {
+       x_min = 400, 
+       x_max = 416,
+       f = function(r, y_base, x_curr)
+        return y_base - (x_curr - r.x_min), -2
+       end,
+     },
+     {
+       x_min = 416, 
+       x_max = 432,
+       f = function(r, y_base, x_curr)
+        return y_base - (r.x_max - x_curr), 2
+       end,
+     },
+     -- END REGULAR RAMP
+     -- BIG TALL RAMP
+     {
+       x_min = 436, 
+       x_max = 462,
+       f = function(r, y_base, x_curr)
+        return y_base - ((x_curr - r.x_min) * 1.5), -3
+       end,
+     },
+     {
+       x_min = 462, 
+       x_max = 488,
+       f = function(r, y_base, x_curr)
+        return y_base - ((r.x_max - x_curr) * 1.5), 3
+       end,
+     },
+     -- END BIG TALL RAMP
      --[[
      {
        x_min = 120, 
@@ -87,11 +125,6 @@ level = {
        used = false,
      },
      {
-       x = 324,
-       dy = -4.5,
-       used = false,
-     },
-     {
        x = 214,
        dy = -2.5,
        used = false,
@@ -99,6 +132,21 @@ level = {
      {
        x = 242,
        dy = -2.5,
+       used = false,
+     },
+     {
+       x = 314,
+       dy = -4.5,
+       used = false,
+     },
+     {
+       x = 416,
+       dy = -4.5,
+       used = false,
+     },
+     {
+       x = 462,
+       dy = -4.5,
        used = false,
      },
      --[[
