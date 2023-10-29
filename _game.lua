@@ -1,4 +1,7 @@
 function _update_game()
+  local now = time()
+  local dt = now - last_ts
+
   local board_pos_x = player:get_board_center_x()
   local y_ground = player.y_base
   local range = find_range(board_pos_x, level)
@@ -14,7 +17,17 @@ function _update_game()
     player:boosty(boosted_dy, y_ground)
   end
 
+  -- handle FX
+  foreach(_FX.parts, function(part) 
+    part:update(dt)
+    if part.ttl <= 0 then
+      del(_FX.parts, part)
+    end
+  end)
+
   player:update(y_ground, angle)
+
+  last_ts = now
 
 end
 
@@ -22,12 +35,13 @@ function _draw_game()
   cls()
   palt(15, true)
 
+  local LEVEL_MAX = 256
+
   -- map(0, 0, 0, 0, 8, 8)
   camera(player.x - 24, 0)
 
-
   local y_base = 72
-  for x_curr=-64,512 do
+  for x_curr=player.x-64,player.x+112 do
     local y_inner = y_base
     local angle = 0
     -- check for range
@@ -42,20 +56,28 @@ function _draw_game()
   player:draw()
 
   -- draw some dang background
-  for i=-32,2056 do
-    if i % 4 == 0 then
-      line(i, 80, i, 82, 2)
+  for i=player.x-64,player.x+112 do
+    if flr(i) % 12 == 0 then
+      spr(10, i, 76)
     end
   end
+
+  foreach(_FX.parts, function(p)
+    p:draw()
+  end)
 
   camera()
   
   draw_ctrls(12, 96)
   -- player debug stuff
   -- print("ST: "..player:get_state(), 96, 24, 10)
-  -- print("DX: "..player.dx, 96, 30, 10)
-  -- print("DY: "..player.dy, 96, 36, 10)
+  print("X: "..flr(player.x), 56, 88, 10)
+  -- print("Y: "..player.y, 56, 96, 10)
+  print("DX: "..player.dx, 56, 96, 10)
+  -- print("DDX: "..player.ddx, 56, 102, 10)
   -- print("Y: "..player.y, 80, 42, 10)
+  -- print(stat(0), 80,  110, 12)
+  print("CPU: "..stat(1), 80,  118, 12)
 
   pal()
 

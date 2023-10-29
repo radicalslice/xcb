@@ -1,5 +1,7 @@
 _PLAYER_MAXDX = 3 -- when on the ground
 _PLAYER_MAXDY = 5
+_PLAYER_INIT_DDX = 0.05
+_PLAYER_MAX_DDX = 0.2
 _PLAYER_STATE_ONGROUND = "on_ground"
 _PLAYER_STATE_SKYUP = "skyup"
 _PLAYER_STATE_SKYDOWN = "skydown"
@@ -15,8 +17,7 @@ player = {
     p.y = 16 -- player's actual y value
     p.y_base = 64 -- baseline y value for the level
     p.dx = 0
-    p.dx_max = _PLAYER_MAXDX
-    p.ddx = 0.2
+    p.ddx = _PLAYER_INIT_DDX
     p.dy = 1 -- give it some initial dy
     p.ddy = 0.5 -- basically gravity
     p.angle = -1
@@ -33,7 +34,8 @@ player = {
       return
     end
     spr(4+flr(p.angle), p.x, p.y, 1, 1)
-    print(flr(p.angle), p.x, p.y-12, 11)
+
+    -- print(flr(p.angle), p.x, p.y-12, 11)
   end,
   boosty = function(p, boosted_dy, y_ground)
     p.dy = min(-1, (p.dx / _PLAYER_MAXDX) * boosted_dy)
@@ -64,6 +66,15 @@ player = {
       or p:get_state() == _PLAYER_STATE_HOPUP
       or p:get_state() == _PLAYER_STATE_HOPDOWN then
       player_state_funcs[p:get_state()](p, y_ground, ground_angle)
+
+      -- cheating and putting this outside of state_funcs
+      if p.dx > 0.3 then
+        local colors = {2, 8, 14}
+        -- randomize color array sometimes
+        if rnd() > 0.6 then colors = {8, 2, 8} end
+        add(_FX.parts, new_part(p.x + (1 - rnd(2)), p.y + 6 + (2 - rnd(4)), -1, 1, colors, 1, 0.2))
+      end
+
       return
     end
 
@@ -97,9 +108,12 @@ crash_lut[3] = {-3,-2,-1,0,1,2,3}
 player_state_funcs = {
   on_ground = function(p, y_ground, ground_angle)
     if btn(4) then
-      p.dx = min(p.dx_max, p.dx + p.ddx)
+      p.dx = min(_PLAYER_MAXDX, p.dx + p.ddx)
     else -- on ground, no btn input
       p.dx *= _friction
+      if p.dx < 0.1 then
+        p.dx = 0
+      end
     end
 
     -- apply velocity
@@ -175,7 +189,8 @@ player_state_funcs = {
           -- make sure we're just above ground level first
           p.y = p.y - 0.1
           p:change_state(_PLAYER_STATE_SKYUP)
-          p.dx -= p.dx\3
+          printh("DX penalty of "..p.dx/3)
+          p.dx -= p.dx/3
           p:change_state(_PLAYER_STATE_HOPUP)
         else
           -- nearing the ground slowly, so force downward

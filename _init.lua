@@ -4,6 +4,9 @@ function _init()
   player:reset()
 
   get_tile_from_pos = _get_tile_from_pos(0, 0)
+
+  last_ts = time()
+
   printh("--init")
 end
 

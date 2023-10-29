@@ -1,5 +1,6 @@
 level = {
    ranges = {
+     --[[
      -- REGULAR RAMP
      {
        x_min = 80, 
@@ -94,31 +95,10 @@ level = {
        end,
      },
      -- END BIG TALL RAMP
-     --[[
-     {
-       x_min = 120, 
-       x_max = 144,
-       f = function(r, y_base, x_curr)
-        return y_base - flr((x_curr - r.x_min) / 2), -2
-       end,
-     },
-     {
-       x_min = 144, 
-       x_max = 168,
-       f = function(r, y_base, x_curr)
-        return y_base - flr((r.x_max - x_curr) / 2), 2
-       end,
-     },
-     {
-       x_min = 164, 
-       x_max = 182,
-       f = function(r, y_base, x_curr)
-        return y_base - (x_curr - r.x_min), -3
-       end,
-     },
      ]]--
    },
    boosts = {
+     --[[
      {
        x = 96,
        dy = -4.5,
@@ -149,23 +129,7 @@ level = {
        dy = -4.5,
        used = false,
      },
-     --[[
-     {
-       x = 144,
-       dy = -3.5,
-       used = false,
-     },
-     {
-       x = 182,
-       dy = -6.5,
-       used = false,
-     },
-     {
-       x = 280,
-       dy = -3,
-       used = false,
-     },
-     ]]--
+   ]]--
    }
 }
 
