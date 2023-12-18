@@ -14,14 +14,14 @@ _airres = 0.99
 player = {
   reset = function(p)
     p.x = 0
-    p.y = 16 -- player's actual y value
+    p.y = 64 -- player's actual y value
     p.y_base = 64 -- baseline y value for the level
     p.dx = 0
     p.ddx = _PLAYER_INIT_DDX
     p.dy = 1 -- give it some initial dy
     p.ddy = 0.5 -- basically gravity
-    p.angle = -1
-    p.state = _PLAYER_STATE_SKYDOWN
+    p.angle = 0
+    p.state = _PLAYER_STATE_ONGROUND
   end,
   change_state = function(p, state)
     printh("State change: "..p.state.."->"..state)
@@ -37,14 +37,12 @@ player = {
 
     -- print(flr(p.angle), p.x, p.y-12, 11)
   end,
-  boosty = function(p, boosted_dy, y_ground)
+  start_jump = function(p, boosted_dy)
     p.dy = min(-1, (p.dx / _PLAYER_MAXDX) * boosted_dy)
     -- make sure we're just above ground level first
     p.y = p.y - 0.1
-    p.dx -= p.dx\3
-    -- p.dx -= min(p.dx\3, abs(p.dy)*2)
+    p.dx -= p.dx * 0.3
     p:change_state(_PLAYER_STATE_SKYUP)
-    printh("boosted,(x,y),yg,dy: ("..p.x..","..p.y.."),"..y_ground..","..p.dy)
   end,
   near_ground = function(p, y_ground)
    return abs(p.y - y_ground) < 1 or p.y > y_ground
@@ -107,6 +105,8 @@ crash_lut[3] = {-3,-2,-1,0,1,2,3}
 
 player_state_funcs = {
   on_ground = function(p, y_ground, ground_angle)
+    p.angle = ground_angle
+
     if btn(4) then
       p.dx = min(_PLAYER_MAXDX, p.dx + p.ddx)
     else -- on ground, no btn input
@@ -117,10 +117,14 @@ player_state_funcs = {
     end
 
     -- apply velocity
-    p.x += p.dx
+    local slow_factors = {0.9, 0.8, 0.7}
+    if true and abs(ground_angle) >= 1 then
+      p.x += p.dx * slow_factors[abs(ground_angle)]
+    else
+      p.x += p.dx
+    end
 
     if flr(p.y) != y_ground then
-      p.angle = ground_angle
       p.y = y_ground
     end
   end,
@@ -135,9 +139,9 @@ player_state_funcs = {
     if btn(1) then
         p.angle = min(3, p.angle + 0.3)
     elseif btn(0) then
+      p.angle = max(-3, p.angle - 0.3)
       if abs(p.dy) > 2 then
         -- extra airres, decreased grav
-        p.angle = max(-3, p.angle - 0.1)
         p.dx *= _airres
         p.dy -= (p.ddy * 0.3)
       end
@@ -160,11 +164,11 @@ player_state_funcs = {
 
     -- tweak angle
     if btn(1) then
-        p.angle = min(3, p.angle + 0.3)
+      p.angle = min(3, p.angle + 0.3)
     elseif btn(0) then
+      p.angle = max(-3, p.angle - 0.3)
       if abs(p.dy) > 2 then
         -- extra airres, decreased grav
-        p.angle = max(-3, p.angle - 0.1)
         p.dx *= _airres
         p.dy -= (p.ddy * 0.3)
       end
@@ -183,20 +187,12 @@ player_state_funcs = {
         if crash_lut[rounded_angle] != nil
         and exists(ground_angle, crash_lut[rounded_angle]) then
           p.state = _PLAYER_STATE_FALLEN
-        elseif abs(p.dy) > 1 then
-          p.angle = ground_angle
+        else
           p.dy = -2
           -- make sure we're just above ground level first
           p.y = p.y - 0.1
-          p:change_state(_PLAYER_STATE_SKYUP)
-          printh("DX penalty of "..p.dx/3)
           p.dx -= p.dx/3
           p:change_state(_PLAYER_STATE_HOPUP)
-        else
-          -- nearing the ground slowly, so force downward
-          p.y = y_ground
-          p.angle = ground_angle
-          p:change_state(_PLAYER_STATE_ONGROUND)
         end
 
       else

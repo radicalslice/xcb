@@ -11,10 +11,10 @@ function _update_game()
     y_ground, angle = range:f(player.y_base, board_pos_x)
   end
 
-  -- Check for any boosts
-  local boosted_dy = find_boost(board_pos_x + player.dx, level)
-  if boosted_dy != 0 and player:near_ground(y_ground) then
-    player:boosty(boosted_dy, y_ground)
+  -- Check for any jumps
+  local added_dy = find_jump(board_pos_x + player.dx, level)
+  if added_dy != 0 and player:near_ground(y_ground) then
+    player:start_jump(added_dy)
   end
 
   -- handle FX
@@ -42,14 +42,14 @@ function _draw_game()
 
   local y_base = 72
   for x_curr=player.x-64,player.x+112 do
-    local y_inner = y_base
+    local y_updated = y_base
     local angle = 0
     -- check for range
     local range = find_range(x_curr, level)
     if range != nil then
-      y_inner, angle = range:f(y_base, x_curr)
+      y_updated, angle = range:f(y_base, x_curr)
     end
-    pset(x_curr, y_inner, 12)
+    pset(x_curr, y_updated, 12)
   end
 
   -- player over background
@@ -71,13 +71,14 @@ function _draw_game()
   draw_ctrls(12, 96)
   -- player debug stuff
   -- print("ST: "..player:get_state(), 96, 24, 10)
-  print("X: "..flr(player.x), 56, 88, 10)
+  print("X/Y: "..flr(player.x).."/"..flr(player.y), 56, 88, 10)
   -- print("Y: "..player.y, 56, 96, 10)
   print("DX: "..player.dx, 56, 96, 10)
+  print("angle: "..player.angle, 56, 102, 10)
   -- print("DDX: "..player.ddx, 56, 102, 10)
   -- print("Y: "..player.y, 80, 42, 10)
   -- print(stat(0), 80,  110, 12)
-  print("CPU: "..stat(1), 80,  118, 12)
+  -- print("CPU: "..stat(1), 80,  118, 12)
 
   pal()
 
