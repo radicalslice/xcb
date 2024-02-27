@@ -8,5 +8,7 @@ function _init()
   last_ts = time()
 
   printh("--init")
+
+  level = parse_level("80,basic:180,basic")
 end
 

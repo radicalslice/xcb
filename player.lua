@@ -95,6 +95,7 @@ player = {
 -- table of [player angle]: ground angles[]
 -- if we find a match, that makes player crash!
 crash_lut = {}
+--[[
 crash_lut[-3] = {0}
 crash_lut[-2] = {}
 crash_lut[-1] = {2,3}
@@ -102,6 +103,7 @@ crash_lut[0] = {2,3}
 crash_lut[1] = {-3,-2,-1}
 crash_lut[2] = {0,-1,-2,-3}
 crash_lut[3] = {-3,-2,-1,0,1,2,3}
+]]--
 
 player_state_funcs = {
   on_ground = function(p, y_ground, ground_angle)
@@ -136,10 +138,10 @@ player_state_funcs = {
     p.dx *= _airres
 
     -- tweak angle 
-    if btn(1) then
-        p.angle = min(3, p.angle + 0.3)
-    elseif btn(0) then
-      p.angle = max(-3, p.angle - 0.3)
+    if btnp(1) then
+        p.angle = min(1, p.angle + 1)
+    elseif btnp(0) then
+      p.angle = max(-1, p.angle - 1)
       if abs(p.dy) > 2 then
         -- extra airres, decreased grav
         p.dx *= _airres
@@ -164,9 +166,9 @@ player_state_funcs = {
 
     -- tweak angle
     if btn(1) then
-      p.angle = min(3, p.angle + 0.3)
+      p.angle = min(1, p.angle + 1)
     elseif btn(0) then
-      p.angle = max(-3, p.angle - 0.3)
+      p.angle = max(-1, p.angle - 1)
       if abs(p.dy) > 2 then
         -- extra airres, decreased grav
         p.dx *= _airres

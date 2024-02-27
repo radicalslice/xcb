@@ -1,161 +1,71 @@
-level = {
-   ranges = {
-     -- REGULAR RAMP
-     {
-       x_start = 80, 
-       x_end = 96,
-       f = function(r, y_base, x_curr)
-        return y_base - (x_curr - r.x_start), -2
-       end,
-     },
-     {
-       x_start = 96, 
-       x_end = 112,
-       f = function(r, y_base, x_curr)
-        return y_base - (r.x_end - x_curr), 2
-       end,
-     },
-     {
-       x_start = 200, 
-       x_end = 216,
-       f = function(r, y_base, x_curr)
-        return y_base - 2 * (x_curr - r.x_start), -3
-       end,
-     },
-     {
-       x_start = 216, 
-       x_end = 232,
-       f = function(r, y_base, x_curr)
-        return y_base - 2 * (r.x_end - x_curr), 3
-       end,
-     },
-     -- END REGULAR RAMP
-     -- TWO TINY RAMPS
-     {
-       x_start = 300, 
-       x_end = 314,
-       f = function(r, y_base, x_curr)
-        return y_base - ((x_curr - r.x_start) \ 2), -1
-       end,
-     },
-     {
-       x_start = 314, 
-       x_end = 328,
-       f = function(r, y_base, x_curr)
-        return y_base - ((r.x_end - x_curr) \ 2), 1
-       end,
-     },
-     {
-       x_start = 332, 
-       x_end = 346,
-       f = function(r, y_base, x_curr)
-        return y_base - ((x_curr - r.x_start) \ 2), -1
-       end,
-     },
-     {
-       x_start = 346, 
-       x_end = 360,
-       f = function(r, y_base, x_curr)
-        return y_base - ((r.x_end - x_curr) \ 2), 1
-       end,
-     },
-     -- END TWO TINY RAMPS
-     --[[
-     -- BIG TALL RAMP
-     {
-       x_start = 290, 
-       x_end = 314,
-       f = function(r, y_base, x_curr)
-        return y_base - ((x_curr - r.x_start) * 1.5), -3
-       end,
-     },
-     {
-       x_start = 314, 
-       x_end = 338,
-       f = function(r, y_base, x_curr)
-        return y_base - ((r.x_end - x_curr) * 1.5), 3
-       end,
-     },
-     -- END BIG TALL RAMP
-     -- REGULAR RAMP
-     {
-       x_start = 400, 
-       x_end = 416,
-       f = function(r, y_base, x_curr)
-        return y_base - (x_curr - r.x_start), -2
-       end,
-     },
-     {
-       x_start = 416, 
-       x_end = 432,
-       f = function(r, y_base, x_curr)
-        return y_base - (r.x_end - x_curr), 2
-       end,
-     },
-     -- END REGULAR RAMP
-     -- BIG TALL RAMP
-     {
-       x_start = 436, 
-       x_end = 462,
-       f = function(r, y_base, x_curr)
-        return y_base - ((x_curr - r.x_start) * 1.5), -3
-       end,
-     },
-     {
-       x_start = 462, 
-       x_end = 488,
-       f = function(r, y_base, x_curr)
-        return y_base - ((r.x_end - x_curr) * 1.5), 3
-       end,
-     },
-     -- END BIG TALL RAMP
-     ]]--
-   },
-   jumps = {
-     {
-       x = 96,
-       dy = -4.5,
-       used = false,
-     },
-     {
-       x = 216,
-       dy = -4,
-       used = false,
-     },
-     {
-       x = 314,
-       dy = -2,
-       used = false,
-     },
-     --[[
-     {
-       x = 346,
-       dy = -2,
-       used = false,
-     },
-     {
-       x = 242,
-       dy = -2.5,
-       used = false,
-     },
-     {
-       x = 314,
-       dy = -4.5,
-       used = false,
-     },
-     {
-       x = 416,
-       dy = -4.5,
-       used = false,
-     },
-     {
-       x = 462,
-       dy = -4.5,
-       used = false,
-     },
-   ]]--
-   }
+level = {}
+
+-- ramp templates
+v2 = {
+  basic = {
+    dup = 16,
+    ddown = 48,
+    fup = function(x_start, x_end)
+      return function(y_base, x_curr)
+        return y_base - (x_curr - x_start), -1
+      end
+    end,
+    fdown = function(x_start, x_end)
+      return function(y_base, x_curr)
+        -- somehow this -32 value works? I have no idea why yet
+        return y_base - 32 - ((x_end - x_start) * -((x_curr - x_start) / (x_end - x_start))), 1
+        -- this one is curvy and kinda owns
+        -- return y_base - ((x_end - x_curr) * -((x_curr - x_start) / (x_end - x_start))), 2
+      end
+    end,
+  },
 }
+
+-- Steep guys
+function ramp2u(r, y_base, x_curr)
+  return y_base - 2 * (x_curr - r.x_start), -3
+end
+function ramp2d(r, y_base, x_curr)
+  return y_base - 2 * (r.x_end - x_curr), 3
+end
+
+-- Shallow boys
+function ramp1u(r, y_base, x_curr)
+ return y_base - ((x_curr - r.x_start) \ 2), -1
+end
+function ramp1d(r, y_base, x_curr)
+ return y_base - ((r.x_end - x_curr) \ 2), 1
+end
+
+
+-- String -> Level
+function parse_level(str)
+  -- 80,basic:
+  local ranges = {}
+  local jumps = {}
+  foreach(split(str, ":"), function(substr)
+    local vals = split(substr, ",")
+    local ramp = v2[vals[2]]
+    local midpoint = vals[1] + ramp.dup
+    add(ranges, {
+      x_start = vals[1],
+      x_end = midpoint,
+      f = ramp.fup(vals[1], midpoint),
+      })
+    add(jumps, {
+      x = midpoint,
+      dy = -4.5,
+      used = false
+    })
+    add(ranges, {
+      x_start = midpoint,
+      x_end = midpoint + ramp.ddown,
+      f = ramp.fdown(vals[1], midpoint+ramp.ddown),
+      })
+  end)
+  return {ranges = ranges, jumps = jumps}
+end
+
 
 -- Int -> Level -> ?Range
 function find_range(x, level)

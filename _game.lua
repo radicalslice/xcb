@@ -8,7 +8,7 @@ function _update_game()
   local angle = 0 -- assume flat ground
 
   if range != nil then
-    y_ground, angle = range:f(player.y_base, board_pos_x)
+    y_ground, angle = range.f(player.y_base, board_pos_x)
   end
 
   -- Check for any jumps
@@ -47,7 +47,7 @@ function _draw_game()
     -- check for range
     local range = find_range(x_curr, level)
     if range != nil then
-      y_updated, angle = range:f(y_base, x_curr)
+      y_updated, angle = range.f(y_base, x_curr)
     end
     pset(x_curr, y_updated, 12)
   end
