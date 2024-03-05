@@ -14,8 +14,8 @@ _airres = 0.99
 player = {
   reset = function(p)
     p.x = 0
-    p.y = 64 -- player's actual y value
-    p.y_base = 64 -- baseline y value for the level
+    p.y = 72 -- player's actual y value
+    p.y_base = 72 -- baseline y value for the level
     p.dx = 0
     p.ddx = _PLAYER_INIT_DDX
     p.dy = 1 -- give it some initial dy
@@ -33,7 +33,10 @@ player = {
       spr(9, p.x, p.y, 1, 1)
       return
     end
-    spr(4+flr(p.angle), p.x, p.y, 1, 1)
+    palt(11, true)
+    palt(0, false)
+    spr(34 + (2*p.angle), p.x, p.y-12, 2, 2)
+    palt()
 
     -- print(flr(p.angle), p.x, p.y-12, 11)
   end,
@@ -165,9 +168,9 @@ player_state_funcs = {
     p.dx *= _airres
 
     -- tweak angle
-    if btn(1) then
+    if btnp(1) then
       p.angle = min(1, p.angle + 1)
-    elseif btn(0) then
+    elseif btnp(0) then
       p.angle = max(-1, p.angle - 1)
       if abs(p.dy) > 2 then
         -- extra airres, decreased grav

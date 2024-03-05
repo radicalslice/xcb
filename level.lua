@@ -1,26 +1,5 @@
 level = {}
 
--- ramp templates
-v2 = {
-  basic = {
-    dup = 16,
-    ddown = 48,
-    fup = function(x_start, x_end)
-      return function(y_base, x_curr)
-        return y_base - (x_curr - x_start), -1
-      end
-    end,
-    fdown = function(x_start, x_end)
-      return function(y_base, x_curr)
-        -- somehow this -32 value works? I have no idea why yet
-        return y_base - 32 - ((x_end - x_start) * -((x_curr - x_start) / (x_end - x_start))), 1
-        -- this one is curvy and kinda owns
-        -- return y_base - ((x_end - x_curr) * -((x_curr - x_start) / (x_end - x_start))), 2
-      end
-    end,
-  },
-}
-
 -- Steep guys
 function ramp2u(r, y_base, x_curr)
   return y_base - 2 * (x_curr - r.x_start), -3
@@ -38,20 +17,56 @@ function ramp1d(r, y_base, x_curr)
 end
 
 
--- String -> Level
-function parse_level(str)
+-- String -> []Range
+function parse_ranges(str)
   -- 80,basic:
   local ranges = {}
-  local jumps = {}
-  foreach(split(str, ":"), function(substr)
+  -- assume we start from y = LAST_FLAT
+  local last_flat = LAST_FLAT
+  foreach(split(str, "\n"), function(substr)
+    printh("substr: "..substr)
+    -- {x_start, ramp_type, x_end, y_value}
     local vals = split(substr, ",")
-    local ramp = v2[vals[2]]
-    local midpoint = vals[1] + ramp.dup
-    add(ranges, {
-      x_start = vals[1],
-      x_end = midpoint,
-      f = ramp.fup(vals[1], midpoint),
-      })
+    --[[ 
+    printh("x_start: "..vals[1])
+    printh("ramp_type: "..vals[2])
+    printh("x_length: "..vals[3])
+    ]]--
+    local x_start = vals[1]
+    local ramp_type = vals[2]
+    local x_end = x_start + vals[3]
+    local range = {x_start = x_start, x_end = x_end}
+    printh("last_flat: "..last_flat)
+    if ramp_type == "bup" then
+      -- trying to shadow
+      local my_flat = last_flat
+      range.f = function(x_curr)
+        return my_flat - (x_curr - vals[1]), -1
+      end
+    elseif ramp_type == "bdown" then
+      local my_flat = last_flat
+      range.f = function(x_curr)
+        -- somehow this -16 value works? I have no idea why yet
+        return my_flat - 16 - ((x_end - x_start) * -((x_curr - x_start) / (x_end - x_start))), 1
+        -- this one is curvy and kinda owns
+        -- return y_base - ((x_end - x_curr) * -((x_curr - x_start) / (x_end - x_start))), 2
+      end
+    elseif ramp_type == "ddown" then
+      local my_flat = last_flat
+      range.f = function(x_curr)
+        -- somehow this -16 value works? I have no idea why yet
+        return my_flat - ((x_end - x_start) * -((x_curr - x_start) / (x_end - x_start))), 1
+        -- this one is curvy and kinda owns
+        -- return y_base - ((x_end - x_curr) * -((x_curr - x_start) / (x_end - x_start))), 2
+      end
+    elseif ramp_type == "flat" then
+      last_flat = vals[4]
+      range.f = function(x_curr)
+          return vals[4], 0
+      end
+    end
+    add(ranges, range)
+    --[[
     add(jumps, {
       x = midpoint,
       dy = -4.5,
@@ -62,10 +77,31 @@ function parse_level(str)
       x_end = midpoint + ramp.ddown,
       f = ramp.fdown(vals[1], midpoint+ramp.ddown),
       })
+    ]]--
   end)
-  return {ranges = ranges, jumps = jumps}
+  return ranges
 end
 
+-- String -> []Jump
+function parse_jumps(str)
+  -- 96,-4.5
+  local jumps = {}
+  foreach(split(str, "\n"), function(substr)
+    printh("substr: "..substr)
+    -- {x_start, ramp_type, x_end, y_value}
+    local vals = split(substr, ",")
+    local jump = {
+      used = false,
+      x = vals[1],
+      dy = vals[2],
+    }
+    add(jumps, jump)
+  end)
+
+  printh("Found # jumps: "..#jumps)
+
+  return jumps
+end
 
 -- Int -> Level -> ?Range
 function find_range(x, level)
@@ -84,17 +120,7 @@ function find_jump(x, level)
   for b in all(level.jumps) do
     if x >= b.x and b.used == false then
       b.used = true
-      return b.dy
-    end
-  end
-  return 0
-end
---
--- Int -> Level -> Int
-function find_jump2(x, level)
-  local found = false
-  for b in all(level.jumps) do
-    if x >= b.x then
+      printh("found jump with dy: "..b.dy)
       return b.dy
     end
   end
