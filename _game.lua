@@ -1,4 +1,8 @@
 LAST_FLAT = 72
+_bigtree_x = 128
+_smalltree_x = 0
+_bigtree_dx = 1
+_smalltree_dx = 0.5
 function _update_game()
   local now = time()
   local dt = now - last_ts
@@ -7,6 +11,12 @@ function _update_game()
   local y_ground = player.y_base
   local range = find_range(board_pos_x, level)
   local angle = 0 -- assume flat ground
+
+  _bigtree_x -= (_bigtree_dx * player.dx)
+  _smalltree_x -= (_smalltree_dx * player.dx)
+
+  if _bigtree_x < -127 then _bigtree_x = 128 end
+  if _smalltree_x < -127 then _smalltree_x = 0 end
 
   if range != nil then
     y_ground, angle = range.f(board_pos_x)
@@ -43,9 +53,34 @@ function _draw_game()
   cls()
 
   rectfill(0,0,128,128,6)
+  rectfill(0,63,128,66,5)
+  rectfill(0,16,128,63,12)
+
+  palt(11, true)
+  palt(0, false)
+  map(17,0, _smalltree_x, 50, 4, 2)
+  map(17,0, _smalltree_x+32, 50, 4, 2)
+  map(17,0, _smalltree_x+64, 50, 4, 2)
+  map(17,0, _smalltree_x+96, 50, 4, 2)
+  map(17,0, _smalltree_x+128, 50, 4, 2)
+  map(17,0, _smalltree_x+128+32, 50, 4, 2)
+  map(17,0, _smalltree_x+128+64, 50, 4, 2)
+  map(17,0, _smalltree_x+128+96, 50, 4, 2)
+  map(17,2, _bigtree_x, 50, 1, 2)
+  map(17,2, _bigtree_x+128, 50, 1, 2)
+  palt()
+  -- map(0,0,0,0,16,1)
+  -- repeatingtrees
+  -- mset(4,6,10)
+  -- mset(5,6,11)
+  -- mset(4,7,26)
+  -- mset(5,7,27)
+  for i = 0,1 do 
+    -- map(17,0,i*128-player.x%128,48,16,3)
+  end
   local LEVEL_MAX = 256
 
-  -- map(0, 0, 0, 0, 8, 8)
+  map(0, 0, 0, 0, 16, 8)
   -- if player.y - 64 > 16
   -- move camera downwards by player.y - 64
   if player.y - _camera_y < (64 - 24) then

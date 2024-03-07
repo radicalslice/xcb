@@ -1,5 +1,5 @@
 function _init()
-  _update = _update_game
+  _update60 = _update_game
   _draw = _draw_game
   player:reset()
 
@@ -24,8 +24,8 @@ function _init()
 
   local jumps1 = [[
 96,-4.5
-196,-3.5
-356,-5.5]]
+196,-4.5
+356,-4.5]]
 
 --[[
   local level2 = [[

@@ -1,6 +1,6 @@
 _PLAYER_MAXDX = 3 -- when on the ground
 _PLAYER_MAXDY = 5
-_PLAYER_INIT_DDX = 0.05
+_PLAYER_INIT_DDX = 0.03
 _PLAYER_MAX_DDX = 0.2
 _PLAYER_STATE_ONGROUND = "on_ground"
 _PLAYER_STATE_SKYUP = "skyup"
@@ -10,7 +10,7 @@ _PLAYER_STATE_HOPDOWN = "hopdown"
 _PLAYER_STATE_INSKY = 2
 _PLAYER_STATE_FALLEN = 3
 _friction = 0.85
-_airres = 0.99
+_airres = 0.995
 player = {
   reset = function(p)
     p.x = 0
@@ -19,7 +19,7 @@ player = {
     p.dx = 0
     p.ddx = _PLAYER_INIT_DDX
     p.dy = 1 -- give it some initial dy
-    p.ddy = 0.5 -- basically gravity
+    p.ddy = 0.3 -- basically gravity
     p.angle = 0
     p.state = _PLAYER_STATE_ONGROUND
   end,
@@ -44,7 +44,7 @@ player = {
     p.dy = min(-1, (p.dx / _PLAYER_MAXDX) * boosted_dy)
     -- make sure we're just above ground level first
     p.y = p.y - 0.1
-    p.dx -= p.dx * 0.3
+    p.dx -= p.dx * 0.2
     p:change_state(_PLAYER_STATE_SKYUP)
   end,
   near_ground = function(p, y_ground)
@@ -112,7 +112,7 @@ player_state_funcs = {
   on_ground = function(p, y_ground, ground_angle)
     p.angle = ground_angle
 
-    if btn(4) then
+    if true or btn(4) then
       p.dx = min(_PLAYER_MAXDX, p.dx + p.ddx)
     else -- on ground, no btn input
       p.dx *= _friction
@@ -122,7 +122,7 @@ player_state_funcs = {
     end
 
     -- apply velocity
-    local slow_factors = {0.9, 0.8, 0.7}
+    local slow_factors = {0.95, 0.9, 0.8}
     if true and abs(ground_angle) >= 1 then
       p.x += p.dx * slow_factors[abs(ground_angle)]
     else
