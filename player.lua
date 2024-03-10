@@ -1,6 +1,6 @@
-_PLAYER_MAXDX = 3 -- when on the ground
+_PLAYER_MAXDX = 1.5 -- when on the ground
 _PLAYER_MAXDY = 5
-_PLAYER_INIT_DDX = 0.03
+_PLAYER_INIT_DDX = 0.01
 _PLAYER_MAX_DDX = 0.2
 _PLAYER_STATE_ONGROUND = "on_ground"
 _PLAYER_STATE_SKYUP = "skyup"
@@ -9,6 +9,7 @@ _PLAYER_STATE_HOPUP = "hopup"
 _PLAYER_STATE_HOPDOWN = "hopdown"
 _PLAYER_STATE_INSKY = 2
 _PLAYER_STATE_FALLEN = 3
+_PLAYER_GRAVITY = 0.2
 _friction = 0.85
 _airres = 0.995
 player = {
@@ -19,7 +20,7 @@ player = {
     p.dx = 0
     p.ddx = _PLAYER_INIT_DDX
     p.dy = 1 -- give it some initial dy
-    p.ddy = 0.3 -- basically gravity
+    p.ddy = _PLAYER_GRAVITY
     p.angle = 0
     p.state = _PLAYER_STATE_ONGROUND
   end,
@@ -70,10 +71,10 @@ player = {
 
       -- cheating and putting this outside of state_funcs
       if p.dx > 0.3 then
-        local colors = {2, 8, 14}
+        local colors = {6}
         -- randomize color array sometimes
-        if rnd() > 0.6 then colors = {8, 2, 8} end
-        add(_FX.parts, new_part(p.x + (1 - rnd(2)), p.y + 6 + (2 - rnd(4)), -1, 1, colors, 1, 0.2))
+        -- if rnd() > 0.6 then colors = {8, 2, 8} end
+        add(_FX.parts, new_part(p.x + 12 + (1 - rnd(2)), p.y + 2 + (2 - rnd(4)), -1, 1, colors, 1, 0.2))
       end
 
       return

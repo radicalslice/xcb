@@ -1,4 +1,7 @@
 level = {}
+-- Map[XPos][mapx, mapy, sprnum]
+_map_table = {}
+_camera_x_offset = 24
 
 -- Steep guys
 function ramp2u(r, y_base, x_curr)
@@ -23,8 +26,8 @@ function parse_ranges(str)
   local ranges = {}
   -- assume we start from y = LAST_FLAT
   local last_flat = LAST_FLAT
+  local x_max = 0
   foreach(split(str, "\n"), function(substr)
-    printh("substr: "..substr)
     -- {x_start, ramp_type, x_end, y_value}
     local vals = split(substr, ",")
     --[[ 
@@ -35,8 +38,11 @@ function parse_ranges(str)
     local x_start = vals[1]
     local ramp_type = vals[2]
     local x_end = x_start + vals[3]
+    if x_end > x_max then
+      x_max = x_end
+      printh("new x_max: "..x_max)
+    end
     local range = {x_start = x_start, x_end = x_end}
-    printh("last_flat: "..last_flat)
     if ramp_type == "bup" then
       -- trying to shadow
       local my_flat = last_flat
@@ -66,20 +72,8 @@ function parse_ranges(str)
       end
     end
     add(ranges, range)
-    --[[
-    add(jumps, {
-      x = midpoint,
-      dy = -4.5,
-      used = false
-    })
-    add(ranges, {
-      x_start = midpoint,
-      x_end = midpoint + ramp.ddown,
-      f = ramp.fdown(vals[1], midpoint+ramp.ddown),
-      })
-    ]]--
   end)
-  return ranges
+  return ranges, x_max
 end
 
 -- String -> []Jump
@@ -87,7 +81,6 @@ function parse_jumps(str)
   -- 96,-4.5
   local jumps = {}
   foreach(split(str, "\n"), function(substr)
-    printh("substr: "..substr)
     -- {x_start, ramp_type, x_end, y_value}
     local vals = split(substr, ",")
     local jump = {
@@ -97,8 +90,6 @@ function parse_jumps(str)
     }
     add(jumps, jump)
   end)
-
-  printh("Found # jumps: "..#jumps)
 
   return jumps
 end

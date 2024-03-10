@@ -9,23 +9,24 @@ function _init()
 
   printh("--init")
 
+  -- x_start, type, x_length, height for flats
   local level1 = [[
 0,flat,80,72
 80,bup,16
 96,bdown,32
-96,flat,84,88
-180,bup,16
-196,bdown,16,
-212,flat,128,88,
-340,bup,16,
-356,flat,128,72,
-484,ddown,64,
-548,flat,128,135]]
+96,flat,80,88
+176,bup,16
+192,bdown,16,
+208,flat,128,88,
+336,bup,16,
+352,flat,128,72,
+480,ddown,64,
+544,flat,128,135]]
 
   local jumps1 = [[
-96,-4.5
-196,-4.5
-356,-4.5]]
+96,-3.5
+192,-3.5
+352,-3.5]]
 
 --[[
   local level2 = [[
@@ -37,8 +38,7 @@ function _init()
   local jumps2 = [[
 96,-5.5]]
 --]]
-  local ranges = parse_ranges(level1)
-
+  local ranges, x_max = parse_ranges(level1)
 
   local jumps = parse_jumps(jumps1)
 
@@ -46,5 +46,25 @@ function _init()
     ranges = ranges,
     jumps = jumps,
   }
+
+  -- load map data for this level
+  for x_curr=0, x_max do
+    local range = find_range(x_curr, level)
+    if range != nil then
+      y_updated, angle = range.f(x_curr)
+    end
+    -- if x_curr % 6 == 0 and x_curr > _last_sprite_at then
+    if x_curr % 8 == 0 then
+      if angle == 0 then
+        add(_map_table,{x=x_curr,y=y_updated,map_x=21,map_y=0,height=2})
+      elseif angle == -1 then
+        add(_map_table,{x=x_curr,y=y_updated-8,map_x=22,map_y=0,height=1})
+        printh("added slopy bit at:"..x_curr..","..y_updated)
+      elseif angle == 1 then
+        add(_map_table,{x=x_curr,y=y_updated,map_x=22,map_y=1,height=1})
+      end
+      -- _last_sprite_at = x_curr
+    end
+  end
 end
 
