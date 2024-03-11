@@ -107,45 +107,6 @@ function _draw_game()
 
   camera(_camera_x, _camera_y)
 
-  local y_base = 72
-    --[[
-  for x_curr=flr(player.x-64),flr(player.x+112) do
-    local y_updated = y_base
-    local angle = 0
-    -- check for range
-    local range = find_range(x_curr, level)
-    if range != nil then
-      y_updated, angle = range.f(x_curr)
-    end
-    if x_curr % 6 == 0 and x_curr > _last_sprite_at then
-      if angle == 0 then
-        -- spr(0, x_curr, y_updated-4, 3, 2)
-        -- sprite_table[x_curr] = 0 + flr(rnd(3))
-        add(_sprite_table, {x=x_curr-2, y=y_updated-4, sprnum=0+flr(rnd(3))})
-        add(_sprite_table, {x=x_curr-2, y=y_updated+4, sprnum=16+flr(rnd(3))})
-        _last_sprite_at = x_curr
-      end
-    end
-    if angle == -1 then
-      -- spr(3, x_curr, y_updated - 4, 1, 1) 
-      line(x_curr, y_updated, x_curr+2, y_updated-1, 6)
-    elseif angle == 1 then
-      -- spr(4, x_curr, y_updated - 4, 1, 1) 
-      line(x_curr, y_updated, x_curr+2, y_updated+3, 6)
-    elseif angle != 0 then
-      -- pset(x_curr, y_updated, 12)
-    end
-  end
-  -- printh("SPrite table length: "..#_sprite_table)
-  for v in all(_sprite_table) do
-    -- clean up old entries
-    if v.x < (player.x - 140) then
-      del(_sprite_table, v)
-    end
-    spr(v.sprnum, v.x, v.y)
-  end
-    ]]--
-
   palt()
 
   foreach(_FX.parts, function(p)
@@ -163,10 +124,4 @@ function _draw_game()
   print("X/Y: "..flr(player.x).."/"..flr(player.y), 56, 108, 9)
   -- print("Y: "..player.y, 56, 96, 10)
   print("DX: "..player.dx, 56, 114, 9)
-  print("angle: "..player.angle, 56, 120, 9)
-  -- print("DDX: "..player.ddx, 56, 102, 10)
-  -- print("Y: "..player.y, 80, 42, 10)
-  -- print(stat(0), 80,  110, 12)
-  -- print("CPU: "..stat(1), 80,  118, 12)
-
 end

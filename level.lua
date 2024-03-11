@@ -30,17 +30,11 @@ function parse_ranges(str)
   foreach(split(str, "\n"), function(substr)
     -- {x_start, ramp_type, x_end, y_value}
     local vals = split(substr, ",")
-    --[[ 
-    printh("x_start: "..vals[1])
-    printh("ramp_type: "..vals[2])
-    printh("x_length: "..vals[3])
-    ]]--
     local x_start = vals[1]
     local ramp_type = vals[2]
     local x_end = x_start + vals[3]
     if x_end > x_max then
       x_max = x_end
-      printh("new x_max: "..x_max)
     end
     local range = {x_start = x_start, x_end = x_end}
     if ramp_type == "bup" then
@@ -62,8 +56,6 @@ function parse_ranges(str)
       range.f = function(x_curr)
         -- somehow this -16 value works? I have no idea why yet
         return my_flat - ((x_end - x_start) * -((x_curr - x_start) / (x_end - x_start))), 1
-        -- this one is curvy and kinda owns
-        -- return y_base - ((x_end - x_curr) * -((x_curr - x_start) / (x_end - x_start))), 2
       end
     elseif ramp_type == "flat" then
       last_flat = vals[4]
@@ -111,7 +103,6 @@ function find_jump(x, level)
   for b in all(level.jumps) do
     if x >= b.x and b.used == false then
       b.used = true
-      printh("found jump with dy: "..b.dy)
       return b.dy
     end
   end
