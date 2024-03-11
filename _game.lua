@@ -1,7 +1,7 @@
 LAST_FLAT = 72
-_bigtree_x = 128
+_bigtree_x = 0
 _smalltree_x = 0
-_bigtree_dx = 1
+_bigtree_dx = 0.9
 _smalltree_dx = 0.5
 function _update_game()
   local now = time()
@@ -15,7 +15,7 @@ function _update_game()
   _bigtree_x -= (_bigtree_dx * player.dx)
   _smalltree_x -= (_smalltree_dx * player.dx)
 
-  if _bigtree_x < -127 then _bigtree_x = 128 end
+  if _bigtree_x < -127 then _bigtree_x = 0 end
   if _smalltree_x < -127 then _smalltree_x = 0 end
 
   if range != nil then
@@ -51,14 +51,11 @@ _camera_x = 0
 function _draw_game()
   cls()
 
-  -- Lower half
-  rectfill(0,0,128,128,7)
-
-  -- sliver below parallax
-  rectfill(0,63,128,66,7)
-
   -- sky
   rectfill(0,16,128,63,12)
+
+  -- sliver below parallax
+  rectfill(0,63,128,90,7)
 
   palt(11, true)
   palt(0, false)
@@ -72,8 +69,18 @@ function _draw_game()
   map(17,0, _smalltree_x+128+64, 50, 4, 2)
   map(17,0, _smalltree_x+128+96, 50, 4, 2)
   -- random trees
-  map(17,2, _bigtree_x, 50, 1, 2)
-  map(17,2, _bigtree_x+128, 50, 1, 2)
+  map(17,2, _bigtree_x, 60, 4, 5)
+  map(17,2, _bigtree_x+32, 60, 4, 5)
+  map(17,2, _bigtree_x+64, 60, 4, 5)
+  map(17,2, _bigtree_x+96, 60, 4, 5)
+  map(17,2, _bigtree_x+128, 60, 4, 5)
+  map(17,2, _bigtree_x+128+32, 60, 4, 5)
+  map(17,2, _bigtree_x+128+64, 60, 4, 5)
+  map(17,2, _bigtree_x+128+96, 60, 4, 5)
+
+  -- Lower half
+  rectfill(0,88,128,128,7)
+
   -- map(0,0,0,0,16,1)
   -- repeatingtrees
   -- mset(4,6,10)

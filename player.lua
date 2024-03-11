@@ -1,6 +1,6 @@
 _PLAYER_MAXDX = 1.5 -- when on the ground
 _PLAYER_MAXDY = 5
-_PLAYER_INIT_DDX = 0.01
+_PLAYER_INIT_DDX = 0.02
 _PLAYER_MAX_DDX = 0.2
 _PLAYER_STATE_ONGROUND = "on_ground"
 _PLAYER_STATE_SKYUP = "skyup"
@@ -9,7 +9,7 @@ _PLAYER_STATE_HOPUP = "hopup"
 _PLAYER_STATE_HOPDOWN = "hopdown"
 _PLAYER_STATE_INSKY = 2
 _PLAYER_STATE_FALLEN = 3
-_PLAYER_GRAVITY = 0.2
+_PLAYER_GRAVITY = 0.15
 _friction = 0.85
 _airres = 0.995
 player = {
