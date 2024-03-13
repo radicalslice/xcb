@@ -16,7 +16,6 @@ player = {
   reset = function(p)
     p.x = 0
     p.y = 72 -- player's actual y value
-    p.y_base = 72 -- baseline y value for the level
     p.dx = 0
     p.ddx = _PLAYER_INIT_DDX
     p.dy = 1 -- give it some initial dy
@@ -29,14 +28,9 @@ player = {
     p.state = state
   end,
   draw = function(p)
-    if p:get_state() == _PLAYER_STATE_FALLEN then
-      spr(8, p.x-6, p.y-10, 1, 1)
-      spr(9, p.x, p.y, 1, 1)
-      return
-    end
     palt(11, true)
     palt(0, false)
-    spr(34 + (2*p.angle), p.x, p.y-12, 2, 2)
+    spr(34 + (2*p.angle), p.x-10, p.y-6, 2, 2)
     palt()
 
     -- print(flr(p.angle), p.x, p.y-12, 11)

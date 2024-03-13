@@ -1,14 +1,16 @@
 LAST_FLAT = 72
 _bigtree_x = 0
 _smalltree_x = 0
-_bigtree_dx = 0.9
-_smalltree_dx = 0.5
+_bigtree_dx = 0.6
+_smalltree_dx = 0.2
+_y_base = 72 -- baseline y value for the level
+
 function _update_game()
   local now = time()
   local dt = now - last_ts
 
   local board_pos_x = player:get_board_center_x()
-  local y_ground = player.y_base
+  local y_ground = _y_base
   local range = find_range(board_pos_x, level)
   local angle = 0 -- assume flat ground
 
@@ -54,32 +56,34 @@ function _draw_game()
   -- sky
   rectfill(0,16,128,63,12)
 
-  -- sliver below parallax
+  -- sliver of snow behind parallax
   rectfill(0,63,128,90,7)
 
   palt(11, true)
   palt(0, false)
-  -- parallax-y tiles
-  map(17,0, _smalltree_x, 50, 4, 2)
-  map(17,0, _smalltree_x+32, 50, 4, 2)
-  map(17,0, _smalltree_x+64, 50, 4, 2)
-  map(17,0, _smalltree_x+96, 50, 4, 2)
-  map(17,0, _smalltree_x+128, 50, 4, 2)
-  map(17,0, _smalltree_x+128+32, 50, 4, 2)
-  map(17,0, _smalltree_x+128+64, 50, 4, 2)
-  map(17,0, _smalltree_x+128+96, 50, 4, 2)
+  -- parallax-y mountain tiles
+  map(17,0, _smalltree_x, 40, 4, 1)
+  map(17,0, _smalltree_x+32, 40, 4, 1)
+  map(17,0, _smalltree_x+64, 40, 4, 1)
+  map(17,0, _smalltree_x+96, 40, 4, 1)
+  map(17,0, _smalltree_x+128, 40, 4, 1)
+  map(17,0, _smalltree_x+128+32, 40, 4, 1)
+  map(17,0, _smalltree_x+128+64, 40, 4, 1)
+  map(17,0, _smalltree_x+128+96, 40, 4, 1)
   -- random trees
-  map(17,2, _bigtree_x, 60, 4, 5)
-  map(17,2, _bigtree_x+32, 60, 4, 5)
-  map(17,2, _bigtree_x+64, 60, 4, 5)
-  map(17,2, _bigtree_x+96, 60, 4, 5)
-  map(17,2, _bigtree_x+128, 60, 4, 5)
-  map(17,2, _bigtree_x+128+32, 60, 4, 5)
-  map(17,2, _bigtree_x+128+64, 60, 4, 5)
-  map(17,2, _bigtree_x+128+96, 60, 4, 5)
+  map(17,2, _bigtree_x, 44, 4, 3)
+  map(17,2, _bigtree_x+32, 44, 4, 3)
+  map(17,2, _bigtree_x+64, 44, 4, 3)
+  map(17,2, _bigtree_x+96, 44, 4, 3)
+  map(17,2, _bigtree_x+128, 44, 4, 3)
+  map(17,2, _bigtree_x+128+32, 44, 4, 3)
+  map(17,2, _bigtree_x+128+64, 44, 4, 3)
+  map(17,2, _bigtree_x+128+96, 44, 4, 3)
 
-  -- Lower half
-  rectfill(0,88,128,128,7)
+  -- row of random tiles
+
+  -- Lower half (snow)
+  rectfill(0,80,128,128,7)
 
   -- map(0,0,0,0,16,1)
   -- repeatingtrees

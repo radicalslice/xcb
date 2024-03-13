@@ -57,10 +57,15 @@ function _init()
     if x_curr % 8 == 0 then
       if angle == 0 then
         local flat_tile = 21 + flr(rnd(3))
-        add(_map_table,{x=x_curr,y=y_updated-8,map_x=flat_tile,map_y=0,height=3})
+        add(_map_table,{x=x_curr,y=y_updated-8,map_x=flat_tile,map_y=0,height=4})
       elseif angle == -1 then
         add(_map_table,{x=x_curr,y=y_updated-8,map_x=24,map_y=0,height=5})
-        printh("added slopy bit at:"..x_curr..","..y_updated)
+        if x_curr % 16 != 0 then
+          --bonus corner tile
+          add(_map_table,{x=x_curr,y=y_updated-8,map_x=26,map_y=0,height=1})
+        else
+          add(_map_table,{x=x_curr,y=y_updated-16,map_x=26,map_y=1,height=1})
+        end
       elseif angle == 1 then
         add(_map_table,{x=x_curr,y=y_updated,map_x=25,map_y=0,height=5})
       end
