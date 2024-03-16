@@ -24,27 +24,32 @@ end
 function parse_ranges(str)
   -- 80,basic:
   local ranges = {}
+  local jumps = {}
   -- assume we start from y = LAST_FLAT
   local last_flat = LAST_FLAT
-  local x_max = 0
+  local x_curr = 0
   foreach(split(str, "\n"), function(substr)
-    -- {x_start, ramp_type, x_end, y_value}
     local vals = split(substr, ",")
-    local x_start = vals[1]
-    local ramp_type = vals[2]
-    local x_end = x_start + vals[3]
-    if x_end > x_max then
-      x_max = x_end
-    end
+    local x_start = x_curr
+    local ramp_type = vals[1]
+    local x_end = x_start + vals[2]
     local range = {x_start = x_start, x_end = x_end}
+    -- {ramp_type, x_end, y_value, jump_dy}
     if ramp_type == "bup" then
       -- trying to shadow
       local my_flat = last_flat
-      range.f = function(x_curr)
-        return my_flat - (x_curr - vals[1]), -1
+      range.f = function(x_pos)
+        return my_flat - (x_pos - x_start), -1
       end
+      local jump = {
+        used = false,
+        x = x_end,
+        dy = vals[3],
+      }
+      add(jumps, jump)
     elseif ramp_type == "bdown" then
       local my_flat = last_flat
+      -- {ramp_type, x_end, y_value}
       range.f = function(x_curr)
         -- somehow this -16 value works? I have no idea why yet
         return my_flat - 16 - ((x_end - x_start) * -((x_curr - x_start) / (x_end - x_start))), 1
@@ -52,20 +57,23 @@ function parse_ranges(str)
         -- return y_base - ((x_end - x_curr) * -((x_curr - x_start) / (x_end - x_start))), 2
       end
     elseif ramp_type == "ddown" then
+    -- {ramp_type, x_end, y_value}
       local my_flat = last_flat
       range.f = function(x_curr)
         -- somehow this -16 value works? I have no idea why yet
         return my_flat - ((x_end - x_start) * -((x_curr - x_start) / (x_end - x_start))), 1
       end
     elseif ramp_type == "flat" then
-      last_flat = vals[4]
+    -- {ramp_type, x_end, y_value, new_x_flat}
+      last_flat = vals[3]
       range.f = function(x_curr)
-          return vals[4], 0
+          return vals[3], 0
       end
     end
     add(ranges, range)
+    x_curr = x_end
   end)
-  return ranges, x_max
+  return ranges, jumps, x_curr
 end
 
 -- String -> []Jump

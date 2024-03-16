@@ -11,17 +11,47 @@ function _init()
 
   -- x_start, type, x_length, height for flats
   local level1 = [[
-0,flat,80,72
-80,bup,16
-96,bdown,32
-96,flat,80,88
-176,bup,16
-192,bdown,16,
-208,flat,128,88,
-336,bup,16,
-352,flat,128,72,
-480,ddown,64,
-544,flat,128,135]]
+flat,64,72
+ddown,128
+flat,128,200
+bup,16,-3.5
+bdown,16
+flat,64,200
+bup,16,-3.5
+bdown,16
+flat,96,200
+bup,16,-3.5
+bdown,16
+flat,8,200
+ddown,64
+flat,96,264
+bup,16,-3.5
+bdown,16
+flat,24,264
+bup,16,-3.5
+bdown,16
+flat,96,264,
+bup,16,-2.5
+flat,96,248,
+ddown,64
+flat,96,312,
+bup,16,-2.5
+flat,16,296
+bup,16,-3.5
+bdown,16
+flat,8,296
+ddown,64
+flat,128,360]]
+--[[
+160,bup,16
+176,bdown,16
+192,flat,32,104
+224,bup,16 
+240,bdown,16
+256,flat,8,104
+306,bdown,64
+372,flat,32,168
+--]]
 
   local jumps1 = [[
 96,-3.5
@@ -38,9 +68,7 @@ function _init()
   local jumps2 = [[
 96,-5.5]]
 --]]
-  local ranges, x_max = parse_ranges(level1)
-
-  local jumps = parse_jumps(jumps1)
+  local ranges, jumps, x_max = parse_ranges(level1)
 
   level = {
     ranges = ranges,
