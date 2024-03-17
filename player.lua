@@ -1,20 +1,20 @@
-_PLAYER_MAXDX = 1.5 -- when on the ground
+_PLAYER_DX_MAX = 1.5 -- when on the ground
+_PLAYER_DX_MAX_BOOSTED = 2.8
 _PLAYER_MAXDY = 5
 _PLAYER_INIT_DDX = 0.02
-_PLAYER_MAX_DDX = 0.2
 _PLAYER_STATE_ONGROUND = "on_ground"
 _PLAYER_STATE_SKYUP = "skyup"
 _PLAYER_STATE_SKYDOWN = "skydown"
 _PLAYER_STATE_HOPUP = "hopup"
 _PLAYER_STATE_HOPDOWN = "hopdown"
 _PLAYER_STATE_INSKY = 2
-_PLAYER_STATE_FALLEN = 3
 _PLAYER_GRAVITY = 0.15
 _friction = 0.85
-_airres = 0.995
+_airres = 1 -- disabled for now
 player = {
   reset = function(p)
     p.x = 0
+    p.dx_max = _PLAYER_DX_MAX
     p.y = 72 -- player's actual y value
     p.dx = 0
     p.ddx = _PLAYER_INIT_DDX
@@ -22,6 +22,7 @@ player = {
     p.ddy = _PLAYER_GRAVITY
     p.angle = 0
     p.state = _PLAYER_STATE_ONGROUND
+    p.board_cycler = new_cycler(0.05, {8,9,10})
   end,
   change_state = function(p, state)
     printh("State change: "..p.state.."->"..state)
@@ -30,13 +31,15 @@ player = {
   draw = function(p)
     palt(11, true)
     palt(0, false)
+    if p.dx_max == _PLAYER_DX_MAX_BOOSTED then
+      pal(8, p.board_cycler:get_color())
+    end
     spr(34 + (2*p.angle), p.x-10, p.y-6, 2, 2)
+    pal()
     palt()
-
-    -- print(flr(p.angle), p.x, p.y-12, 11)
   end,
   start_jump = function(p, boosted_dy)
-    p.dy = min(-1, (p.dx / _PLAYER_MAXDX) * boosted_dy)
+    p.dy = min(-1, (p.dx / p.dx_max) * boosted_dy)
     -- make sure we're just above ground level first
     p.y = p.y - 0.1
     p.dx -= p.dx * 0.2
@@ -45,39 +48,26 @@ player = {
   near_ground = function(p, y_ground)
    return abs(p.y - y_ground) < 1 or p.y > y_ground
   end,
-  update = function(p, y_ground, ground_angle)
+  update = function(p, dt, y_ground, ground_angle)
 
-    if btn(5) then
-      p.y = 32
-      p.dy = 1
-      p.dx = 0
-      p.angle = -1
-      p:change_state(_PLAYER_STATE_SKYDOWN)
-      return
-    end
+    -- update board cycler
+    p.board_cycler:update(dt)
 
     if p:get_state() == _PLAYER_STATE_ONGROUND 
       or p:get_state() == _PLAYER_STATE_SKYUP
       or p:get_state() == _PLAYER_STATE_SKYDOWN
       or p:get_state() == _PLAYER_STATE_HOPUP
       or p:get_state() == _PLAYER_STATE_HOPDOWN then
-      player_state_funcs[p:get_state()](p, y_ground, ground_angle)
+      player_state_funcs[p:get_state()](p, dt, y_ground, ground_angle)
 
       -- cheating and putting this outside of state_funcs
       if p.dx > 0.3 then
         local colors = {6}
         -- randomize color array sometimes
         -- if rnd() > 0.6 then colors = {8, 2, 8} end
-        add(_FX.parts, new_part(p.x + 12 + (1 - rnd(2)), p.y + 2 + (2 - rnd(4)), -1, 1, colors, 1, 0.2))
+        add(_FX.parts, new_part(p.x - 8 + (1 - rnd(2)), p.y + 9 + (2 - rnd(4)), -1, 1, colors, 1, 0.2))
       end
 
-      return
-    end
-
-    if p:get_state() == _PLAYER_STATE_FALLEN then
-      -- update position only
-      p.dx *= _friction
-      p.x += p.dx
       return
     end
 
@@ -90,31 +80,18 @@ player = {
   end
 }
 
--- table of [player angle]: ground angles[]
--- if we find a match, that makes player crash!
-crash_lut = {}
---[[
-crash_lut[-3] = {0}
-crash_lut[-2] = {}
-crash_lut[-1] = {2,3}
-crash_lut[0] = {2,3}
-crash_lut[1] = {-3,-2,-1}
-crash_lut[2] = {0,-1,-2,-3}
-crash_lut[3] = {-3,-2,-1,0,1,2,3}
-]]--
-
 player_state_funcs = {
-  on_ground = function(p, y_ground, ground_angle)
+  on_ground = function(p, dt, y_ground, ground_angle)
     p.angle = ground_angle
 
-    if true or btn(4) then
-      p.dx = min(_PLAYER_MAXDX, p.dx + p.ddx)
-    else -- on ground, no btn input
+    p.dx = min(p.dx_max, p.dx + p.ddx)
+      --[[
+      -- old stuff, we used to use this before auto-input
       p.dx *= _friction
       if p.dx < 0.1 then
         p.dx = 0
       end
-    end
+      ]]--
 
     -- apply velocity
     local slow_factors = {0.95, 0.9, 0.8}
@@ -128,7 +105,7 @@ player_state_funcs = {
       p.y = y_ground
     end
   end,
-  skyup = function(p, y_ground, ground_angle)
+  skyup = function(p, dt, y_ground, ground_angle)
     -- apply velocity
     p.x += p.dx
 
@@ -155,7 +132,7 @@ player_state_funcs = {
       p:change_state(_PLAYER_STATE_SKYDOWN)
     end
   end,
-  skydown = function(p, y_ground, ground_angle)
+  skydown = function(p, dt, y_ground, ground_angle)
     -- apply velocity
     p.x += p.dx
 
@@ -177,34 +154,31 @@ player_state_funcs = {
     p.dy = min(_PLAYER_MAXDY, p.dy + p.ddy)
     p.y = min(p.y + p.dy, y_ground)
 
-    -- hop, crash, or land
+    -- hop or land
     if p:near_ground(y_ground) then
 
       if flr(p.angle) != ground_angle then
         local rounded_angle = flr(p.angle)
 
-        -- either hop or crash
-        if crash_lut[rounded_angle] != nil
-        and exists(ground_angle, crash_lut[rounded_angle]) then
-          p.state = _PLAYER_STATE_FALLEN
-        else
-          p.dy = -2
-          -- make sure we're just above ground level first
-          p.y = p.y - 0.1
-          p.dx -= p.dx/3
-          p:change_state(_PLAYER_STATE_HOPUP)
-        end
-
+        p.dy = -2
+        -- make sure we're just above ground level first
+        p.y = p.y - 0.1
+        p.dx -= p.dx/3
+        p:change_state(_PLAYER_STATE_HOPUP)
       else
         -- angle is the same, so land
         -- nearing the ground slowly, so force downward
         p.y = y_ground
         p.angle = ground_angle
         p:change_state(_PLAYER_STATE_ONGROUND)
+
+        -- increase max_dx and set a timer to expire
+        player.dx_max = _PLAYER_DX_MAX_BOOSTED
+        _timers.boost:init(2,time())
       end
     end 
   end,
-  hopup = function(p, y_ground, ground_angle)
+  hopup = function(p, dt, y_ground, ground_angle)
     -- apply velocity
     p.x += p.dx
 
@@ -216,7 +190,7 @@ player_state_funcs = {
       p:change_state(_PLAYER_STATE_HOPDOWN)
     end
   end,
-  hopdown = function(p, y_ground, ground_angle)
+  hopdown = function(p, dt, y_ground, ground_angle)
     -- apply velocity
     p.x += p.dx
 

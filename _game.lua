@@ -1,18 +1,16 @@
-LAST_FLAT = 72
 _bigtree_x = 0
 _smalltree_x = 0
 _bigtree_dx = 0.6
 _smalltree_dx = 0.2
-_y_base = 72 -- baseline y value for the level
+_camera_x_offset = 24
+_timers = {}
 
 function _update_game()
   local now = time()
   local dt = now - last_ts
 
-  local board_pos_x = player:get_board_center_x()
-  local y_ground = _y_base
-  local range = find_range(board_pos_x, level)
-  local angle = 0 -- assume flat ground
+  -- update timers
+  _timers.boost:update(now)
 
   _bigtree_x -= (_bigtree_dx * player.dx)
   _smalltree_x -= (_smalltree_dx * player.dx)
@@ -20,6 +18,10 @@ function _update_game()
   if _bigtree_x < -127 then _bigtree_x = 0 end
   if _smalltree_x < -127 then _smalltree_x = 0 end
 
+  local board_pos_x = player:get_board_center_x()
+  local y_ground = Y_BASE
+  local range = find_range(board_pos_x, level)
+  local angle = 0 -- assume flat ground
   if range != nil then
     y_ground, angle = range.f(board_pos_x)
   else
@@ -41,7 +43,7 @@ function _update_game()
     end
   end)
 
-  player:update(y_ground, angle)
+  player:update(dt, y_ground, angle)
 
   last_ts = now
 
@@ -132,7 +134,9 @@ function _draw_game()
   draw_ctrls(12, 108, 9)
   -- player debug stuff
   -- print("ST: "..player:get_state(), 96, 24, 10)
-  print("X/Y: "..flr(player.x).."/"..flr(player.y), 56, 108, 9)
+  print("X/Y: "..flr(player.x).."/"..flr(player.y), 56, 100, 9)
   -- print("Y: "..player.y, 56, 96, 10)
-  print("DX: "..player.dx, 56, 114, 9)
+  print("DX: "..player.dx, 56, 106, 9)
+  print("DX_MAX: "..player.dx_max, 56, 112, 9)
+  print("boostttl: ".._timers.boost.ttl, 56, 120, 9)
 end

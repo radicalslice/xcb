@@ -1,7 +1,7 @@
 level = {}
 -- Map[XPos][mapx, mapy, sprnum]
 _map_table = {}
-_camera_x_offset = 24
+Y_BASE = 72
 
 -- Steep guys
 function ramp2u(r, y_base, x_curr)
@@ -25,8 +25,8 @@ function parse_ranges(str)
   -- 80,basic:
   local ranges = {}
   local jumps = {}
-  -- assume we start from y = LAST_FLAT
-  local last_flat = LAST_FLAT
+  -- assume we start from y = Y_BASE
+  local last_flat = Y_BASE
   local x_curr = 0
   foreach(split(str, "\n"), function(substr)
     local vals = split(substr, ",")
@@ -51,7 +51,7 @@ function parse_ranges(str)
       local my_flat = last_flat
       -- {ramp_type, x_end, y_value}
       range.f = function(x_curr)
-        -- somehow this -16 value works? I have no idea why yet
+        -- i think this -16 works because our ramps are (so far) always 16 px high and wide
         return my_flat - 16 - ((x_end - x_start) * -((x_curr - x_start) / (x_end - x_start))), 1
         -- this one is curvy and kinda owns
         -- return y_base - ((x_end - x_curr) * -((x_curr - x_start) / (x_end - x_start))), 2

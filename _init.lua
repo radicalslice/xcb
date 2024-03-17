@@ -7,6 +7,15 @@ function _init()
 
   last_ts = time()
 
+  -- player's boosting timer
+  _timers.boost = new_timer(
+    0,
+    function()
+      printh("did the timer expiration")
+      player.dx_max = _PLAYER_DX_MAX
+    end
+  )
+
   printh("--init")
 
   -- x_start, type, x_length, height for flats
@@ -42,32 +51,16 @@ bdown,16
 flat,8,296
 ddown,64
 flat,128,360]]
---[[
-160,bup,16
-176,bdown,16
-192,flat,32,104
-224,bup,16 
-240,bdown,16
-256,flat,8,104
-306,bdown,64
-372,flat,32,168
---]]
 
-  local jumps1 = [[
-96,-3.5
-192,-3.5
-352,-3.5]]
 
---[[
-  local level2 = [[
-0,flat,80,72
-80,bup,16
-96,bdown,16
-112,flat,16,72
-128,ddown,64]]
-  local jumps2 = [[
-96,-5.5]]
---]]
+  local levelf = [[
+flat,64,72
+ddown,128
+flat,128,200
+bup,16,-3.5
+bdown,16
+flat,1200,200]]
+
   local ranges, jumps, x_max = parse_ranges(level1)
 
   level = {
@@ -81,7 +74,6 @@ flat,128,360]]
     if range != nil then
       y_updated, angle = range.f(x_curr)
     end
-    -- if x_curr % 6 == 0 and x_curr > _last_sprite_at then
     if x_curr % 8 == 0 then
       if angle == 0 then
         local flat_tile = 21 + flr(rnd(3))
@@ -97,7 +89,6 @@ flat,128,360]]
       elseif angle == 1 then
         add(_map_table,{x=x_curr,y=y_updated,map_x=25,map_y=0,height=5})
       end
-      -- _last_sprite_at = x_curr
     end
   end
 end

@@ -8,6 +8,7 @@ __lua__
 #include utils.lua
 #include level.lua
 #include fleas.lua
+#include timer.lua
 
 __gfx__
 00000000777777777777777777777777bbbbbbb5777777775bbbbbbb7777777bf888ffffffffffffcccccccccccccccccccccccccccccccc0000000000000000
