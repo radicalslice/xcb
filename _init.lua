@@ -18,48 +18,39 @@ function _init()
 
   printh("--init")
 
-  -- x_start, type, x_length, height for flats
+  -- type, x_length, height for flats
   local level1 = [[
-flat,64,72
-ddown,128
-flat,128,200
-bup,16,-3.5
-bdown,16
-flat,64,200
-bup,16,-3.5
-bdown,16
-flat,96,200
-bup,16,-3.5
-bdown,16
-flat,8,200
+flat,96
 ddown,64
-flat,96,264
+flat,256
 bup,16,-3.5
 bdown,16
-flat,24,264
+flat,256
 bup,16,-3.5
 bdown,16
-flat,96,264,
+flat,192
+ddown,16
+flat,128
+bup,16,-3.5
+bdown,32
+flat,192
+bup,16,-3.5
+bdown,16
+flat,32
+bup,16,-3.5
+bdown,16
+flat,96
 bup,16,-2.5
-flat,96,248,
+flat,96
 ddown,64
-flat,96,312,
+flat,96
 bup,16,-2.5
-flat,16,296
+flat,16
 bup,16,-3.5
 bdown,16
-flat,8,296
+flat,8
 ddown,64
-flat,128,360]]
-
-
-  local levelf = [[
-flat,64,72
-ddown,128
-flat,128,200
-bup,16,-3.5
-bdown,16
-flat,1200,200]]
+flat,128]]
 
   local ranges, jumps, x_max = parse_ranges(level1)
 

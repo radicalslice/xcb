@@ -1,6 +1,6 @@
 _PLAYER_DX_MAX = 1.5 -- when on the ground
-_PLAYER_DX_MAX_BOOSTED = 2.8
-_PLAYER_MAXDY = 5
+_PLAYER_DX_MAX_BOOSTED = 2.2
+_PLAYER_MAXDY = 3
 _PLAYER_INIT_DDX = 0.02
 _PLAYER_STATE_ONGROUND = "on_ground"
 _PLAYER_STATE_SKYUP = "skyup"
@@ -15,7 +15,7 @@ player = {
   reset = function(p)
     p.x = 0
     p.dx_max = _PLAYER_DX_MAX
-    p.y = 72 -- player's actual y value
+    p.y = Y_BASE -- player's actual y value
     p.dx = 0
     p.ddx = _PLAYER_INIT_DDX
     p.dy = 1 -- give it some initial dy
@@ -39,7 +39,8 @@ player = {
     palt()
   end,
   start_jump = function(p, boosted_dy)
-    p.dy = min(-1, (p.dx / p.dx_max) * boosted_dy)
+    p.dy = mid(-1, boosted_dy, (p.dx / _PLAYER_DX_MAX) * boosted_dy)
+    printh("New dy: "..p.dy)
     -- make sure we're just above ground level first
     p.y = p.y - 0.1
     p.dx -= p.dx * 0.2

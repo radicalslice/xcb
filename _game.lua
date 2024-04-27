@@ -3,6 +3,7 @@ _smalltree_x = 0
 _bigtree_dx = 0.6
 _smalltree_dx = 0.2
 _camera_x_offset = 24
+Y_BASE = 88
 _timers = {}
 
 function _update_game()
@@ -51,48 +52,47 @@ end
 
 _last_sprite_at = 0
 _camera_y = 0
+_last_camera_y_offset = 0
 _camera_x = 0
 function _draw_game()
   cls()
 
-  -- sky
-  rectfill(0,16,128,63,12)
+  local y_ground = Y_BASE
+  -- Look ahead to try and prep camera
+  local range = find_range(player:get_board_center_x() + 24, level)
+  if range != nil then
+    y_ground, _ = range.f(player:get_board_center_x() + 24)
+  end
 
-  -- sliver of snow behind parallax
-  rectfill(0,63,128,90,7)
+  _camera_x = player.x - _camera_x_offset
+  _camera_y = flr(player.y - Y_BASE)
+  if player.y - y_ground < -1 then
+    local adj = flr((player.y - y_ground) * 0.5)
+    _last_camera_y_offset = adj
+    printh("Adj: ".._last_camera_y_offset)
+  elseif _last_camera_y_offset != 0 then
+    _last_camera_y_offset += 1
+  end
+
+  _camera_y -= _last_camera_y_offset
+
+  -- sky
+  rectfill(0,8,128,63,12)
 
   palt(11, true)
   palt(0, false)
   -- parallax-y mountain tiles
-  map(17,0, _smalltree_x, 40, 4, 1)
-  map(17,0, _smalltree_x+32, 40, 4, 1)
-  map(17,0, _smalltree_x+64, 40, 4, 1)
-  map(17,0, _smalltree_x+96, 40, 4, 1)
-  map(17,0, _smalltree_x+128, 40, 4, 1)
-  map(17,0, _smalltree_x+128+32, 40, 4, 1)
-  map(17,0, _smalltree_x+128+64, 40, 4, 1)
-  map(17,0, _smalltree_x+128+96, 40, 4, 1)
+  for i=0,224,32 do
+    map(17,0, _smalltree_x + i, 24, 4, 1)
+  end
   -- random trees
-  map(17,2, _bigtree_x, 44, 4, 3)
-  map(17,2, _bigtree_x+32, 44, 4, 3)
-  map(17,2, _bigtree_x+64, 44, 4, 3)
-  map(17,2, _bigtree_x+96, 44, 4, 3)
-  map(17,2, _bigtree_x+128, 44, 4, 3)
-  map(17,2, _bigtree_x+128+32, 44, 4, 3)
-  map(17,2, _bigtree_x+128+64, 44, 4, 3)
-  map(17,2, _bigtree_x+128+96, 44, 4, 3)
-
-  -- row of random tiles
+  for i=0,224,32 do
+    map(17,2, _bigtree_x + i, 28, 4, 3)
+  end
 
   -- Lower half (snow)
-  rectfill(0,80,128,128,7)
+  rectfill(0,52,128,128,7)
 
-  -- map(0,0,0,0,16,1)
-  -- repeatingtrees
-  -- mset(4,6,10)
-  -- mset(5,6,11)
-  -- mset(4,7,26)
-  -- mset(5,7,27)
   local LEVEL_MAX = 256
 
   -- the sky
@@ -100,14 +100,15 @@ function _draw_game()
 
   -- if player.y - 64 > 16
   -- move camera downwards by player.y - 64
+  --[[
   if player.y - _camera_y < (64 - 24) then
     _camera_y -= 1
   end
   if player.y - _camera_y > (64 + 24) then
     _camera_y += 1
   end
+  ]]--
 
-  _camera_x = player.x - _camera_x_offset
 
   for tile in all(_map_table) do 
     map(tile.map_x,
