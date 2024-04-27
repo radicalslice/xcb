@@ -69,7 +69,6 @@ function _draw_game()
   if player.y - y_ground < -1 then
     local adj = flr((player.y - y_ground) * 0.5)
     _last_camera_y_offset = adj
-    printh("Adj: ".._last_camera_y_offset)
   elseif _last_camera_y_offset != 0 then
     _last_camera_y_offset += 1
   end
@@ -137,7 +136,8 @@ function _draw_game()
   -- print("ST: "..player:get_state(), 96, 24, 10)
   print("X/Y: "..flr(player.x).."/"..flr(player.y), 56, 100, 9)
   -- print("Y: "..player.y, 56, 96, 10)
-  print("DX: "..player.dx, 56, 106, 9)
-  print("DX_MAX: "..player.dx_max, 56, 112, 9)
-  print("boostttl: ".._timers.boost.ttl, 56, 120, 9)
+  print("dx: "..player.dx, 56, 106, 9)
+  print("dx_max: "..player.dx_max, 56, 112, 9)
+  print("juice: "..player.juice, 56, 120, 9)
+  -- print("boostttl: ".._timers.boost.ttl, 56, 120, 9)
 end

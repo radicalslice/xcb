@@ -9,8 +9,11 @@ _PLAYER_STATE_HOPUP = "hopup"
 _PLAYER_STATE_HOPDOWN = "hopdown"
 _PLAYER_STATE_INSKY = 2
 _PLAYER_GRAVITY = 0.15
+_PLAYER_JUICE_ADD = 1
+_PLAYER_JUICE_MAX = 3
+_PLAYER_AIRTIMER_0 = 0.5
 _friction = 0.85
-_airres = 1 -- disabled for now
+_airres = 0.99 -- disabled for now
 player = {
   reset = function(p)
     p.x = 0
@@ -23,6 +26,9 @@ player = {
     p.angle = 0
     p.state = _PLAYER_STATE_ONGROUND
     p.board_cycler = new_cycler(0.05, {8,9,10})
+    p.trick = nil
+    p.juice = 0
+    p.airtimer = 0
   end,
   change_state = function(p, state)
     printh("State change: "..p.state.."->"..state)
@@ -44,6 +50,7 @@ player = {
     -- make sure we're just above ground level first
     p.y = p.y - 0.1
     p.dx -= p.dx * 0.2
+    p.airtimer = 0
     p:change_state(_PLAYER_STATE_SKYUP)
   end,
   near_ground = function(p, y_ground)
@@ -113,11 +120,16 @@ player_state_funcs = {
     -- air resistance
     p.dx *= _airres
 
+    -- increase airtimer
+    p.airtimer += dt
+
     -- tweak angle 
     if btnp(1) then
         p.angle = min(1, p.angle + 1)
+        p.airtimer = 0
     elseif btnp(0) then
       p.angle = max(-1, p.angle - 1)
+      p.airtimer = 0
       if abs(p.dy) > 2 then
         -- extra airres, decreased grav
         p.dx *= _airres
@@ -126,8 +138,9 @@ player_state_funcs = {
     end
 
     local prev_dy = p.dy
-    p.dy = min(_PLAYER_MAXDY, p.dy + p.ddy)
-    p.y = min(p.y + p.dy, y_ground)
+
+    p = move_in_y(p, y_ground)
+
     if prev_dy <= 0 and p.dy > 0 then
       -- if we're switching from rise to fall, switch states
       p:change_state(_PLAYER_STATE_SKYDOWN)
@@ -140,10 +153,15 @@ player_state_funcs = {
     -- air resistance
     p.dx *= _airres
 
+    -- increase airtimer
+    p.airtimer += dt
+
     -- tweak angle
     if btnp(1) then
       p.angle = min(1, p.angle + 1)
+      p.airtimer = 0
     elseif btnp(0) then
+      p.airtimer = 0
       p.angle = max(-1, p.angle - 1)
       if abs(p.dy) > 2 then
         -- extra airres, decreased grav
@@ -152,8 +170,7 @@ player_state_funcs = {
       end
     end
 
-    p.dy = min(_PLAYER_MAXDY, p.dy + p.ddy)
-    p.y = min(p.y + p.dy, y_ground)
+    p = move_in_y(p, y_ground)
 
     -- hop or land
     if p:near_ground(y_ground) then
@@ -172,10 +189,17 @@ player_state_funcs = {
         p.y = y_ground
         p.angle = ground_angle
         p:change_state(_PLAYER_STATE_ONGROUND)
+        p.juice = min(_PLAYER_JUICE_MAX, p.juice + _PLAYER_JUICE_ADD)
+
+        -- check airtimer, if it's small enough, print a message...
+        if p.airtimer < _PLAYER_AIRTIMER_0 then
+          p.dx = p.dx_max
+          printh("LANDED WITHIN: "..p.airtimer)
+        end
 
         -- increase max_dx and set a timer to expire
-        player.dx_max = _PLAYER_DX_MAX_BOOSTED
-        _timers.boost:init(2,time())
+        -- player.dx_max = _PLAYER_DX_MAX_BOOSTED
+        -- _timers.boost:init(2,time())
       end
     end 
   end,
@@ -184,8 +208,9 @@ player_state_funcs = {
     p.x += p.dx
 
     local prev_dy = p.dy
-    p.dy = min(_PLAYER_MAXDY, p.dy + p.ddy)
-    p.y = min(p.y + p.dy, y_ground)
+
+    p = move_in_y(p, y_ground)
+
     if prev_dy <= 0 and p.dy > 0 then
       -- if we're switching from rise to fall, switch states
       p:change_state(_PLAYER_STATE_HOPDOWN)
@@ -195,8 +220,7 @@ player_state_funcs = {
     -- apply velocity
     p.x += p.dx
 
-    p.dy = min(_PLAYER_MAXDY, p.dy + p.ddy)
-    p.y = min(p.y + p.dy, y_ground)
+    p = move_in_y(p, y_ground)
 
     -- land the hop
     if p:near_ground(y_ground) then
@@ -207,3 +231,9 @@ player_state_funcs = {
 
   end,
 }
+
+function move_in_y(p, y_ground)
+  p.dy = min(_PLAYER_MAXDY, p.dy + p.ddy)
+  p.y = min(p.y + p.dy, y_ground)
+  return p
+end
