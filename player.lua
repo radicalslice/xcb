@@ -12,6 +12,7 @@ _PLAYER_GRAVITY = 0.15
 _PLAYER_JUICE_ADD = 1
 _PLAYER_JUICE_MAX = 3
 _PLAYER_AIRTIMER_0 = 0.5
+_PLAYER_BOOST_TIME = 2 --seconds
 _friction = 0.85
 _airres = 0.99 -- disabled for now
 player = {
@@ -112,6 +113,14 @@ player_state_funcs = {
     if flr(p.y) != y_ground then
       p.y = y_ground
     end
+
+    if btnp(4) and
+      p.dx_max != _PLAYER_DX_MAX_BOOSTED and
+      p.juice > 0 then
+        p.juice -= 1
+        p.dx_max = _PLAYER_DX_MAX_BOOSTED
+        _timers.boost:init(2,time())
+    end
   end,
   skyup = function(p, dt, y_ground, ground_angle)
     -- apply velocity
@@ -176,8 +185,6 @@ player_state_funcs = {
     if p:near_ground(y_ground) then
 
       if flr(p.angle) != ground_angle then
-        local rounded_angle = flr(p.angle)
-
         p.dy = -2
         -- make sure we're just above ground level first
         p.y = p.y - 0.1
