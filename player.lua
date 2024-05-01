@@ -1,6 +1,6 @@
 _PLAYER_DX_MAX = 1.5 -- when on the ground
 _PLAYER_DX_MAX_BOOSTED = 2.2
-_PLAYER_MAXDY = 3
+_PLAYER_DY_MAX = 3
 _PLAYER_INIT_DDX = 0.02
 _PLAYER_STATE_ONGROUND = "on_ground"
 _PLAYER_STATE_SKYUP = "skyup"
@@ -13,6 +13,8 @@ _PLAYER_JUICE_ADD = 1
 _PLAYER_JUICE_MAX = 3
 _PLAYER_AIRTIMER_0 = 0.5
 _PLAYER_BOOST_TIME = 2 --seconds
+_PLAYER_BOOST_BONUS = 1 --seconds, extra time for a successful boost landing
+_PLAYER_HOP_PENALTY = 0.7
 _friction = 0.85
 _airres = 0.99 -- disabled for now
 player = {
@@ -94,17 +96,10 @@ player_state_funcs = {
     p.angle = ground_angle
 
     p.dx = min(p.dx_max, p.dx + p.ddx)
-      --[[
-      -- old stuff, we used to use this before auto-input
-      p.dx *= _friction
-      if p.dx < 0.1 then
-        p.dx = 0
-      end
-      ]]--
 
     -- apply velocity
     local slow_factors = {0.95, 0.9, 0.8}
-    if true and abs(ground_angle) >= 1 then
+    if abs(ground_angle) >= 1 then
       p.x += p.dx * slow_factors[abs(ground_angle)]
     else
       p.x += p.dx
@@ -114,7 +109,7 @@ player_state_funcs = {
       p.y = y_ground
     end
 
-    if btnp(4) and
+    if btnp(5) and
       p.dx_max != _PLAYER_DX_MAX_BOOSTED and
       p.juice > 0 then
         p.juice -= 1
@@ -188,7 +183,8 @@ player_state_funcs = {
         p.dy = -2
         -- make sure we're just above ground level first
         p.y = p.y - 0.1
-        p.dx -= p.dx/3
+        p.dx *= _PLAYER_HOP_PENALTY
+        p.dx_max = _PLAYER_DX_MAX
         p:change_state(_PLAYER_STATE_HOPUP)
       else
         -- angle is the same, so land
@@ -197,6 +193,9 @@ player_state_funcs = {
         p.angle = ground_angle
         p:change_state(_PLAYER_STATE_ONGROUND)
         p.juice = min(_PLAYER_JUICE_MAX, p.juice + _PLAYER_JUICE_ADD)
+        if p.dx_max == _PLAYER_DX_MAX_BOOSTED then
+          _timers.boost:add(_PLAYER_BOOST_BONUS)
+        end
 
         -- check airtimer, if it's small enough, print a message...
         if p.airtimer < _PLAYER_AIRTIMER_0 then
@@ -240,7 +239,7 @@ player_state_funcs = {
 }
 
 function move_in_y(p, y_ground)
-  p.dy = min(_PLAYER_MAXDY, p.dy + p.ddy)
+  p.dy = min(_PLAYER_DY_MAX, p.dy + p.ddy)
   p.y = min(p.y + p.dy, y_ground)
   return p
 end

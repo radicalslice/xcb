@@ -138,6 +138,6 @@ function _draw_game()
   -- print("Y: "..player.y, 56, 96, 10)
   print("dx: "..player.dx, 56, 106, 9)
   print("dx_max: "..player.dx_max, 56, 112, 9)
-  print("juice: "..player.juice, 56, 120, 9)
-  -- print("boostttl: ".._timers.boost.ttl, 56, 120, 9)
+  -- print("juice: "..player.juice, 56, 120, 9)
+  print("boostttl: ".._timers.boost.ttl, 56, 120, 9)
 end
