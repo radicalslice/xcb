@@ -11,8 +11,22 @@ function _init()
   _timers.boost = new_timer(
     0,
     function()
-      printh("did the timer expiration")
+      printh("did the boost timer expiration")
       player.dx_max = _PLAYER_DX_MAX
+      player.boosting = false
+    end
+  )
+
+  _timers.trick = new_timer(
+    0,
+    function()
+      printh("did the trick timer expiration")
+      player.tricking = false
+      if player.boosting then
+        player.dx_max = _PLAYER_DX_MAX_BOOSTED
+      else 
+        player.dx_max = _PLAYER_DX_MAX
+      end
     end
   )
 

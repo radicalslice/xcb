@@ -24,4 +24,3 @@ function new_timer(now, f)
     end,
   }
 end
-

@@ -12,6 +12,7 @@ function _update_game()
 
   -- update timers
   _timers.boost:update(now)
+  _timers.trick:update(now)
 
   _bigtree_x -= (_bigtree_dx * player.dx)
   _smalltree_x -= (_smalltree_dx * player.dx)

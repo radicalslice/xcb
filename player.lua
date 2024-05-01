@@ -15,6 +15,7 @@ _PLAYER_AIRTIMER_0 = 0.5
 _PLAYER_BOOST_TIME = 2 --seconds
 _PLAYER_BOOST_BONUS = 1 --seconds, extra time for a successful boost landing
 _PLAYER_HOP_PENALTY = 0.7
+_PLAYER_TRICK_THROTTLE = 0.9
 _friction = 0.85
 _airres = 0.99 -- disabled for now
 player = {
@@ -29,7 +30,8 @@ player = {
     p.angle = 0
     p.state = _PLAYER_STATE_ONGROUND
     p.board_cycler = new_cycler(0.05, {8,9,10})
-    p.trick = nil
+    p.tricking = false
+    p.boosting = false
     p.juice = 0
     p.airtimer = 0
   end,
@@ -40,10 +42,10 @@ player = {
   draw = function(p)
     palt(11, true)
     palt(0, false)
-    if p.dx_max == _PLAYER_DX_MAX_BOOSTED then
+    if p.boosting then
       pal(8, p.board_cycler:get_color())
     end
-    spr(34 + (2*p.angle), p.x-10, p.y-6, 2, 2)
+    spr(34 + (2*p.angle), p.x-10, p.y-6, 2, 2, false, player.tricking == true and true or false)
     pal()
     palt()
   end,
@@ -110,12 +112,19 @@ player_state_funcs = {
     end
 
     if btnp(5) and
-      p.dx_max != _PLAYER_DX_MAX_BOOSTED and
+      not p.boosting and
+      not p.tricking and
       p.juice > 0 then
         p.juice -= 1
         p.dx_max = _PLAYER_DX_MAX_BOOSTED
+        p.boosting = true
         _timers.boost:init(2,time())
+    elseif btnp(4) then
+      p.tricking = true
+      p.dx_max *= _PLAYER_TRICK_THROTTLE
+      _timers.trick:init(2,time())
     end
+
   end,
   skyup = function(p, dt, y_ground, ground_angle)
     -- apply velocity
@@ -193,7 +202,7 @@ player_state_funcs = {
         p.angle = ground_angle
         p:change_state(_PLAYER_STATE_ONGROUND)
         p.juice = min(_PLAYER_JUICE_MAX, p.juice + _PLAYER_JUICE_ADD)
-        if p.dx_max == _PLAYER_DX_MAX_BOOSTED then
+        if p.boosting then
           _timers.boost:add(_PLAYER_BOOST_BONUS)
         end
 
