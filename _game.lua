@@ -3,7 +3,9 @@ _smalltree_x = 0
 _bigtree_dx = 0.6
 _smalltree_dx = 0.2
 _camera_x_offset = 24
+_game_timer = 0
 Y_BASE = 88
+_debug = true
 _timers = {}
 
 function _update_game()
@@ -13,6 +15,14 @@ function _update_game()
   -- update timers
   _timers.boost:update(now)
   _timers.trick:update(now)
+  _timers.trick_reward:update(now)
+
+  _game_timer -= dt
+  if _game_timer < 0 then
+    _game_timer = 0
+    _update60 = _update_gameover
+    _draw = _draw_gameover
+  end
 
   _bigtree_x -= (_bigtree_dx * player.dx)
   _smalltree_x -= (_smalltree_dx * player.dx)
@@ -28,7 +38,8 @@ function _update_game()
     y_ground, angle = range.f(board_pos_x)
   else
     cls()
-    stop("Done!")
+    _update60 = _update_victory
+    _draw = _draw_victory
   end
 
   -- Check for any jumps
@@ -98,18 +109,6 @@ function _draw_game()
   -- the sky
   map(0, 0, 0, 0, 16, 2)
 
-  -- if player.y - 64 > 16
-  -- move camera downwards by player.y - 64
-  --[[
-  if player.y - _camera_y < (64 - 24) then
-    _camera_y -= 1
-  end
-  if player.y - _camera_y > (64 + 24) then
-    _camera_y += 1
-  end
-  ]]--
-
-
   for tile in all(_map_table) do 
     map(tile.map_x,
       tile.map_y,
@@ -123,22 +122,29 @@ function _draw_game()
 
   palt()
 
-  foreach(_FX.parts, function(p)
-    p:draw()
-  end)
 
   -- player over background
   player:draw()
 
+  foreach(_FX.parts, function(p)
+    p:draw()
+  end)
+
   camera()
+
+  print(flr(_game_timer), 59, 12, 4)
+  print(flr(_game_timer), 58, 12, 9)
   
-  draw_ctrls(12, 108, 9)
-  -- player debug stuff
-  -- print("ST: "..player:get_state(), 96, 24, 10)
-  print("X/Y: "..flr(player.x).."/"..flr(player.y), 56, 100, 9)
-  -- print("Y: "..player.y, 56, 96, 10)
-  print("dx: "..player.dx, 56, 106, 9)
-  print("dx_max: "..player.dx_max, 56, 112, 9)
-  -- print("juice: "..player.juice, 56, 120, 9)
-  print("boostttl: ".._timers.boost.ttl, 56, 120, 9)
+  if _debug then
+    draw_ctrls(12, 108, 9)
+    -- player debug stuff
+    -- print("ST: "..player:get_state(), 96, 24, 10)
+    -- print("X/Y: "..flr(player.x).."/"..flr(player.y), 56, 100, 9)
+    -- print("Y: "..player.y, 56, 96, 10)
+    print("dx: "..player.dx, 56, 106, 9)
+    -- print("dx_max: "..player.dx_max, 56, 112, 9)
+    -- print("juice: "..player.juice, 56, 120, 9)
+    -- print("tkttl: ".._timers.trick.ttl, 56, 120, 9)
+    print("style: "..player.style, 56, 120, 9)
+  end
 end

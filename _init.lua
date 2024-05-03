@@ -2,6 +2,7 @@ function _init()
   _update60 = _update_game
   _draw = _draw_game
   player:reset()
+  _game_timer = 28
 
   get_tile_from_pos = _get_tile_from_pos(0, 0)
 
@@ -20,15 +21,31 @@ function _init()
   _timers.trick = new_timer(
     0,
     function()
-      printh("did the trick timer expiration")
-      player.tricking = false
+      if player.trick_state == _PLAYER_TKSTATE_TRICKING then
+        player.trick_state = _PLAYER_TKSTATE_REWARD
+        player.dx *= 0.5
+        _timers.trick_reward:init(1,time())
+        player.last_trick_ttl = 0
+        trick_cycler_1.colors = {8, 7}
+      end
       if player.boosting then
         player.dx_max = _PLAYER_DX_MAX_BOOSTED
-      else 
+      else
         player.dx_max = _PLAYER_DX_MAX
       end
     end
-  )
+    )
+ _timers.trick.window_min = 0
+ _timers.trick.window_max = 0
+
+ _timers.trick_reward = new_timer(
+   0,
+   function()
+     printh("did trick reward timer expiration!")
+     player.trick_state = _PLAYER_TKSTATE_OFF
+     player.last_trick_ttl = nil
+   end
+   )
 
   printh("--init")
 
