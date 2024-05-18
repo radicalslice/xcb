@@ -39,7 +39,7 @@ player = {
     p.tricking = false
     p.trick_state = _PLAYER_TKSTATE_OFF
     p.boosting = false
-    p.juice = 0
+    p.juice = 3
     p.style = 0
     p.airtimer = 0
     p.last_trick_ttl = nil -- need this for a UI thing...
@@ -65,7 +65,7 @@ player = {
     spr(base_sprite, p.x-10, p.y-6, 2, 2)
 
     for i=1,player.juice do
-      rectfill(p.x-14, p.y - 8 + (i*4), p.x-12, p.y - 6 + (i*4), 9)
+      spr(96, p.x-13 - (i*2) , p.y - 11 + (i*5))
     end
 
     if p.trick_state == _PLAYER_TKSTATE_TRICKING or p.trick_state == _PLAYER_TKSTATE_REWARD then
