@@ -1,13 +1,11 @@
 _PLAYER_DX_MAX = 1.5 -- when on the ground
 _PLAYER_DX_MAX_BOOSTED = 2.2
 _PLAYER_DY_MAX = 3
-_PLAYER_INIT_DDX = 0.02
 _PLAYER_STATE_ONGROUND = "on_ground"
 _PLAYER_STATE_SKYUP = "skyup"
 _PLAYER_STATE_SKYDOWN = "skydown"
 _PLAYER_STATE_HOPUP = "hopup"
 _PLAYER_STATE_HOPDOWN = "hopdown"
-_PLAYER_STATE_INSKY = 2
 _PLAYER_GRAVITY = 0.15
 _PLAYER_JUICE_ADD = 1
 _PLAYER_JUICE_MAX = 3
@@ -21,8 +19,7 @@ _PLAYER_TKSTATE_TRICKING = "tricking"
 _PLAYER_TKSTATE_REWARD = "reward"
 _PLAYER_TRICK_TTL = 1
 _friction = 0.85
-_airres = 0.99 -- disabled for now
--- add cool cycler here 
+_airres = 0.99
 trick_cycler_1 = new_cycler(0.04, {11, 7})
 player = {
   reset = function(p)
@@ -30,7 +27,7 @@ player = {
     p.dx_max = _PLAYER_DX_MAX
     p.y = Y_BASE -- player's actual y value
     p.dx = 0
-    p.ddx = _PLAYER_INIT_DDX
+    p.ddx = 0.02 -- initial ddx
     p.dy = 1 -- give it some initial dy
     p.ddy = _PLAYER_GRAVITY
     p.angle = 0
@@ -109,12 +106,13 @@ player = {
     -- update trick cyclers
     trick_cycler_1:update(dt)
 
-    if p:get_state() == _PLAYER_STATE_ONGROUND 
-      or p:get_state() == _PLAYER_STATE_SKYUP
-      or p:get_state() == _PLAYER_STATE_SKYDOWN
-      or p:get_state() == _PLAYER_STATE_HOPUP
-      or p:get_state() == _PLAYER_STATE_HOPDOWN then
-      player_state_funcs[p:get_state()](p, dt, y_ground, ground_angle)
+    local pstate = p:get_state()
+    if pstate == _PLAYER_STATE_ONGROUND 
+      or pstate == _PLAYER_STATE_SKYUP
+      or pstate == _PLAYER_STATE_SKYDOWN
+      or pstate == _PLAYER_STATE_HOPUP
+      or pstate == _PLAYER_STATE_HOPDOWN then
+      player_state_funcs[pstate](p, dt, y_ground, ground_angle)
 
       if p:get_state() == _PLAYER_STATE_ONGROUND then
         add(_FX.parts, new_part(

@@ -38,8 +38,9 @@ function _update_game()
     y_ground, angle = range.f(board_pos_x)
   else
     cls()
-    _update60 = _update_victory
-    _draw = _draw_victory
+    _update60 = _update_interlevel
+    _draw = _draw_interlevel
+    return
   end
 
   -- Check for any jumps
@@ -68,6 +69,7 @@ _last_camera_y_offset = 0
 _camera_x = 0
 function _draw_game()
   cls()
+  printh("P.Y, top: "..player.y)
 
   local y_ground = Y_BASE
   -- Look ahead to try and prep camera
@@ -101,7 +103,7 @@ function _draw_game()
     map(17,2, _bigtree_x + i, 28, 4, 3)
   end
 
-  -- Lower half (snow)
+  -- Snow below trees and above course
   rectfill(0,52,128,128,7)
 
   local LEVEL_MAX = 256
@@ -109,13 +111,35 @@ function _draw_game()
   -- the sky
   map(0, 0, 0, 0, 16, 2)
 
+  local last_x_drawn = 0
   for tile in all(_map_table) do 
-    map(tile.map_x,
-      tile.map_y,
-      tile.x - player.x + _camera_x_offset,
-      tile.y - _camera_y,
-      1,
-      tile.height)
+    if tile.x < player.x + 136 then
+      map(tile.map_x,
+        tile.map_y,
+        tile.x - player.x + _camera_x_offset,
+        tile.y - _camera_y,
+        1,
+        tile.height)
+      last_x_drawn = tile.x
+      last_y_drawn = tile.y
+    end
+  end
+
+  printh("P.Y, LYD: "..player.y..","..last_y_drawn)
+  if player.x + 128 > level.x_max then
+    local x_start = player.x > level.x_max and (player.x - (player.x % 8)) - 32 or level.x_max
+    -- printh()
+    for i=x_start,x_start+144,8 do
+      local tile = gen_flat_tile(i, last_y_drawn)
+      map(
+        tile.map_x,
+        tile.map_y,
+        tile.x - player.x + _camera_x_offset,
+        tile.y - _camera_y,
+        1,
+        tile.height
+      )
+    end
   end
 
   camera(_camera_x, _camera_y)

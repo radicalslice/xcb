@@ -49,6 +49,10 @@ function _init()
 
   printh("--init")
 
+  local level0 = [[
+flat,96
+bdown,16
+flat,256]]
   -- type, x_length, height for flats
   local level1 = [[
 flat,96
@@ -88,6 +92,7 @@ flat,128]]
   level = {
     ranges = ranges,
     jumps = jumps,
+    x_max = x_max,
   }
 
   -- load map data for this level
@@ -98,8 +103,10 @@ flat,128]]
     end
     if x_curr % 8 == 0 then
       if angle == 0 then
-        local flat_tile = 21 + flr(rnd(3))
-        add(_map_table,{x=x_curr,y=y_updated-8,map_x=flat_tile,map_y=0,height=4})
+        add(
+          _map_table,
+          gen_flat_tile(x_curr, y_updated - 8)
+        )
       elseif angle == -1 then
         add(_map_table,{x=x_curr,y=y_updated-8,map_x=24,map_y=0,height=5})
         if x_curr % 16 != 0 then
@@ -115,3 +122,6 @@ flat,128]]
   end
 end
 
+function gen_flat_tile(x, y)
+  return {x=x,y=y,map_x=21 + ((x / 8) % 3),map_y=0,height=6}
+end
