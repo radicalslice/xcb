@@ -98,7 +98,7 @@ player = {
   near_ground = function(p, y_ground)
    return abs(p.y - y_ground) < 1 or p.y > y_ground
   end,
-  update = function(p, dt, y_ground, ground_angle)
+  update = function(p, dt, y_ground, ground_angle, block_input)
 
     -- update board cycler
     p.board_cycler:update(dt)
@@ -128,8 +128,10 @@ player = {
         ))
       end
 
+      -- printh("player.y: "..player.y)
       return
     end
+
   end,
   get_board_center_x = function(p)
     return flr(p.x + 3)
@@ -140,7 +142,7 @@ player = {
 }
 
 player_state_funcs = {
-  on_ground = function(p, dt, y_ground, ground_angle)
+  on_ground = function(p, dt, y_ground, ground_angle, block_input)
     p.angle = ground_angle
 
     p.dx = min(p.dx_max, p.dx + p.ddx)
@@ -158,6 +160,7 @@ player_state_funcs = {
     end
 
     if btnp(5) and
+      not block_input and
       not p.boosting and
       p.trick_state != _PLAYER_TKSTATE_TRICKING and
       p.juice > 0 then
@@ -165,12 +168,14 @@ player_state_funcs = {
         p.dx_max = _PLAYER_DX_MAX_BOOSTED
         p.boosting = true
         _timers.boost:init(2,time())
-    elseif btnp(4) and 
+    elseif btnp(4) and
+      not block_input and
       p.trick_state != _PLAYER_TKSTATE_TRICKING and 
       p.trick_state != _PLAYER_TKSTATE_REWARD
       then
       p = start_tricking(p)
     elseif btnp(4) and
+      not block_input and
       p.trick_state == _PLAYER_TKSTATE_TRICKING then
       p = stop_tricking(p)
     end

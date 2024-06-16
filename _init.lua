@@ -49,45 +49,8 @@ function _init()
 
   printh("--init")
 
-  local level0 = [[
-flat,96
-bdown,16
-flat,256]]
-  -- type, x_length, height for flats
-  local level1 = [[
-flat,96
-ddown,64
-flat,256
-bup,16,-3.5
-bdown,16
-flat,256
-bup,16,-3.5
-bdown,16
-flat,192
-ddown,16
-flat,128
-bup,16,-3.5
-bdown,32
-flat,192
-bup,16,-3.5
-bdown,16
-flat,32
-bup,16,-3.5
-bdown,16
-flat,96
-bup,16,-2.5
-flat,96
-ddown,64
-flat,96
-bup,16,-2.5
-flat,16
-bup,16,-3.5
-bdown,16
-flat,8
-ddown,64
-flat,128]]
-
-  local ranges, jumps, x_max = parse_ranges(level1)
+  -- parse this level to be rendered from x=0, y=Y_BASE
+  local ranges, jumps, x_max = parse_ranges(_level0, 0, Y_BASE)
 
   level = {
     ranges = ranges,
@@ -95,8 +58,16 @@ flat,128]]
     x_max = x_max,
   }
 
-  -- load map data for this level
-  for x_curr=0, x_max do
+  _map_table = load_level_map_data(level) 
+end
+
+function gen_flat_tile(x, y)
+  return {x=x,y=y,map_x=21 + ((x / 8) % 3),map_y=0,height=6}
+end
+
+function load_level_map_data(level)
+  local map_table = {}
+  for x_curr=0, level.x_max do
     local range = find_range(x_curr, level)
     if range != nil then
       y_updated, angle = range.f(x_curr)
@@ -104,24 +75,22 @@ flat,128]]
     if x_curr % 8 == 0 then
       if angle == 0 then
         add(
-          _map_table,
+          map_table,
           gen_flat_tile(x_curr, y_updated - 8)
         )
       elseif angle == -1 then
-        add(_map_table,{x=x_curr,y=y_updated-8,map_x=24,map_y=0,height=5})
+        add(map_table,{x=x_curr,y=y_updated-8,map_x=24,map_y=0,height=5})
         if x_curr % 16 != 0 then
           --bonus corner tile
-          add(_map_table,{x=x_curr,y=y_updated-8,map_x=26,map_y=0,height=1})
+          add(map_table,{x=x_curr,y=y_updated-8,map_x=26,map_y=0,height=1})
         else
-          add(_map_table,{x=x_curr,y=y_updated-16,map_x=26,map_y=1,height=1})
+          add(map_table,{x=x_curr,y=y_updated-16,map_x=26,map_y=1,height=1})
         end
       elseif angle == 1 then
-        add(_map_table,{x=x_curr,y=y_updated,map_x=25,map_y=0,height=5})
+        add(map_table,{x=x_curr,y=y_updated,map_x=25,map_y=0,height=5})
       end
     end
   end
-end
 
-function gen_flat_tile(x, y)
-  return {x=x,y=y,map_x=21 + ((x / 8) % 3),map_y=0,height=6}
+  return map_table
 end

@@ -2,6 +2,51 @@ level = {}
 -- Map[XPos][mapx, mapy, sprnum]
 _map_table = {}
 
+-- how much time to add to the remaining time at each interlevel
+_checkpoints = {20}
+
+-- type, x_length, height for flats
+_level0 = [[
+flat,128
+bdown,16
+flat,128
+bup,16,-3.5
+bdown,16
+flat,128]]
+  _level1 = [[
+flat,96
+ddown,64
+flat,256
+bup,16,-3.5
+bdown,16
+flat,256
+bup,16,-3.5
+bdown,16
+flat,192
+ddown,16
+flat,128
+bup,16,-3.5
+bdown,32
+flat,192
+bup,16,-3.5
+bdown,16
+flat,32
+bup,16,-3.5
+bdown,16
+flat,96
+bup,16,-2.5
+flat,96
+ddown,64
+flat,96
+bup,16,-2.5
+flat,16
+bup,16,-3.5
+bdown,16
+flat,8
+ddown,64
+flat,128]]
+
+
 -- Steep guys
 function ramp2u(r, y_base, x_curr)
   return y_base - 2 * (x_curr - r.x_start), -3
@@ -20,13 +65,11 @@ end
 
 
 -- String -> []Range
-function parse_ranges(str)
-  -- 80,basic:
+function parse_ranges(str, x_base, y_base)
   local ranges = {}
   local jumps = {}
-  -- assume we start from y = Y_BASE
-  local last_flat = Y_BASE
-  local x_curr = 0
+  local last_flat = y_base
+  local x_curr = x_base
   foreach(split(str, "\n"), function(substr)
     local vals = split(substr, ",")
     local x_start = x_curr

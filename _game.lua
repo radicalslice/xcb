@@ -4,6 +4,7 @@ _bigtree_dx = 0.6
 _smalltree_dx = 0.2
 _camera_x_offset = 24
 _game_timer = 0
+_last_y_drawn = 0
 Y_BASE = 88
 _debug = true
 _timers = {}
@@ -69,7 +70,7 @@ _last_camera_y_offset = 0
 _camera_x = 0
 function _draw_game()
   cls()
-  printh("P.Y, top: "..player.y)
+  -- printh("P.Y, top: "..player.y)
 
   local y_ground = Y_BASE
   -- Look ahead to try and prep camera
@@ -121,16 +122,15 @@ function _draw_game()
         1,
         tile.height)
       last_x_drawn = tile.x
-      last_y_drawn = tile.y
+      _last_y_drawn = tile.y
     end
   end
 
-  printh("P.Y, LYD: "..player.y..","..last_y_drawn)
+  -- printh("P.Y, LYD: "..player.y..",".._last_y_drawn)
   if player.x + 128 > level.x_max then
     local x_start = player.x > level.x_max and (player.x - (player.x % 8)) - 32 or level.x_max
-    -- printh()
     for i=x_start,x_start+144,8 do
-      local tile = gen_flat_tile(i, last_y_drawn)
+      local tile = gen_flat_tile(i, _last_y_drawn)
       map(
         tile.map_x,
         tile.map_y,
