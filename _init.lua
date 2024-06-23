@@ -50,7 +50,7 @@ function _init()
   printh("--init")
 
   -- parse this level to be rendered from x=0, y=Y_BASE
-  local ranges, jumps, x_max = parse_ranges(_level0, 0, Y_BASE)
+  local ranges, jumps, x_max = parse_ranges(_level1, 0, Y_BASE)
 
   level = {
     ranges = ranges,

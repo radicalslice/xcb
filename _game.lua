@@ -8,6 +8,7 @@ _last_y_drawn = 0
 Y_BASE = 88
 _debug = true
 _timers = {}
+_shake = 0
 
 function _update_game()
   local now = time()
@@ -30,6 +31,12 @@ function _update_game()
 
   if _bigtree_x < -127 then _bigtree_x = 0 end
   if _smalltree_x < -127 then _smalltree_x = 0 end
+
+  -- squash shake if it's > 0
+  if _shake > 0 then
+   _shake = _shake*0.95
+   if (_shake<0.1) then _shake=0 end
+ end
 
   local board_pos_x = player:get_board_center_x()
   local y_ground = Y_BASE
@@ -90,8 +97,14 @@ function _draw_game()
 
   _camera_y -= _last_camera_y_offset
 
+  -- add in the shake, if any
+  local shakex = (4 - rnd(8)) * _shake
+  local shakey = (4 - rnd(8)) * _shake
+
+  camera(shakex, shakey)
+
   -- sky
-  rectfill(0,8,128,63,12)
+  rectfill(-16,8,144,63,12)
 
   palt(11, true)
   palt(0, false)
@@ -105,12 +118,13 @@ function _draw_game()
   end
 
   -- Snow below trees and above course
-  rectfill(0,52,128,128,7)
+  rectfill(-16,52,144,128,7)
 
   local LEVEL_MAX = 256
 
   -- the sky
-  map(0, 0, 0, 0, 16, 2)
+  map(0, 0, -16, 0, 16, 2)
+  map(0, 0, 112, 0, 4, 2)
 
   local last_x_drawn = 0
   for tile in all(_map_table) do 

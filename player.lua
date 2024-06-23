@@ -253,6 +253,7 @@ player_state_funcs = {
     -- hop or land
     if p:near_ground(y_ground) then
 
+      -- we missed the landing! so we'll hop
       if flr(p.angle) != ground_angle then
         p.dy = -2
         -- make sure we're just above ground level first
@@ -260,6 +261,8 @@ player_state_funcs = {
         p.dx *= _PLAYER_HOP_PENALTY
         p.dx_max = _PLAYER_DX_MAX
         p:change_state(_PLAYER_STATE_HOPUP)
+        -- do the shake
+        _shake = 1
         for i=0,20 do 
           add(_FX.parts,
             new_part(
