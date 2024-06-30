@@ -1,7 +1,18 @@
 _FX = {
   parts = {}
 }
-function new_part(x, y, fvx, fvy, fillcolors, edgecolor, start_size, ttl, gravity)
+-- new_part ::
+--  InitialX :: Int ->
+--  InitialY :: Int ->
+--  () -> InitialVX :: Float  -> 
+--  () -> InitialVY :: Float ->
+--  []Color -> 
+--  []Color ->
+--  InitSize :: Int ->
+--  Ttl :: Float ->
+--  Shrink :: Bool ->
+--  Gravity :: Float 
+function new_part(x, y, fvx, fvy, fillcolors, edgecolor, start_size, ttl, shrink, gravity)
   local newP = {
     colors = fillcolors,
     edgecolor = edgecolor,
@@ -11,17 +22,14 @@ function new_part(x, y, fvx, fvy, fillcolors, edgecolor, start_size, ttl, gravit
     max_ttl = ttl,
     size = start_size,
     max_size = start_size,
+    shrink = shrink,
     gravity = gravity
   }
-  -- newP.vel_x = sin(rnd()) * vx
-  -- newP.vel_y = cos(rnd()) * vy
+
   newP.vel_x = fvx()
   newP.vel_y = fvy()
 
   newP.draw = function(p)
-    -- {5,6,8,9,14,14}
-    -- {dark grey, light grey, red, orange, pink, pink}
-
     local idx = (p.ttl * #p.colors) \ p.max_ttl
 
     if idx >= #p.colors then idx = #p.colors - 1 end
@@ -49,7 +57,9 @@ function new_part(x, y, fvx, fvy, fillcolors, edgecolor, start_size, ttl, gravit
 
     p.ttl -= dt
 
-    p.size = (p.ttl * p.max_size) \ p.max_ttl
+    if shrink then
+      p.size = (p.ttl * p.max_size) \ p.max_ttl
+    end
   end
 
   return newP

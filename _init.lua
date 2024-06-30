@@ -11,7 +11,8 @@ function _init()
   -- player's boosting timer
   _timers.boost = new_timer(
     0,
-    function()
+    function(t)
+      t.ttl = 45
       printh("did the boost timer expiration")
       player.dx_max = _PLAYER_DX_MAX
       player.boosting = false
@@ -20,7 +21,8 @@ function _init()
 
   _timers.trick = new_timer(
     0,
-    function()
+    function(t)
+      t.ttl = 5
       if player.trick_state == _PLAYER_TKSTATE_TRICKING then
         player.trick_state = _PLAYER_TKSTATE_REWARD
         player.dx *= 0.5
@@ -50,7 +52,7 @@ function _init()
   printh("--init")
 
   -- parse this level to be rendered from x=0, y=Y_BASE
-  local ranges, jumps, x_max = parse_ranges(_level1, 0, Y_BASE)
+  local ranges, jumps, x_max = parse_ranges(_level0, 0, Y_BASE)
 
   level = {
     ranges = ranges,

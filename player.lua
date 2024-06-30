@@ -112,18 +112,19 @@ player = {
       or pstate == _PLAYER_STATE_SKYDOWN
       or pstate == _PLAYER_STATE_HOPUP
       or pstate == _PLAYER_STATE_HOPDOWN then
-      player_state_funcs[pstate](p, dt, y_ground, ground_angle)
+      player_state_funcs[pstate](p, dt, y_ground, ground_angle, block_input)
 
       if p:get_state() == _PLAYER_STATE_ONGROUND then
         add(_FX.parts, new_part(
-          p.x - 7 - rnd(2),
+          p.x + 4 - rnd(6),
           p.y + 11 - rnd(4),
           function() return sin(rnd()) * -1 end,
-          function() return cos(rnd()) * 1 end,
-          {6},
+          function() return 0 end,
+          {7},
           nil,
+          flr(rnd(2)) + 1,
           1,
-          0.2,
+          false,
           0
         ))
       end
@@ -168,6 +169,7 @@ player_state_funcs = {
         p.dx_max = _PLAYER_DX_MAX_BOOSTED
         p.boosting = true
         _timers.boost:init(2,time())
+        printh("player boosted")
     elseif btnp(4) and
       not block_input and
       p.trick_state != _PLAYER_TKSTATE_TRICKING and 
@@ -206,7 +208,7 @@ player_state_funcs = {
     end
 
     if btnp(4) and
-      p.trick_state == _PLAYER_STATE_TRICKING then
+      p.trick_state == _PLAYER_TKSTATE_TRICKING then
       p = stop_tricking(p)
     end
 
@@ -274,6 +276,7 @@ player_state_funcs = {
               rnd() > 0.8 and 6 or nil,
               3 + rnd(3),
               0.5 + rnd(0.5),
+              true,
               0.15
             ))
         end
@@ -287,18 +290,20 @@ player_state_funcs = {
         if p.boosting then
           _timers.boost:add(_PLAYER_BOOST_BONUS)
         end
-        for i=0,5 do 
+        local edgecolors = {9,2,12}
+        for i=0,10 do 
           add(_FX.parts,
             new_part(
-              p.x + rnd(6),
+              p.x + rnd(12),
               p.y + 11 - rnd(2),
               function() return sin(rnd()) * 2 end,
               function() return -rnd(2) end,
               {7},
-              6,
-              1 + rnd(2),
+              edgecolors[flr(rnd(3))+1],
+              3,
               0.3 + rnd(0.3),
-              0
+              true,
+              -0.1
             ))
         end
 
@@ -346,6 +351,7 @@ function move_in_y(p, y_ground)
 end
 
 function start_tricking(p)
+  printh("in start tricking")
   p.trick_state =  _PLAYER_TKSTATE_TRICKING
   p.dx_max *= _PLAYER_TRICK_THROTTLE
   _timers.trick:init(_PLAYER_TRICK_TTL,time())
@@ -357,6 +363,7 @@ function start_tricking(p)
 end
 
 function stop_tricking(p)
+  printh("in stop tricking")
   -- if timer.ttl is within window_min and window_max, you get some style points
   if _timers.trick.ttl > _timers.trick.window_min and
     _timers.trick.ttl < _timers.trick.window_max then

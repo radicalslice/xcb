@@ -19,7 +19,7 @@ function new_timer(now, f)
       t.last_t = now
       if t.ttl <= 0 then
         t.ttl = 0
-        t.f()
+        t:f()
       end
     end,
   }

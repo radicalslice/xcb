@@ -46,6 +46,10 @@ function _update_game()
     y_ground, angle = range.f(board_pos_x)
   else
     cls()
+    -- force player to stop boosting or tricking
+    _timers.boost:f()
+    player.trick_state = _PLAYER_TKSTATE_OFF
+    _timers.trick:f()
     _update60 = _update_interlevel
     _draw = _draw_interlevel
     return

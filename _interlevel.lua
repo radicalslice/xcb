@@ -1,5 +1,6 @@
 function _draw_interlevel()
   _draw_game()
+  print("interlevel", 0, 0, 9)
 end
 
 function _update_interlevel()
@@ -10,7 +11,7 @@ function _update_interlevel()
 
   if btnp(4) or btnp(5) then
     -- pass in last_y_drawn so the level hopefully connects to previous one...
-    local ranges, jumps, x_max = parse_ranges(_level1, flr(player.x - (flr(player.x) % 8)), _last_y_drawn + 8)
+    local ranges, jumps, x_max = parse_ranges(_level0, flr(player.x - (flr(player.x) % 8)), _last_y_drawn + 8)
 
     level = {
       ranges = ranges,
@@ -22,6 +23,7 @@ function _update_interlevel()
 
     _game_timer += _checkpoints[1]
 
+    printh("game state switch: interlevel->game")
     _update60 = _update_game
     _draw = _draw_game
   end
