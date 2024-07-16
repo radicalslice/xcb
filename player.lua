@@ -40,6 +40,7 @@ player = {
     p.style = 0
     p.airtimer = 0
     p.last_trick_ttl = nil -- need this for a UI thing...
+    p.pose = false
   end,
   change_state = function(p, state)
     printh("State change: "..p.state.."->"..state)
@@ -51,12 +52,13 @@ player = {
     if p.boosting then
       pal(8, p.board_cycler:get_color())
     end
-    local base_sprite = 34 + 2*p.angle
+    local base_sprite = 11 + 2*p.angle
+    if player.pose then base_sprite = 34 + 2*p.angle end
     if player.trick_state == _PLAYER_TKSTATE_TRICKING and 
       (player.state == _PLAYER_STATE_SKYUP or player.state == _PLAYER_STATE_SKYDOWN) then
       base_sprite = 40 + 2*p.angle
     elseif player.trick_state == _PLAYER_TKSTATE_TRICKING and player.state == _PLAYER_STATE_ONGROUND then
-      base_sprite = 14 
+      base_sprite = 7
     end
 
     spr(base_sprite, p.x-10, p.y-6, 2, 2)
@@ -291,6 +293,7 @@ player_state_funcs = {
           _timers.boost:add(_PLAYER_BOOST_BONUS)
         end
         local edgecolors = {9,2,12}
+        --[[
         for i=0,10 do 
           add(_FX.parts,
             new_part(
@@ -306,12 +309,19 @@ player_state_funcs = {
               -0.1
             ))
         end
+        ]]--
 
-        -- check airtimer, if it's small enough, print a message...
+        -- speed pin if timer was low enough
         if p.airtimer < _PLAYER_AIRTIMER_0 then
           p.dx = p.dx_max
           p.airtimer = 0
         end
+
+        -- sakurai stop
+        _timers.sakurai:init(0.20,time())
+        p.pose = true
+        _update60 = _update_stop
+        _draw = _draw_stop
       end
     end 
   end,

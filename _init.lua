@@ -13,9 +13,20 @@ function _init()
     0,
     function(t)
       t.ttl = 45
-      printh("did the boost timer expiration")
       player.dx_max = _PLAYER_DX_MAX
       player.boosting = false
+    end
+  )
+
+  -- for a sakurai stop when landing
+  _timers.sakurai = new_timer(
+    0,
+    function(t)
+      t.ttl = 0.3
+      printh("expired sakurai stop")
+      player.pose = false
+      _update60 = _update_game
+      _draw = _draw_game
     end
   )
 
@@ -52,7 +63,7 @@ function _init()
   printh("--init")
 
   -- parse this level to be rendered from x=0, y=Y_BASE
-  local ranges, jumps, x_max = parse_ranges(_level1, 0, Y_BASE)
+  local ranges, jumps, x_max = parse_ranges(_levelX, 0, Y_BASE)
 
   level = {
     ranges = ranges,
@@ -64,7 +75,7 @@ function _init()
 end
 
 function gen_flat_tile(x, y)
-  return {x=x,y=y,map_x=21 + ((x / 8) % 3),map_y=0,height=6}
+  return {x=x,y=y,map_x=21 + ((x / 8) % 3),map_y=0,height=5}
 end
 
 function load_level_map_data(level)

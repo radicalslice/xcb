@@ -19,14 +19,15 @@ bup,8,-2
 bdown,8
 flat,128
 bup,8,-2
-bdown,48
+bdown,64
 flat,128
 bup,24,-2
+bdown,64,-2
 flat,16
 bup,24,-2
 flat,32
 bup,8,-2
-bdown,48
+bdown,128
 flat,128]]
 _level0 = [[
 flat,128
