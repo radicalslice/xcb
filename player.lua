@@ -117,7 +117,7 @@ player = {
       if p:get_state() == _PLAYER_STATE_ONGROUND then
         add(_FX.parts, new_part(
           p.x + 4 - rnd(6),
-          p.y + 11 - rnd(4),
+          p.y + 12 - rnd(4),
           function() return sin(rnd()) * -1 end,
           function() return 0 end,
           {7},

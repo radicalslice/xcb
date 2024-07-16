@@ -6,6 +6,28 @@ _map_table = {}
 _checkpoints = {20}
 
 -- type, x_length, height for flats
+-- this one is pretty sick, you can ride a boost through like the entire thing..
+_levelX = [[
+flat,128
+bup,8,-1.5
+bdown,8
+flat,32
+bup,8,-2
+bdown,8
+flat,32
+bup,8,-2
+bdown,8
+flat,128
+bup,8,-2
+bdown,48
+flat,128
+bup,24,-2
+flat,16
+bup,24,-2
+flat,32
+bup,8,-2
+bdown,48
+flat,128]]
 _level0 = [[
 flat,128
 bdown,16
@@ -14,11 +36,9 @@ bup,16,-3.5
 bdown,16
 flat,128]]
 _level1 = [[
-flat,96
-ddown,64
-flat,256
-bup,16,-3.5
-bdown,16
+flat,128
+bup,32,-3.5
+bdown,32
 flat,256
 bup,16,-3.5
 bdown,16

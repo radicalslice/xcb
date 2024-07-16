@@ -52,7 +52,7 @@ function _init()
   printh("--init")
 
   -- parse this level to be rendered from x=0, y=Y_BASE
-  local ranges, jumps, x_max = parse_ranges(_level0, 0, Y_BASE)
+  local ranges, jumps, x_max = parse_ranges(_level1, 0, Y_BASE)
 
   level = {
     ranges = ranges,
@@ -69,6 +69,7 @@ end
 
 function load_level_map_data(level)
   local map_table = {}
+  local last_angle = 0 -- use this to track when there's a transition between ramp/flat
   for x_curr=0, level.x_max do
     local range = find_range(x_curr, level)
     if range != nil then
@@ -80,10 +81,17 @@ function load_level_map_data(level)
           map_table,
           gen_flat_tile(x_curr, y_updated - 8)
         )
+      last_angle = 0
       elseif angle == -1 then
-        add(map_table,{x=x_curr,y=y_updated-8,map_x=24,map_y=0,height=5})
+        local map_x = 24
+        if last_angle == -1 then map_x = 25 end
+        add(map_table,{x=x_curr,y=y_updated-8,map_x=map_x,map_y=0,height=5})
+        last_angle = -1
       elseif angle == 1 then
-        add(map_table,{x=x_curr,y=y_updated,map_x=25,map_y=0,height=5})
+        local map_x = 27
+        if last_angle == -1 then map_x = 26 end
+        add(map_table,{x=x_curr,y=y_updated,map_x=map_x,map_y=0,height=5})
+        last_angle = 1
       end
     end
   end

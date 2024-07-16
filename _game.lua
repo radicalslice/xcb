@@ -178,15 +178,16 @@ function _draw_game()
   print(flr(_game_timer), 58, 12, 9)
   
   if _debug then
-    draw_ctrls(12, 108, 9)
+    -- draw_ctrls(12, 108, 9)
     -- player debug stuff
     -- print("ST: "..player:get_state(), 96, 24, 10)
-    -- print("X/Y: "..flr(player.x).."/"..flr(player.y), 56, 100, 9)
+    -- print("X: "..flr(player.x), 56, 100, 9)
     -- print("Y: "..player.y, 56, 96, 10)
-    print("dx: "..player.dx, 56, 106, 9)
+    -- print("dx: "..player.dx, 56, 106, 9)
     -- print("dx_max: "..player.dx_max, 56, 112, 9)
     -- print("juice: "..player.juice, 56, 120, 9)
     -- print("tkttl: ".._timers.trick.ttl, 56, 120, 9)
-    print("style: "..player.style, 56, 120, 9)
+    -- print("style: "..player.style, 56, 120, 9)
+    -- print(count(_FX.parts), 56, 120, 9)
   end
 end
