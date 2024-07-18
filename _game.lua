@@ -69,6 +69,13 @@ function _update_game()
     end
   end)
 
+  foreach(_FX.doppels, function(doppel) 
+    doppel:update(dt)
+    if doppel.ttl <= 0 then
+      del(_FX.doppels, doppel)
+    end
+  end)
+
   player:update(dt, y_ground, angle)
 
   last_ts = now
@@ -170,6 +177,10 @@ function _draw_game()
 
   foreach(_FX.parts, function(p)
     p:draw()
+  end)
+
+  foreach(_FX.doppels, function(d)
+    d:draw()
   end)
 
   camera()

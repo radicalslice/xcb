@@ -8,6 +8,13 @@ function _init()
 
   last_ts = time()
 
+  -- FX setup
+  _FX = {
+    parts = {},
+    doppels = {}
+  }
+
+
   -- player's boosting timer
   _timers.boost = new_timer(
     0,

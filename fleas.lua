@@ -1,6 +1,3 @@
-_FX = {
-  parts = {}
-}
 -- new_part ::
 --  InitialX :: Int ->
 --  InitialY :: Int ->
@@ -63,4 +60,39 @@ function new_part(x, y, fvx, fvy, fillcolors, edgecolor, start_size, ttl, shrink
   end
 
   return newP
+end
+
+-- SpriteIndex -> InitX -> InitY -> ()
+function new_doppel(si,x,y)
+  local w = 16
+  local h = 16
+  local sx, sy = (11 % 16) * 8, (11 \ 16) * 8
+  return {
+    sprite_idx = si,
+    scale = 1,
+    x = x,
+    y = y,
+    ttl = 0.3,
+    cycler = new_cycler(0.02, {9,10,12}),
+    update = function(d, dt)
+      d.scale *= 1.05
+      d.ttl -= dt
+      d.x -= 0.2 * d.scale
+      d.y -= 1
+      d.cycler:update(dt)
+    end,
+    draw = function (d)
+      palt(0, false)
+      for i=0,15 do
+        if i != 0 then
+          palt(i, true)
+        end
+      end
+      pal(0, d.cycler:get_color())
+      -- spr(base_sprite, p.x-10, p.y-32, 2, 2)
+      sspr(sx,sy,w,h,d.x,d.y,w*d.scale,h*d.scale)
+      pal()
+      palt()
+    end,
+  }
 end

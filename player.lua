@@ -61,6 +61,7 @@ player = {
       base_sprite = 7
     end
 
+
     spr(base_sprite, p.x-10, p.y-6, 2, 2)
 
     for i=1,player.juice do
@@ -292,24 +293,6 @@ player_state_funcs = {
         if p.boosting then
           _timers.boost:add(_PLAYER_BOOST_BONUS)
         end
-        local edgecolors = {9,2,12}
-        --[[
-        for i=0,10 do 
-          add(_FX.parts,
-            new_part(
-              p.x + rnd(12),
-              p.y + 11 - rnd(2),
-              function() return sin(rnd()) * 2 end,
-              function() return -rnd(2) end,
-              {7},
-              edgecolors[flr(rnd(3))+1],
-              3,
-              0.3 + rnd(0.3),
-              true,
-              -0.1
-            ))
-        end
-        ]]--
 
         -- speed pin if timer was low enough
         if p.airtimer < _PLAYER_AIRTIMER_0 then
@@ -320,6 +303,10 @@ player_state_funcs = {
         -- sakurai stop
         _timers.sakurai:init(0.20,time())
         p.pose = true
+        add(
+          _FX.doppels,
+          new_doppel(11,p.x-8,p.y-4)
+        )
         _update60 = _update_stop
         _draw = _draw_stop
       end
