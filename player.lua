@@ -203,11 +203,6 @@ player_state_funcs = {
     elseif btnp(0) then
       p.angle = max(-1, p.angle - 1)
       p.airtimer = 0
-      if abs(p.dy) > 2 then
-        -- extra airres, decreased grav
-        p.dx *= _airres
-        p.dy -= (p.ddy * 0.3)
-      end
     end
 
     if btnp(4) and
@@ -241,11 +236,6 @@ player_state_funcs = {
     elseif btnp(0) then
       p.airtimer = 0
       p.angle = max(-1, p.angle - 1)
-      if abs(p.dy) > 2 then
-        -- extra airres, decreased grav
-        p.dx *= _airres
-        p.dy -= (p.ddy * 0.3)
-      end
     end
 
     if btnp(4) and

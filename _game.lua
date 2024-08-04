@@ -187,6 +187,7 @@ function _draw_game()
 
   print(flr(_game_timer), 59, 12, 4)
   print(flr(_game_timer), 58, 12, 9)
+  print("("..flr(time())..")", 76, 12, 9)
   
   if _debug then
     -- draw_ctrls(12, 108, 9)

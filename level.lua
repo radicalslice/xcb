@@ -5,8 +5,118 @@ _map_table = {}
 -- how much time to add to the remaining time at each interlevel
 _checkpoints = {20}
 
+-- ramps
+--[[
+-- one star --
+- mini -
+bup,8,-2
+bdown,8
+- normie -
+bup,16,-2.5
+bdown,16
+- normie x2 -
+bup,16,-2.5
+bdown,16
+flat,16
+bup,16,-2.5
+bdown,16
+- flat -
+bup,16,-2.5
+flat,16
+-- two star --
+- mini -
+bup,8,-2
+bdown,8
+flat,32
+bup,8,-2
+bdown,8
+- normie -
+bup,16,-2.5
+bdown,16
+flat,8
+bup,16,-2.5
+bdown,16
+- flat -
+bup,16,-2.5
+flat,16
+bup,16,-2.5
+flat,16
+-- three star --
+- mini -
+bdown,8
+flat,32
+bup,8,-2
+bdown,8
+flat,16
+bup,8,-2
+bdown,8
+- normie -
+bup,16,-2.5
+bdown,16
+flat,8
+bup,16,-2.5
+bdown,24
+flat,16
+bup,8,-2
+bdown,32
+--]]
+_level1 = [[
+flat,32
+ddown,96
+flat,96
+bup,16,-2.5
+bdown,16
+flat,96
+bup,8,-2
+bdown,8
+flat,96
+bup,16,-2.5
+bdown,16
+flat,64
+ddown,24
+flat,64
+bup,8,-2
+bdown,8
+flat,96
+bup,16,-2.5
+flat,96
+bup,16,-2.5
+bdown,16
+flat,8
+bup,16,-2.5
+bdown,16
+flat,128
+bup,16,-2.5
+bdown,16
+flat,8
+bup,16,-2.5
+bdown,16
+flat,64
+bup,8,-2
+bdown,8
+flat,32
+bup,8,-2
+bdown,8
+flat,96
+bup,16,-2.5
+flat,32
+bup,8,-2
+bdown,8
+flat,64
+bup,16,-2.5
+flat,40
+ddown,64
+flat,64
+bup,8,-2
+bdown,8
+flat,16
+bup,16,-2.5
+flat,16
+bup,16,-2.5
+flat,16
+flat,128]]
 -- type, x_length, height for flats
--- this one is pretty sick, you can ride a boost through like the entire thing..
+-- this levelX one is pretty sick, you can ride a boost through like the entire thing..
 _levelX = [[
 flat,128
 bup,8,-1.5
@@ -29,43 +139,107 @@ flat,32
 bup,8,-2
 bdown,128
 flat,128]]
-_level0 = [[
+--[[
+_menagMini = [[
 flat,128
-bdown,16
+bup,8,-2
+bdown,8
 flat,128
-bup,16,-3.5
-bdown,16
-flat,128]]
-_level1 = [[
+bup,8,-2
+bdown,8
 flat,128
-bup,32,-3.5
-bdown,32
-flat,256
-bup,16,-3.5
-bdown,16
-flat,192
-ddown,16
-flat,128
-bup,16,-3.5
-bdown,32
-flat,192
-bup,16,-3.5
-bdown,16
+bup,8,-2
+bdown,8
 flat,32
-bup,16,-3.5
-bdown,16
-flat,96
+bup,8,-2
+bdown,8
+flat,128
+bup,8,-2
+bdown,8
+flat,32
+bup,8,-2
+bdown,8
+flat,128
+bup,8,-2
+bdown,8
+flat,32
+bup,8,-2
+bdown,8
+flat,16
+bup,8,-2
+bdown,8
+flat,128
+bup,8,-2
+bdown,8
+flat,32
+bup,8,-2
+bdown,8
+flat,16
+bup,8,-2
+bdown,8
+flat,128]]--
+--[[
+_menagFlats = [[
+flat,128
 bup,16,-2.5
-flat,96
-ddown,64
-flat,96
+flat,128
+bup,16,-2.5
+flat,128
 bup,16,-2.5
 flat,16
-bup,16,-3.5
+bup,16,-2.5
+flat,128
+bup,16,-2.5
+flat,16
+bup,16,-2.5
+flat,16
+bdown,24
+flat,128
+bup,16,-2.5
+flat,16
+bup,16,-2.5
+flat,16
+bdown,24
+flat,128]]--
+--[[
+_menagReg = [[
+flat,128
+bup,16,-2.5
 bdown,16
-flat,8
-ddown,64
-flat,128]]
+flat,128
+bup,16,-2.5
+bdown,16
+flat,128
+bup,16,-2.5
+bdown,16
+flat,16
+bup,16,-2.5
+bdown,16
+flat,128
+bup,16,-2.5
+bdown,16
+flat,16
+bup,16,-2.5
+bdown,16
+flat,128
+bup,16,-2.5
+bdown,16
+flat,16
+bup,16,-2.5
+bdown,24
+flat,16
+bup,8,-2
+bdown,32
+flat,128
+bup,16,-2.5
+bdown,16
+flat,16
+bup,16,-2.5
+bdown,16
+flat,24
+bup,8,-2
+bdown,32
+flat,128]]--
 
 
 -- Steep guys

@@ -77,8 +77,8 @@ function new_doppel(si,x,y)
     update = function(d, dt)
       d.scale *= 1.05
       d.ttl -= dt
-      d.x -= 0.2 * d.scale
-      d.y -= 1
+      d.x = player.x - 8 - (0.2 * d.scale)
+      d.y -= 2
       d.cycler:update(dt)
     end,
     draw = function (d)
