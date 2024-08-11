@@ -2,7 +2,8 @@ function _init()
   _update60 = _update_game
   _draw = _draw_game
   player:reset()
-  _game_timer = 28
+  _game_timer = _checkpoints[1]
+  _level_index = 1
 
   get_tile_from_pos = _get_tile_from_pos(0, 0)
 
@@ -76,6 +77,7 @@ function _init()
     ranges = ranges,
     jumps = jumps,
     x_max = x_max,
+    config = _configs[_level_index],
   }
 
   _map_table = load_level_map_data(level) 

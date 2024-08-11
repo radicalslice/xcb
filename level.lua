@@ -1,9 +1,30 @@
 level = {}
+_level_index = 1
+_level_count = 2
 -- Map[XPos][mapx, mapy, sprnum]
 _map_table = {}
 
 -- how much time to add to the remaining time at each interlevel
-_checkpoints = {20}
+_checkpoints = {28,20}
+
+_configs = {
+  {
+    mountain_tile_x = 17,
+    mountain_tile_y = 1,
+    mountain_pos_y = 24,
+    tree_pos_y = 30,
+    tree_tileheight = 3,
+    foreground = false,
+  },
+  {
+    mountain_tile_x = 13,
+    mountain_tile_y = 3,
+    mountain_pos_y = 27,
+    tree_pos_y = 40,
+    tree_tileheight = 2,
+    foreground = true,
+  },
+}
 
 -- ramps
 --[[

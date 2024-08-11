@@ -1,7 +1,7 @@
 _bigtree_x = 0
-_smalltree_x = 0
+_mountain_x = 0
 _bigtree_dx = 0.6
-_smalltree_dx = 0.2
+_mountain_dx = 0.2
 _camera_x_offset = 24
 _game_timer = 0
 _last_y_drawn = 0
@@ -27,10 +27,10 @@ function _update_game()
   end
 
   _bigtree_x -= (_bigtree_dx * player.dx)
-  _smalltree_x -= (_smalltree_dx * player.dx)
+  _mountain_x -= (_mountain_dx * player.dx)
 
   if _bigtree_x < -127 then _bigtree_x = 0 end
-  if _smalltree_x < -127 then _smalltree_x = 0 end
+  if _mountain_x < -127 then _mountain_x = 0 end
 
   -- squash shake if it's > 0
   if _shake > 0 then
@@ -47,11 +47,16 @@ function _update_game()
   else
     cls()
     -- force player to stop boosting or tricking
-    _timers.boost:f()
-    player.trick_state = _PLAYER_TKSTATE_OFF
-    _timers.trick:f()
-    _update60 = _update_interlevel
-    _draw = _draw_interlevel
+    if _level_index == _level_count then
+      _update60 = _update_victory
+      _draw = _draw_victory
+    else 
+      _timers.boost:f()
+      player.trick_state = _PLAYER_TKSTATE_OFF
+      _timers.trick:f()
+      _update60 = _update_interlevel
+      _draw = _draw_interlevel
+    end
     return
   end
 
@@ -114,28 +119,46 @@ function _draw_game()
 
   camera(shakex, shakey)
 
+  -- palate swappies
+  -- clouds
+  map(0, 0, -16, 0, 18, 1)
+
   -- sky
   rectfill(-16,8,144,63,12)
 
   palt(11, true)
   palt(0, false)
+
   -- parallax-y mountain tiles
   for i=0,224,32 do
-    map(17,0, _smalltree_x + i, 24, 4, 1)
+    -- far out
+    -- map(17,1, _mountain_x + i, 24, 4, 2)
+    -- near ish
+    map(
+      level.config.mountain_tile_x,
+      level.config.mountain_tile_y,
+      _mountain_x + i,
+      level.config.mountain_pos_y,
+      4,
+      2
+    )
   end
+
   -- random trees
   for i=0,224,32 do
-    map(17,2, _bigtree_x + i, 28, 4, 3)
+    map(9,1, _bigtree_x + i, level.config.tree_pos_y, 4, level.config.tree_tileheight)
   end
 
   -- Snow below trees and above course
+  -- rectfill(-16,46,144,128,7)
   rectfill(-16,52,144,128,7)
 
-  local LEVEL_MAX = 256
-
-  -- the sky
-  map(0, 0, -16, 0, 16, 2)
-  map(0, 0, 112, 0, 4, 2)
+  -- foreground trees
+  if level.config.foreground then
+    for i=0,224,32 do
+      map(9,4, _bigtree_x + i, level.config.tree_pos_y + 12, 4, 1)
+    end
+  end
 
   local last_x_drawn = 0
   for tile in all(_map_table) do 
@@ -187,7 +210,7 @@ function _draw_game()
 
   print(flr(_game_timer), 59, 12, 4)
   print(flr(_game_timer), 58, 12, 9)
-  print("("..flr(time())..")", 76, 12, 9)
+  -- print("("..flr(time())..")", 76, 12, 9)
   
   if _debug then
     -- draw_ctrls(12, 108, 9)
