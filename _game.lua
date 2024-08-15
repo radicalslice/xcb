@@ -17,6 +17,9 @@ function _update_game()
   -- update timers
   _timers.boost:update(now)
   _timers.trick:update(now)
+  _timers.sakurai:update(now)
+  _timers.speedpin:update(now)
+  _timers.okami:update(now)
   _timers.trick_reward:update(now)
 
   _game_timer -= dt
@@ -71,13 +74,6 @@ function _update_game()
     part:update(dt)
     if part.ttl <= 0 then
       del(_FX.parts, part)
-    end
-  end)
-
-  foreach(_FX.doppels, function(doppel) 
-    doppel:update(dt)
-    if doppel.ttl <= 0 then
-      del(_FX.doppels, doppel)
     end
   end)
 
@@ -202,10 +198,6 @@ function _draw_game()
     p:draw()
   end)
 
-  foreach(_FX.doppels, function(d)
-    d:draw()
-  end)
-
   camera()
 
   print(flr(_game_timer), 59, 12, 4)
@@ -218,7 +210,7 @@ function _draw_game()
     -- print("ST: "..player:get_state(), 96, 24, 10)
     -- print("X: "..flr(player.x), 56, 100, 9)
     -- print("Y: "..player.y, 56, 96, 10)
-    -- print("dx: "..player.dx, 56, 106, 9)
+    print("dx: "..player.dx, 56, 106, 9)
     -- print("dx_max: "..player.dx_max, 56, 112, 9)
     -- print("juice: "..player.juice, 56, 120, 9)
     -- print("tkttl: ".._timers.trick.ttl, 56, 120, 9)

@@ -9,7 +9,7 @@ _PLAYER_STATE_HOPDOWN = "hopdown"
 _PLAYER_GRAVITY = 0.15
 _PLAYER_JUICE_ADD = 1
 _PLAYER_JUICE_MAX = 3
-_PLAYER_AIRTIMER_0 = 0.5
+_PLAYER_AIRTIMER_0 = 0.2
 _PLAYER_BOOST_TIME = 2 --seconds
 _PLAYER_BOOST_BONUS = 1 --seconds, extra time for a successful boost landing
 _PLAYER_HOP_PENALTY = 0.7
@@ -32,7 +32,8 @@ player = {
     p.ddy = _PLAYER_GRAVITY
     p.angle = 0
     p.state = _PLAYER_STATE_ONGROUND
-    p.board_cycler = new_cycler(0.05, {8,9,10})
+    p.board_cycler = new_cycler(0.05, {9,10,12})
+    p.speedpin_cycler = new_cycler(0.05, {9,10,12})
     p.tricking = false
     p.trick_state = _PLAYER_TKSTATE_OFF
     p.boosting = false
@@ -41,6 +42,7 @@ player = {
     p.airtimer = 0
     p.last_trick_ttl = nil -- need this for a UI thing...
     p.pose = false
+    p.pinned = false
   end,
   change_state = function(p, state)
     printh("State change: "..p.state.."->"..state)
@@ -51,6 +53,9 @@ player = {
     palt(0, false)
     if p.boosting then
       pal(8, p.board_cycler:get_color())
+    end
+    if p.pinned then
+      pal(0, p.speedpin_cycler:get_color())
     end
     local base_sprite = 11 + 2*p.angle
     if player.pose then base_sprite = 34 + 2*p.angle end
@@ -63,6 +68,7 @@ player = {
 
 
     spr(base_sprite, p.x-10, p.y-6, 2, 2)
+    p.last_sprite = base_sprite
 
     for i=1,player.juice do
       spr(96, p.x-13 - (i*2) , p.y - 11 + (i*5))
@@ -106,6 +112,9 @@ player = {
     -- update board cycler
     p.board_cycler:update(dt)
 
+    -- update outline cycler for speedpin
+    p.speedpin_cycler:update(dt)
+
     -- update trick cyclers
     trick_cycler_1:update(dt)
 
@@ -117,16 +126,20 @@ player = {
       or pstate == _PLAYER_STATE_HOPDOWN then
       player_state_funcs[pstate](p, dt, y_ground, ground_angle, block_input)
 
+      local f = function()
+        return p.speedpin_cycler:get_color()
+      end
       if p:get_state() == _PLAYER_STATE_ONGROUND then
         add(_FX.parts, new_part(
           p.x + 4 - rnd(6),
           p.y + 12 - rnd(4),
           function() return sin(rnd()) * -1 end,
           function() return 0 end,
-          {7},
+          {7}, -- regular color
+          _timers.okami.ttl > 0 and f or nil, -- colorf
           nil,
           flr(rnd(2)) + 1,
-          1,
+          0.4,
           false,
           0
         ))
@@ -266,6 +279,7 @@ player_state_funcs = {
               function() return sin(rnd()) * 3 end,
               function() return -rnd(7) end,
               {7},
+              nil,
               rnd() > 0.8 and 6 or nil,
               3 + rnd(3),
               0.5 + rnd(0.5),
@@ -282,23 +296,22 @@ player_state_funcs = {
         p.juice = min(_PLAYER_JUICE_MAX, p.juice + _PLAYER_JUICE_ADD)
         if p.boosting then
           _timers.boost:add(_PLAYER_BOOST_BONUS)
+          printh("Init okami timer!")
+          _timers.okami:init(0.2,time())
         end
 
         -- speed pin if timer was low enough
         if p.airtimer < _PLAYER_AIRTIMER_0 then
           p.dx = p.dx_max
           p.airtimer = 0
+          -- for stopping the speed pin cycler
+          p.pinned = true
+          _timers.speedpin:init(0.2,time())
         end
 
-        -- sakurai stop
+        -- for stopping the pose
         _timers.sakurai:init(0.20,time())
         p.pose = true
-        add(
-          _FX.doppels,
-          new_doppel(11,p.x-8,p.y-4)
-        )
-        _update60 = _update_stop
-        _draw = _draw_stop
       end
     end 
   end,

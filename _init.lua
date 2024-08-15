@@ -12,7 +12,6 @@ function _init()
   -- FX setup
   _FX = {
     parts = {},
-    doppels = {}
   }
 
 
@@ -33,8 +32,24 @@ function _init()
       t.ttl = 0.3
       printh("expired sakurai stop")
       player.pose = false
-      _update60 = _update_game
-      _draw = _draw_game
+    end
+  )
+
+  -- for stopping the speed pin cycler
+  _timers.speedpin = new_timer(
+    0,
+    function(t)
+      t.ttl = 0.3
+      printh("expired speed pin timer")
+      player.pinned = false
+    end
+  )
+
+  -- for stopping the okami particles 
+  _timers.okami = new_timer(
+    0,
+    function(t)
+      printh("expired okami timer")
     end
   )
 
