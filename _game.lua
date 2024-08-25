@@ -152,7 +152,7 @@ function _draw_game()
   camera(shakex, shakey)
 
   -- palate swappies
-  -- sunset() 
+  sunset() 
   -- night()
 
   -- clouds
@@ -166,7 +166,7 @@ function _draw_game()
   palt(0, false)
 
   -- parallax-y mountain tiles
-  -- sunset_mtns()
+  sunset_mtns()
   -- night_mtns()
   for i=0,224,32 do
     map(
@@ -185,8 +185,8 @@ function _draw_game()
   palt(0, false)
   
   -- sun / moon / etc
-  circfill(112, 16, 4, 10)
-  -- circfill(112, 16, 5, 8)
+  -- circfill(112, 16, 4, 10)
+  circfill(112, 16, 5, 8)
   -- spr(66, 112, 16, 2, 2)
 
   -- night_snow()

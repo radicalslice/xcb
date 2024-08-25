@@ -182,6 +182,7 @@ player_state_funcs = {
       p.trick_state != _PLAYER_TKSTATE_TRICKING and
       p.juice > 0 then
         _timers.sakurai:init(0.5,time())
+        make_lines()
         __update = _update_stop
         __draw = _draw_stop
     elseif btnp(4) and
