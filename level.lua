@@ -19,7 +19,7 @@ _configs = {
   {
     mountain_tile_x = 13,
     mountain_tile_y = 3,
-    mountain_pos_y = 27,
+    mountain_pos_y = 28,
     tree_pos_y = 40,
     tree_tileheight = 2,
     foreground = true,

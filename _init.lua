@@ -1,6 +1,6 @@
 function _init()
-  _update60 = _update_game
-  _draw = _draw_game
+  __update = _update_game
+  __draw = _draw_game
   player:reset()
   _game_timer = _checkpoints[1]
   _level_index = 1
@@ -25,13 +25,28 @@ function _init()
     end
   )
 
-  -- for a sakurai stop when landing
-  _timers.sakurai = new_timer(
+  -- for a pose when landing
+  _timers.pose = new_timer(
     0,
     function(t)
       t.ttl = 0.3
-      printh("expired sakurai stop")
+      printh("expired pose stop")
       player.pose = false
+    end
+  )
+
+  -- for a sakurai stop when boosting
+  _timers.sakurai = new_timer(
+    0,
+    function(t)
+      printh("expired sakurai stop")
+      __update = _update_game
+      __draw = _draw_game
+      _timers.boost:init(2,time())
+      player.juice -= 1
+      player.dx_max = _PLAYER_DX_MAX_BOOSTED
+      player.dx = _PLAYER_DX_MAX_BOOSTED
+      player.boosting = true
     end
   )
 
@@ -132,4 +147,12 @@ function load_level_map_data(level)
   end
 
   return map_table
+end
+
+function _update60()
+  __update()
+end
+
+function _draw()
+  __draw()
 end

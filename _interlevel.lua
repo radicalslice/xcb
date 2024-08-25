@@ -35,7 +35,7 @@ function _update_interlevel()
     _game_timer += _checkpoints[_level_index]
 
     printh("game state switch: interlevel->game")
-    _update60 = _update_game
-    _draw = _draw_game
+    __update = _update_game
+    __draw = _draw_game
   end
 end

@@ -17,6 +17,7 @@ function _update_game()
   -- update timers
   _timers.boost:update(now)
   _timers.trick:update(now)
+  _timers.pose:update(now)
   _timers.sakurai:update(now)
   _timers.speedpin:update(now)
   _timers.okami:update(now)
@@ -25,8 +26,8 @@ function _update_game()
   _game_timer -= dt
   if _game_timer < 0 then
     _game_timer = 0
-    _update60 = _update_gameover
-    _draw = _draw_gameover
+    __update = _update_gameover
+    __draw = _draw_gameover
   end
 
   _bigtree_x -= (_bigtree_dx * player.dx)
@@ -51,14 +52,14 @@ function _update_game()
     cls()
     -- force player to stop boosting or tricking
     if _level_index == _level_count then
-      _update60 = _update_victory
-      _draw = _draw_victory
+      __update = _update_victory
+      __draw = _draw_victory
     else 
       _timers.boost:f()
       player.trick_state = _PLAYER_TKSTATE_OFF
       _timers.trick:f()
-      _update60 = _update_interlevel
-      _draw = _draw_interlevel
+      __update = _update_interlevel
+      __draw = _draw_interlevel
     end
     return
   end
@@ -87,10 +88,7 @@ _last_sprite_at = 0
 _camera_y = 0
 _last_camera_y_offset = 0
 _camera_x = 0
-function _draw_game()
-  cls()
-  -- printh("P.Y, top: "..player.y)
-
+function align_camera()
   local y_ground = Y_BASE
   -- Look ahead to try and prep camera
   local range = find_range(player:get_board_center_x() + 24, level)
@@ -108,54 +106,9 @@ function _draw_game()
   end
 
   _camera_y -= _last_camera_y_offset
+end
 
-  -- add in the shake, if any
-  local shakex = (4 - rnd(8)) * _shake
-  local shakey = (4 - rnd(8)) * _shake
-
-  camera(shakex, shakey)
-
-  -- palate swappies
-  -- clouds
-  map(0, 0, -16, 0, 18, 1)
-
-  -- sky
-  rectfill(-16,8,144,63,12)
-
-  palt(11, true)
-  palt(0, false)
-
-  -- parallax-y mountain tiles
-  for i=0,224,32 do
-    -- far out
-    -- map(17,1, _mountain_x + i, 24, 4, 2)
-    -- near ish
-    map(
-      level.config.mountain_tile_x,
-      level.config.mountain_tile_y,
-      _mountain_x + i,
-      level.config.mountain_pos_y,
-      4,
-      2
-    )
-  end
-
-  -- random trees
-  for i=0,224,32 do
-    map(9,1, _bigtree_x + i, level.config.tree_pos_y, 4, level.config.tree_tileheight)
-  end
-
-  -- Snow below trees and above course
-  -- rectfill(-16,46,144,128,7)
-  rectfill(-16,52,144,128,7)
-
-  -- foreground trees
-  if level.config.foreground then
-    for i=0,224,32 do
-      map(9,4, _bigtree_x + i, level.config.tree_pos_y + 12, 4, 1)
-    end
-  end
-
+function draw_course()
   local last_x_drawn = 0
   for tile in all(_map_table) do 
     if tile.x < player.x + 136 then
@@ -185,7 +138,79 @@ function _draw_game()
       )
     end
   end
+end
 
+function _draw_game()
+  cls()
+
+  align_camera()
+
+  -- add in the shake, if any
+  local shakex = (4 - rnd(8)) * _shake
+  local shakey = (4 - rnd(8)) * _shake
+
+  camera(shakex, shakey)
+
+  -- palate swappies
+  -- sunset() 
+  -- night()
+
+  -- clouds
+  map(0, 0, -16, 0, 18, 1)
+
+  -- sky
+  rectfill(-16,8,144,63,12)
+  pal() 
+
+  palt(11, true)
+  palt(0, false)
+
+  -- parallax-y mountain tiles
+  -- sunset_mtns()
+  -- night_mtns()
+  for i=0,224,32 do
+    map(
+      level.config.mountain_tile_x,
+      level.config.mountain_tile_y,
+      _mountain_x + i,
+      level.config.mountain_pos_y,
+      4,
+      2
+    )
+  end
+
+  pal()
+
+  palt(11, true)
+  palt(0, false)
+  
+  -- sun / moon / etc
+  circfill(112, 16, 4, 10)
+  -- circfill(112, 16, 5, 8)
+  -- spr(66, 112, 16, 2, 2)
+
+  -- night_snow()
+  -- random trees
+  for i=0,224,32 do
+    map(9,1, _bigtree_x + i, level.config.tree_pos_y, 4, level.config.tree_tileheight)
+  end
+
+
+  -- Snow below trees and above course
+  rectfill(-16,52,144,128,7)
+
+  -- foreground trees
+  if level.config.foreground then
+    for i=0,224,32 do
+      map(9,4, _bigtree_x + i, level.config.tree_pos_y + 12, 4, 1)
+    end
+  end
+  pal()
+
+  palt(11, true)
+  palt(0, false)
+
+  draw_course()
   camera(_camera_x, _camera_y)
 
   palt()

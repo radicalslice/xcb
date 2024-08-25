@@ -181,11 +181,9 @@ player_state_funcs = {
       not p.boosting and
       p.trick_state != _PLAYER_TKSTATE_TRICKING and
       p.juice > 0 then
-        p.juice -= 1
-        p.dx_max = _PLAYER_DX_MAX_BOOSTED
-        p.boosting = true
-        _timers.boost:init(2,time())
-        printh("player boosted")
+        _timers.sakurai:init(0.5,time())
+        __update = _update_stop
+        __draw = _draw_stop
     elseif btnp(4) and
       not block_input and
       p.trick_state != _PLAYER_TKSTATE_TRICKING and 
@@ -310,7 +308,7 @@ player_state_funcs = {
         end
 
         -- for stopping the pose
-        _timers.sakurai:init(0.20,time())
+        _timers.pose:init(0.25,time())
         p.pose = true
       end
     end 
