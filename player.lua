@@ -96,11 +96,11 @@ player = {
     palt()
   end,
   start_jump = function(p, boosted_dy)
-    p.dy = mid(-1, boosted_dy, (p.dx / _PLAYER_DX_MAX) * boosted_dy)
+    p.dy = mid(-1, boosted_dy, (p.dx / p.dx_max) * boosted_dy)
     printh("New dy: "..p.dy)
     -- make sure we're just above ground level first
     p.y = p.y - 0.1
-    p.dx -= p.dx * 0.2
+    p.dx -= p.dx * 0.1
     p.airtimer = 0
     p:change_state(_PLAYER_STATE_SKYUP)
   end,
