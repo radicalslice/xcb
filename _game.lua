@@ -6,7 +6,14 @@ _camera_x_offset = 24
 _game_timer = 0
 _last_y_drawn = 0
 Y_BASE = 88
-_debug = true
+_debug = {
+  msgs = true,
+  pinflash = false,
+  pinparticles = false,
+  pose = false,
+  idle = false,
+  sakurai = false,
+}
 _timers = {}
 _shake = 0
 
@@ -16,12 +23,10 @@ function _update_game()
 
   -- update timers
   _timers.boost:update(now)
-  _timers.trick:update(now)
   _timers.pose:update(now)
   _timers.sakurai:update(now)
   _timers.speedpin:update(now)
   _timers.okami:update(now)
-  _timers.trick_reward:update(now)
 
   _game_timer -= dt
   if _game_timer < 0 then
@@ -50,14 +55,12 @@ function _update_game()
     y_ground, angle = range.f(board_pos_x)
   else
     cls()
-    -- force player to stop boosting or tricking
+    -- force player to stop boosting
     if _level_index == _level_count then
       __update = _update_victory
       __draw = _draw_victory
     else 
       _timers.boost:f()
-      player.trick_state = _PLAYER_TKSTATE_OFF
-      _timers.trick:f()
       __update = _update_interlevel
       __draw = _draw_interlevel
     end
@@ -229,7 +232,7 @@ function _draw_game()
   print(flr(_game_timer), 58, 12, 9)
   print("("..flr(time())..")", 76, 12, 9)
   
-  if _debug then
+  if _debug.msgs then
     -- draw_ctrls(12, 108, 9)
     -- player debug stuff
     -- print("ST: "..player:get_state(), 96, 24, 10)
@@ -238,7 +241,6 @@ function _draw_game()
     print("dx: "..player.dx, 56, 106, 9)
     -- print("dx_max: "..player.dx_max, 56, 112, 9)
     -- print("juice: "..player.juice, 56, 120, 9)
-    -- print("tkttl: ".._timers.trick.ttl, 56, 120, 9)
     -- print("style: "..player.style, 56, 120, 9)
     -- print(count(_FX.parts), 56, 120, 9)
   end
