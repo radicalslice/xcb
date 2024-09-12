@@ -13,15 +13,18 @@ function _init()
   _FX = {
     parts = {},
   }
+  
+  _q = qico()
+  _q.add_topics("expr_boost")
+  _q.add_subs("expr_boost", {player.handle_expr_boost})
 
 
   -- player's boosting timer
   _timers.boost = new_timer(
     0,
     function(t)
-      t.ttl = 45
-      player.dx_max = _PLAYER_DX_MAX
-      player.boosting = false
+      printh("boost timer expired")
+      _q.add_event("expr_boost")
     end
   )
 

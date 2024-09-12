@@ -59,9 +59,11 @@ player = {
     spr(base_sprite, p.x-10, p.y-6, 2, 2)
     p.last_sprite = base_sprite
 
+    --[[
     for i=1,player.juice do
       spr(96, p.x-13 - (i*2) , p.y - 11 + (i*5))
     end
+    ]]--
 
     pal()
     palt()
@@ -298,6 +300,12 @@ player_state_funcs = {
 
   end,
 }
+
+player.handle_expr_boost = function()
+  printh("called player handler")
+  player.dx_max = _PLAYER_DX_MAX
+  player.boosting = false
+end
 
 function move_in_y(p, y_ground)
   p.dy = min(_PLAYER_DY_MAX, p.dy + p.ddy)

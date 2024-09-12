@@ -28,6 +28,8 @@ function _update_game()
   _timers.speedpin:update(now)
   _timers.okami:update(now)
 
+  _q.proc()
+
   _game_timer -= dt
   if _game_timer < 0 then
     _game_timer = 0
@@ -228,10 +230,26 @@ function _draw_game()
 
   camera()
 
-  print(flr(_game_timer), 59, 12, 4)
-  print(flr(_game_timer), 58, 12, 9)
-  print("("..flr(time())..")", 76, 12, 9)
-  
+
+  -- draw menu over everything
+  palt(11, true)
+  rectfill(0, 0, 9, 128, 0)
+  for i=1,player.juice do
+    spr(96, 1, 48 + (i*6))
+  end
+
+  rect(1,82,7,115,1)
+  local meter_max = 83
+  if player.dx_max <= _PLAYER_DX_MAX then
+    meter_max = 115 - ((player.dx / player.dx_max) << 5)
+  end
+  rectfill(2,114,6,meter_max,12)
+
+  print(flr(_game_timer), 0, 120, 1)
+  print(flr(_game_timer), 1, 120, 12)
+  -- print("("..flr(time())..")", 76, 12, 9)
+  -- end menu draw
+ 
   if _debug.msgs then
     -- draw_ctrls(12, 108, 9)
     -- player debug stuff
