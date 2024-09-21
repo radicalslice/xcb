@@ -4,15 +4,16 @@ _bigtree_dx = 0.6
 _mountain_dx = 0.2
 _camera_x_offset = 24
 _game_timer = 0
+_frame_counter = 0
 _last_y_drawn = 0
 Y_BASE = 88
 _debug = {
   msgs = true,
-  pinflash = false,
-  pinparticles = false,
-  pose = false,
+  pinflash = true,
+  pinparticles = true,
+  pose = true,
   idle = false,
-  sakurai = false,
+  sakurai = true,
 }
 _timers = {}
 _shake = 0
@@ -157,7 +158,9 @@ function _draw_game()
   camera(shakex, shakey)
 
   -- palate swappies
-  sunset() 
+  if _level_index > 1 then
+    sunset() 
+  end
   -- night()
 
   -- clouds
@@ -191,7 +194,9 @@ function _draw_game()
   
   -- sun / moon / etc
   -- circfill(112, 16, 4, 10)
-  circfill(112, 16, 5, 8)
+  if _level_index > 1 then
+    circfill(112, 16, 5, 8)
+  end
   -- spr(66, 112, 16, 2, 2)
 
   -- night_snow()
@@ -238,15 +243,22 @@ function _draw_game()
     spr(96, 1, 48 + (i*6))
   end
 
-  rect(1,82,7,115,1)
+  rect(1,85,7,118,1)
   local meter_max = 83
   if player.dx_max <= _PLAYER_DX_MAX then
-    meter_max = 115 - ((player.dx / player.dx_max) << 5)
+    meter_max = 118 - ((player.dx / player.dx_max) << 5)
   end
-  rectfill(2,114,6,meter_max,12)
+  rectfill(2,117,6,meter_max,12)
 
-  print(flr(_game_timer), 0, 120, 1)
-  print(flr(_game_timer), 1, 120, 12)
+  circfill(6, 4, 15, 0)
+  local text_color, border_color = 12, 1
+  if true or _game_timer < 5 then
+    text_color, border_color = 8, 2
+  end
+  if _game_timer % 1 > 0.5 then
+    print("\^w\^t"..flr(_game_timer), 1, 2, border_color)
+    print("\^w\^t"..flr(_game_timer), 2, 3, text_color)
+  end
   -- print("("..flr(time())..")", 76, 12, 9)
   -- end menu draw
  
@@ -256,7 +268,7 @@ function _draw_game()
     -- print("ST: "..player:get_state(), 96, 24, 10)
     -- print("X: "..flr(player.x), 56, 100, 9)
     -- print("Y: "..player.y, 56, 96, 10)
-    print("dx: "..player.dx, 56, 106, 9)
+    -- print("dx: "..player.dx, 56, 106, 9)
     -- print("dx_max: "..player.dx_max, 56, 112, 9)
     -- print("juice: "..player.juice, 56, 120, 9)
     -- print("style: "..player.style, 56, 120, 9)

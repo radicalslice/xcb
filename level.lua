@@ -5,7 +5,7 @@ _level_count = 2
 _map_table = {}
 
 -- how much time to add to the remaining time at each interlevel
-_checkpoints = {28,20}
+_checkpoints = {33,23}
 
 _configs = {
   {
@@ -81,7 +81,8 @@ flat,16
 bup,8,-2
 bdown,32
 --]]
-_level1 = [[
+_levels = {
+[[
 flat,48
 ddown,128
 flat,96
@@ -138,8 +139,8 @@ bup,16,-2.5
 flat,16
 bup,16,-2.5
 flat,16
-flat,128]]
-_level2 = [[
+flat,128]],
+[[
 flat,128
 bup,8,-2
 bdown,8
@@ -205,7 +206,8 @@ ddown,24
 flat,16
 bup,8,-2
 ddown,32
-flat,128]]
+flat,128]],
+}
 -- type, x_length, height for flats
 -- this levelX one is pretty sick, you can ride a boost through like the entire thing..
 _levelX = [[
@@ -333,23 +335,6 @@ bdown,32
 flat,128]]--
 
 
--- Steep guys
-function ramp2u(r, y_base, x_curr)
-  return y_base - 2 * (x_curr - r.x_start), -3
-end
-function ramp2d(r, y_base, x_curr)
-  return y_base - 2 * (r.x_end - x_curr), 3
-end
-
--- Shallow boys
-function ramp1u(r, y_base, x_curr)
- return y_base - ((x_curr - r.x_start) \ 2), -1
-end
-function ramp1d(r, y_base, x_curr)
- return y_base - ((r.x_end - x_curr) \ 2), 1
-end
-
-
 -- String -> []Range
 function parse_ranges(str, x_base, y_base)
   local ranges = {}
@@ -390,7 +375,6 @@ function parse_ranges(str, x_base, y_base)
     -- {ramp_type, x_end, y_value}
       local my_flat = last_flat
       range.f = function(x_curr)
-        -- somehow this -16 value works? I have no idea why yet
         return my_flat - ((x_end - x_start) * -((x_curr - x_start) / (x_end - x_start))), 1
       end
       last_flat = last_flat + vals[2]

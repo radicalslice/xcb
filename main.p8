@@ -8,6 +8,7 @@ __lua__
 #include _victory.lua
 #include _interlevel.lua
 #include _stop.lua
+#include _title.lua
 #include qico.lua
 #include utils.lua
 #include player.lua

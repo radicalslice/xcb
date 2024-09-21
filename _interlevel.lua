@@ -18,10 +18,10 @@ function _update_interlevel()
   end)
 
   if btnp(4) or btnp(5) then
-    -- pass in last_y_drawn so the level hopefully connects to previous one...
-    local ranges, jumps, x_max = parse_ranges(_level2, flr(player.x - (flr(player.x) % 8)), _last_y_drawn + 8)
-
     _level_index += 1
+
+    -- pass in last_y_drawn so the level hopefully connects to previous one...
+    local ranges, jumps, x_max = parse_ranges(_levels[_level_index], flr(player.x - (flr(player.x) % 8)), _last_y_drawn + 8)
 
     level = {
       ranges = ranges,

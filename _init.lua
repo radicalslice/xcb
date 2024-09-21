@@ -1,89 +1,52 @@
-function _init()
-  __update = _update_game
-  __draw = _draw_game
-  player:reset()
-  _game_timer = _checkpoints[1]
-  _level_index = 1
+-- anytime_init resets all our globals and game state
+function anytime_init()
 
-  get_tile_from_pos = _get_tile_from_pos(0, 0)
+    player:reset()
+
+    _game_timer = _checkpoints[1]
+    _level_index = 1
+
+    -- FX setup
+    _FX = {
+      parts = {},
+      snow = {},
+    }
+
+    -- parse this level to be rendered from x=0, y=Y_BASE
+    local ranges, jumps, x_max = parse_ranges(_levels[_level_index], 0, Y_BASE)
+
+    level = {
+      ranges = ranges,
+      jumps = jumps,
+      x_max = x_max,
+      config = _configs[_level_index],
+    }
+
+    _map_table = load_level_map_data(level) 
+
+    init_timers()
+
+    --[[
+     expr_boost: Fired by boost timer to tell the player to stop boosting
+    ]]--
+    _q = qico()
+    _q.add_topics("expr_boost")
+    _q.add_subs("expr_boost", {player.handle_expr_boost})
+end
+
+function _init()
+  printh("--init")
 
   last_ts = time()
 
-  -- FX setup
+  -- need this for title screen, so we'll set it up in here
   _FX = {
     parts = {},
-  }
-  
-  _q = qico()
-  _q.add_topics("expr_boost")
-  _q.add_subs("expr_boost", {player.handle_expr_boost})
-
-
-  -- player's boosting timer
-  _timers.boost = new_timer(
-    0,
-    function(t)
-      printh("boost timer expired")
-      _q.add_event("expr_boost")
-    end
-  )
-
-  -- for a pose when landing
-  _timers.pose = new_timer(
-    0,
-    function(t)
-      t.ttl = 0.3
-      printh("expired pose stop")
-      player.pose = false
-    end
-  )
-
-  -- for a sakurai stop when boosting
-  _timers.sakurai = new_timer(
-    0,
-    function(t)
-      printh("expired sakurai stop")
-      __update = _update_game
-      __draw = _draw_game
-      _timers.boost:init(2,time())
-      player.juice -= 1
-      player.dx_max = _PLAYER_DX_MAX_BOOSTED
-      player.dx = _PLAYER_DX_MAX_BOOSTED
-      player.boosting = true
-    end
-  )
-
-  -- for stopping the speed pin cycler
-  _timers.speedpin = new_timer(
-    0,
-    function(t)
-      t.ttl = 0.3
-      printh("expired speed pin timer")
-      player.pinned = false
-    end
-  )
-
-  -- for stopping the okami particles 
-  _timers.okami = new_timer(
-    0,
-    function(t)
-      printh("expired okami timer")
-    end
-  )
-
-  printh("--init")
-
-  -- parse this level to be rendered from x=0, y=Y_BASE
-  local ranges, jumps, x_max = parse_ranges(_level1, 0, Y_BASE)
-
-  level = {
-    ranges = ranges,
-    jumps = jumps,
-    x_max = x_max,
-    config = _configs[_level_index],
+    snow = {},
   }
 
-  _map_table = load_level_map_data(level) 
+  __update = _update_title
+  __draw = _draw_title
 end
 
 function gen_flat_tile(x, y)
@@ -123,6 +86,7 @@ function load_level_map_data(level)
 end
 
 function _update60()
+  _frame_counter += 1
   __update()
 end
 
