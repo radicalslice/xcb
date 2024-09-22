@@ -1,11 +1,11 @@
 level = {}
 _level_index = 1
-_level_count = 2
+_level_count = 3
 -- Map[XPos][mapx, mapy, sprnum]
 _map_table = {}
 
 -- how much time to add to the remaining time at each interlevel
-_checkpoints = {33,23}
+_checkpoints = {32,22,20}
 
 _configs = {
   {
@@ -15,6 +15,11 @@ _configs = {
     tree_pos_y = 30,
     tree_tileheight = 3,
     foreground = false,
+    clouds = false,
+    mtn_f = function() end,
+    sky_f = function() end,
+    sun_f = function() end,
+    snow_f = function() end,
   },
   {
     mountain_tile_x = 13,
@@ -23,6 +28,42 @@ _configs = {
     tree_pos_y = 40,
     tree_tileheight = 2,
     foreground = true,
+    clouds = true,
+    mtn_f = function()
+      pal(6, 5)
+      pal(7, 6)
+    end,
+    sky_f = function()
+      pal(12, 9)
+    end,
+    sun_f = function()
+      circfill(112, 16, 5, 8)
+    end,
+    snow_f = function() end,
+  },
+  {
+    mountain_tile_x = 13,
+    mountain_tile_y = 3,
+    mountain_pos_y = 28,
+    tree_pos_y = 40,
+    tree_tileheight = 2,
+    foreground = true,
+    clouds = true,
+    mtn_f = function()
+      pal(6, 0)
+      pal(7, 6)
+      pal(7, 5)
+    end,
+    sky_f = function()
+      pal(12, 1)
+    end,
+    sun_f = function()
+      circfill(100, 28, 3, 7)
+    end,
+    snow_f = function()
+      pal(7, 6)
+      pal(3, 5)
+    end,
   },
 }
 
@@ -97,7 +138,10 @@ bdown,8
 flat,112
 bup,16,-2.5
 bdown,16
-flat,96
+flat,64
+bup,8,-2
+bdown,8
+flat,128
 ddown,24
 flat,96
 bup,8,-2
@@ -107,24 +151,21 @@ bup,16,-2.5
 flat,96
 bup,16,-2.5
 bdown,16
-flat,32
-bup,16,-2.5
-bdown,16
 flat,144
 bup,16,-2.5
 bdown,16
-flat,8
+flat,48
 bup,16,-2.5
 bdown,16
 flat,112
 bup,8,-2
 bdown,8
-flat,32
-bup,8,-2
-bdown,8
-flat,96
+flat,16
+bup,16,-2
+bdown,16
+flat,112
 bup,16,-2.5
-flat,32
+flat,48
 bup,8,-2
 bdown,8
 flat,64
@@ -136,46 +177,41 @@ bup,8,-2
 bdown,8
 flat,16
 bup,16,-2.5
-flat,16
-bup,16,-2.5
-flat,16
 flat,128]],
 [[
 flat,128
 bup,8,-2
 bdown,8
-flat,24
+flat,32
 bup,8,-2
 bdown,8
-flat,64
+flat,72
 bup,16,-2.5
 bdown,16
 flat,8
 bup,16,-2.5
 bdown,16
-flat,64
+flat,72
 bup,8,-2
 bdown,8
-flat,24
-bup,8,-2
-bdown,8
-flat,96
-bup,8,-2
-bdown,8
-flat,24
-bup,8,-2
-bdown,8
-flat,96
-bup,16,-2.5
-flat,16
-bup,16,-2.5
 flat,32
 bup,8,-2
 bdown,8
-flat,64
+flat,96
+ddown,24
+flat,8
 bup,8,-2
 bdown,8
-flat,16
+flat,8
+ddown,48
+flat,96
+bup,16,-2.5
+flat,48
+ddown,72
+bup,8,-2
+bdown,8
+ddown,72
+flat,32
 bup,8,-2
 ddown,64
 flat,128
@@ -185,13 +221,13 @@ bup,8,-2
 bdown,8
 flat,16
 bup,8,-2
-ddown,48
+ddown,72
 flat,96
 bup,16,-2.5
-flat,48
+flat,96
 bup,8,-2
 bdown,8
-flat,96
+flat,40
 bup,8,-2
 bdown,8
 flat,16
@@ -207,6 +243,68 @@ flat,16
 bup,8,-2
 ddown,32
 flat,128]],
+[[
+flat,96
+bup,8,-2
+bdown,16
+ddown,112
+flat,64
+bup,8,-2
+bdown,8
+flat,48
+bup,16,-2.5
+bdown,16
+ddown,40
+bup,8,-2
+bdown,8
+ddown,40
+flat,64
+bup,16,-2
+flat,64
+bup,16,-2.5
+bdown,8
+ddown,48
+flat,16
+bup,8,-2
+bdown,8
+ddown,96
+flat,112
+bup,8,-2
+bdown,8
+flat,16
+bup,16,-2
+flat,24
+bup,16,-2
+flat,64
+bup,8,-2
+ddown,60
+flat,60
+bup,8,-2
+bdown,8
+flat,40
+bup,8,-2
+bdown,8
+flat,40
+bup,16,-2.5
+bdown,16
+flat,8
+ddown,32
+flat,8
+bup,16,-2.5
+bdown,16
+ddown,56
+flat,8
+bup,16,-2.5
+bdown,16
+ddown,96
+flat,8
+bup,16,-2.5
+bdown,16
+ddown,56
+flat,64
+bup,16,-2.5
+bdown,16
+flat,96]]
 }
 -- type, x_length, height for flats
 -- this levelX one is pretty sick, you can ride a boost through like the entire thing..
@@ -231,7 +329,7 @@ bup,24,-2
 flat,32
 bup,8,-2
 bdown,128
-flat,128]]
+flat,196]]
 --[[
 _menagMini = [[
 flat,128

@@ -3,13 +3,12 @@ function anytime_init()
 
     player:reset()
 
-    _game_timer = _checkpoints[1]
     _level_index = 1
+    _game_timer = _checkpoints[_level_index]
 
     -- FX setup
     _FX = {
       parts = {},
-      snow = {},
     }
 
     -- parse this level to be rendered from x=0, y=Y_BASE
@@ -24,7 +23,6 @@ function anytime_init()
 
     _map_table = load_level_map_data(level) 
 
-    init_timers()
 
     --[[
      expr_boost: Fired by boost timer to tell the player to stop boosting
@@ -39,10 +37,12 @@ function _init()
 
   last_ts = time()
 
+  init_timers()
+  _timers.input_freeze:init(0.1, last_ts)
+
   -- need this for title screen, so we'll set it up in here
   _FX = {
     parts = {},
-    snow = {},
   }
 
   __update = _update_title

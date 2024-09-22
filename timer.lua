@@ -39,7 +39,7 @@ function init_timers()
   _timers.pose = new_timer(
     0,
     function(t)
-      t.ttl = 0.3
+      -- t.ttl = 0.3
       printh("expired pose stop")
       player.pose = false
     end
@@ -64,7 +64,6 @@ function init_timers()
   _timers.speedpin = new_timer(
     0,
     function(t)
-      t.ttl = 0.3
       printh("expired speed pin timer")
       player.pinned = false
     end
@@ -77,4 +76,20 @@ function init_timers()
       printh("expired okami timer")
     end
     )
+  
+  -- for stopping button presses from advancing
+  _timers.input_freeze = new_timer(
+    0,
+    function(t)
+      printh("expired input lock")
+    end
+  )
+
+  -- for screen transitions
+  _timers.wipe = new_timer(
+    0,
+    function(t)
+      printh("expired wipe timer")
+    end
+  )
 end

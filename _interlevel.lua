@@ -1,12 +1,19 @@
 function _draw_interlevel()
   _draw_game()
-  print("interlevel", 0, 0, 9)
+  rectfill(24,32,112,72,0)
+  print("level ".._level_index.." clear!", 34, 34, 9)
+  print("time remaining: "..flr(_game_timer).."S", 34, 42, 9)
+  print("time added: ".._checkpoints[_level_index+1].."S",34,50,9)
+  print("press "..BUTTON_X.." or "..BUTTON_O,34,60,9)
 end
 
 function _update_interlevel()
   local now = time()
   local dt = now - last_ts
-  -- should add a flag here to disallow button presses
+  
+  if player.boosting then
+    player.boosting = false
+  end
   player:update(dt, player.y, player.angle, true)
   if player.x >= level.x_max + 128 then player.x = level.x_max end
 
@@ -17,7 +24,9 @@ function _update_interlevel()
     end
   end)
 
-  if btnp(4) or btnp(5) then
+  _timers.input_freeze:update(now)
+
+  if _timers.input_freeze.ttl == 0 and (btnp(4) or btnp(5)) then
     _level_index += 1
 
     -- pass in last_y_drawn so the level hopefully connects to previous one...
@@ -35,6 +44,7 @@ function _update_interlevel()
     _game_timer += _checkpoints[_level_index]
 
     printh("game state switch: interlevel->game")
+    last_ts = time()
     __update = _update_game
     __draw = _draw_game
   end

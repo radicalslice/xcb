@@ -64,6 +64,7 @@ function _update_game()
       __draw = _draw_victory
     else 
       _timers.boost:f()
+      _timers.input_freeze:init(0.5,now)
       __update = _update_interlevel
       __draw = _draw_interlevel
     end
@@ -158,24 +159,28 @@ function _draw_game()
   camera(shakex, shakey)
 
   -- palate swappies
-  if _level_index > 1 then
-    sunset() 
-  end
-  -- night()
+  level.config.sky_f() 
 
   -- clouds
-  map(0, 0, -16, 0, 18, 1)
+  if level.config.clouds then
+    map(0, 0, -16, 0, 18, 1)
+  end
 
   -- sky
-  rectfill(-16,8,144,63,12)
+  rectfill(-16,0,144,63,12)
   pal() 
 
   palt(11, true)
   palt(0, false)
 
   -- parallax-y mountain tiles
-  sunset_mtns()
+  -- sunset_mtns()
   -- night_mtns()
+  -- sun / moon / etc
+  level.config.sun_f()
+
+  level.config.mtn_f()
+
   for i=0,224,32 do
     map(
       level.config.mountain_tile_x,
@@ -192,19 +197,13 @@ function _draw_game()
   palt(11, true)
   palt(0, false)
   
-  -- sun / moon / etc
-  -- circfill(112, 16, 4, 10)
-  if _level_index > 1 then
-    circfill(112, 16, 5, 8)
-  end
-  -- spr(66, 112, 16, 2, 2)
 
-  -- night_snow()
+  level.config.snow_f()
+
   -- random trees
   for i=0,224,32 do
     map(9,1, _bigtree_x + i, level.config.tree_pos_y, 4, level.config.tree_tileheight)
   end
-
 
   -- Snow below trees and above course
   rectfill(-16,52,144,128,7)
@@ -239,23 +238,30 @@ function _draw_game()
   -- draw menu over everything
   palt(11, true)
   rectfill(0, 0, 9, 128, 0)
+  for i=1,3 do
+    spr(112, 1, 82 - (i*6))
+  end
   for i=1,player.juice do
-    spr(96, 1, 48 + (i*6))
+    spr(96, 1, 82 - (i*6))
   end
 
-  rect(1,85,7,118,1)
+  rect(0,85,7,118,1)
   local meter_max = 83
   if player.dx_max <= _PLAYER_DX_MAX then
     meter_max = 118 - ((player.dx / player.dx_max) << 5)
   end
-  rectfill(2,117,6,meter_max,12)
+  local meter_color = 12
+  if player.boosting then
+    meter_color = player.board_cycler:get_color()
+  end
+  rectfill(1,117,6,meter_max,meter_color)
 
   circfill(6, 4, 15, 0)
   local text_color, border_color = 12, 1
-  if true or _game_timer < 5 then
+  if _game_timer < 5 then
     text_color, border_color = 8, 2
   end
-  if _game_timer % 1 > 0.5 then
+  if _game_timer > 5 or _game_timer % 1 > 0.5 then
     print("\^w\^t"..flr(_game_timer), 1, 2, border_color)
     print("\^w\^t"..flr(_game_timer), 2, 3, text_color)
   end

@@ -4,7 +4,10 @@ function _draw_gameover()
 end
 
 function _update_gameover()
+  last_ts = time()
   if btnp(4) or btnp(5) then
-    _init()
+    __update = _update_title
+    __draw = _draw_title
+    _timers.input_freeze:init(0.2, last_ts)
   end
 end

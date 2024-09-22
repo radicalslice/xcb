@@ -1,3 +1,5 @@
+advance_title = false
+
 function _draw_title()
   -- _draw_game()
   cls()
@@ -25,34 +27,34 @@ function _draw_title()
   -- dude
   spr(128, 50, 50, 2, 2)
   print("\^w\^tx c b", 8, 57, 12)
-  for i, snow in pairs(_FX.snow) do
-    pset(snow.x, snow.y, 6)
-  end
+
+  print("press "..BUTTON_X.." or "..BUTTON_O, 8, 107, 12)
   palt()
+
+  if _timers.wipe.ttl > 0 then
+    if _timers.wipe.ttl < 1 then
+      _draw_game()
+    end
+    rectfill(128 + (128 * (_timers.wipe.ttl - 2)),0,256 * (_timers.wipe.ttl / 2),128,0)
+  end
 end
 
 
 function _update_title()
   last_ts = time()
+  _timers.input_freeze:update(last_ts)
+  _timers.wipe:update(last_ts)
 
-  if #_FX.snow < 40 then
-    local snow_y = rnd(128) - 32
-    local snow_dx = 3.1
-    local snow_osc = rnd(3)
-    add(_FX.snow, {x=128, y=snow_y, dx=snow_dx, osc=snow_osc})
-  end
-
-  for i, snow in pairs(_FX.snow) do
-    snow.x-=snow.dx 
-    snow.y = snow.y + (sin(snow.x)*snow.osc) + rnd(2)
-    if snow.x < 0 then
-      del(_FX.snow, snow)
-    end
-  end
-
-  if btn(4) or btn(5) then
+  if _timers.input_freeze.ttl == 0 and (btnp(4) or btnp(5)) then
     anytime_init()
+    _timers.wipe:init(2, last_ts)
+    advance_title = true
+  end
+
+  if advance_title and _timers.wipe.ttl == 0 then
     __update = _update_game
     __draw = _draw_game
+    advance_title = false
   end
+
 end
