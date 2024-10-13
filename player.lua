@@ -7,7 +7,7 @@ _PLAYER_STATE_SKYDOWN = "skydown"
 _PLAYER_STATE_HOPUP = "hopup"
 _PLAYER_STATE_HOPDOWN = "hopdown"
 _PLAYER_GRAVITY = 0.15
-_PLAYER_JUICE_ADD = 1
+_PLAYER_JUICE_ADD = 0.5
 _PLAYER_JUICE_MAX = 3
 _PLAYER_AIRTIMER_0 = 0.2
 _PLAYER_BOOST_TIME = 2 --seconds
@@ -29,7 +29,7 @@ player = {
     p.board_cycler = new_cycler(0.05, {9,10,12})
     p.speedpin_cycler = new_cycler(0.05, {9,10,12})
     p.boosting = false
-    p.juice = 3
+    p.juice = 0
     p.style = 0
     p.airtimer = 0
     p.pose = false
@@ -154,7 +154,7 @@ player_state_funcs = {
     if btnp(5) and
       not block_input and
       not p.boosting and
-      p.juice > 0 then
+      p.juice >= 1 then
       if _debug.sakurai then
         _timers.sakurai:init(0.5,time())
         make_lines()

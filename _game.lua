@@ -244,17 +244,24 @@ function _draw_game()
   for i=1,player.juice do
     spr(96, 1, 82 - (i*6))
   end
-
-  rect(0,85,7,118,1)
-  local meter_max = 83
-  if player.dx_max <= _PLAYER_DX_MAX then
-    meter_max = 118 - ((player.dx / player.dx_max) << 5)
+  if player.juice % 1 == _PLAYER_JUICE_ADD then
+    spr(113, 1, 82 - (ceil(player.juice)*6))
   end
+
+  local meter_max = 97
   local meter_color = 12
-  if player.boosting then
+  if not player.boosting then
+    meter_max = 131 - ((player.dx / player.dx_max) << 5)
+  else
+    meter_max = 118 - ((player.dx / player.dx_max) << 5)
     meter_color = player.board_cycler:get_color()
   end
-  rectfill(1,117,6,meter_max,meter_color)
+  rectfill(1,126,7,meter_max,meter_color)
+  rect(0,85,8,98,1)
+  rect(0,98,8,127,1)
+  for i=0,8,2 do
+    pset(i, 98, 12)
+  end
 
   circfill(6, 4, 15, 0)
   local text_color, border_color = 12, 1
