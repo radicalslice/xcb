@@ -19,8 +19,77 @@ function new_timer(now, f)
       t.last_t = now
       if t.ttl <= 0 then
         t.ttl = 0
-        t.f()
+        t:f()
       end
     end,
   }
+end
+
+function init_timers()
+  -- player's boosting timer
+  _timers.boost = new_timer(
+    0,
+    function(t)
+      printh("boost timer expired")
+      _q.add_event("expr_boost")
+    end
+    )
+
+  -- for a pose when landing
+  _timers.pose = new_timer(
+    0,
+    function(t)
+      -- t.ttl = 0.3
+      printh("expired pose stop")
+      player.pose = false
+    end
+    )
+
+  -- for a sakurai stop when boosting
+  _timers.sakurai = new_timer(
+    0,
+    function(t)
+      printh("expired sakurai stop")
+      __update = _update_game
+      __draw = _draw_game
+      _timers.boost:init(2,time())
+      player.juice -= 1
+      player.dx_max = _PLAYER_DX_MAX_BOOSTED
+      player.dx = _PLAYER_DX_MAX_BOOSTED
+      player.boosting = true
+    end
+    )
+
+  -- for stopping the speed pin cycler
+  _timers.speedpin = new_timer(
+    0,
+    function(t)
+      printh("expired speed pin timer")
+      player.pinned = false
+    end
+    )
+
+  -- for stopping the okami particles 
+  _timers.okami = new_timer(
+    0,
+    function(t)
+      printh("expired okami timer")
+    end
+    )
+  
+  -- for stopping button presses from advancing
+  _timers.input_freeze = new_timer(
+    0,
+    function(t)
+      printh("expired input lock")
+    end
+  )
+
+  -- for screen transitions
+  _timers.wipe = new_timer(
+    0,
+    function(t)
+      printh("expired wipe timer")
+    end
+  )
 end

@@ -1,48 +1,40 @@
 _PLAYER_DX_MAX = 1.5 -- when on the ground
 _PLAYER_DX_MAX_BOOSTED = 2.2
 _PLAYER_DY_MAX = 3
-_PLAYER_INIT_DDX = 0.02
 _PLAYER_STATE_ONGROUND = "on_ground"
 _PLAYER_STATE_SKYUP = "skyup"
 _PLAYER_STATE_SKYDOWN = "skydown"
 _PLAYER_STATE_HOPUP = "hopup"
 _PLAYER_STATE_HOPDOWN = "hopdown"
-_PLAYER_STATE_INSKY = 2
 _PLAYER_GRAVITY = 0.15
-_PLAYER_JUICE_ADD = 1
+_PLAYER_JUICE_ADD = 0.5
 _PLAYER_JUICE_MAX = 3
-_PLAYER_AIRTIMER_0 = 0.5
+_PLAYER_AIRTIMER_0 = 0.2
 _PLAYER_BOOST_TIME = 2 --seconds
 _PLAYER_BOOST_BONUS = 1 --seconds, extra time for a successful boost landing
 _PLAYER_HOP_PENALTY = 0.7
-_PLAYER_TRICK_THROTTLE = 0.9
-_PLAYER_TKSTATE_OFF = "off"
-_PLAYER_TKSTATE_TRICKING = "tricking"
-_PLAYER_TKSTATE_REWARD = "reward"
-_PLAYER_TRICK_TTL = 1
 _friction = 0.85
-_airres = 0.99 -- disabled for now
--- add cool cycler here 
-trick_cycler_1 = new_cycler(0.04, {11, 7})
+_airres = 0.99
 player = {
   reset = function(p)
-    p.x = 0
+    p.x = 20
     p.dx_max = _PLAYER_DX_MAX
     p.y = Y_BASE -- player's actual y value
     p.dx = 0
-    p.ddx = _PLAYER_INIT_DDX
+    p.ddx = 0.02 -- initial ddx
     p.dy = 1 -- give it some initial dy
     p.ddy = _PLAYER_GRAVITY
     p.angle = 0
     p.state = _PLAYER_STATE_ONGROUND
-    p.board_cycler = new_cycler(0.05, {8,9,10})
-    p.tricking = false
-    p.trick_state = _PLAYER_TKSTATE_OFF
+    p.board_cycler = new_cycler(0.05, {9,10,12})
+    p.speedpin_cycler = new_cycler(0.05, {9,10,12})
     p.boosting = false
-    p.juice = 3
+    p.juice = 0
     p.style = 0
     p.airtimer = 0
-    p.last_trick_ttl = nil -- need this for a UI thing...
+    p.pose = false
+    p.pinned = false
+    p.frame_timer = 0
   end,
   change_state = function(p, state)
     printh("State change: "..p.state.."->"..state)
@@ -54,84 +46,84 @@ player = {
     if p.boosting then
       pal(8, p.board_cycler:get_color())
     end
-    local base_sprite = 34 + 2*p.angle
-    if player.trick_state == _PLAYER_TKSTATE_TRICKING and 
-      (player.state == _PLAYER_STATE_SKYUP or player.state == _PLAYER_STATE_SKYDOWN) then
-      base_sprite = 40 + 2*p.angle
-    elseif player.trick_state == _PLAYER_TKSTATE_TRICKING and player.state == _PLAYER_STATE_ONGROUND then
-      base_sprite = 14 
+    if p.pinned and _debug.pinflash then
+      pal(0, p.speedpin_cycler:get_color())
+    end
+    local base_sprite = 11 + 2*p.angle
+    if p.frame_timer > 1 and p.angle == 0 and _debug.idle then
+      base_sprite = 46
     end
 
-    spr(base_sprite, p.x-10, p.y-6, 2, 2)
+    if player.pose and _debug.pose then base_sprite = 34 + 2*p.angle end
 
+    spr(base_sprite, p.x-10, p.y-6, 2, 2)
+    p.last_sprite = base_sprite
+
+    --[[
     for i=1,player.juice do
       spr(96, p.x-13 - (i*2) , p.y - 11 + (i*5))
     end
-
-    if p.trick_state == _PLAYER_TKSTATE_TRICKING or p.trick_state == _PLAYER_TKSTATE_REWARD then
-      -- base rectangle
-      local color_window = 11
-      if p.trick_state == _PLAYER_TKSTATE_REWARD then
-        color_window = trick_cycler_1:get_color()
-      end
-      rectfill(p.x - 13, p.y - 11, p.x - 13 + 19, p.y - 10, 9)
-
-      -- green bit
-      local leftx = (p.x - 13) + flr(19 * (_timers.trick.window_min / _PLAYER_TRICK_TTL))
-      local rightx = (p.x - 13) + flr(19 * (_timers.trick.window_max / _PLAYER_TRICK_TTL)) 
-      rectfill(leftx, p.y - 11, rightx, p.y - 10, color_window)
-
-      -- cursor, draw over the green bit
-      local rightedge = p.x - 13 + flr(19 * (p.last_trick_ttl != nil and p.last_trick_ttl or _timers.trick.ttl / _PLAYER_TRICK_TTL))
-      rectfill(rightedge, p.y - 11, rightedge, p.y - 10, 4)
-    end
+    ]]--
 
     pal()
     palt()
   end,
   start_jump = function(p, boosted_dy)
-    p.dy = mid(-1, boosted_dy, (p.dx / _PLAYER_DX_MAX) * boosted_dy)
+    p.dy = mid(-1, boosted_dy, (p.dx / p.dx_max) * boosted_dy)
     printh("New dy: "..p.dy)
     -- make sure we're just above ground level first
     p.y = p.y - 0.1
-    p.dx -= p.dx * 0.2
+    p.dx -= p.dx * 0.1
     p.airtimer = 0
     p:change_state(_PLAYER_STATE_SKYUP)
   end,
   near_ground = function(p, y_ground)
    return abs(p.y - y_ground) < 1 or p.y > y_ground
   end,
-  update = function(p, dt, y_ground, ground_angle)
+  update = function(p, dt, y_ground, ground_angle, block_input)
+
+    p.frame_timer += dt
+    if p.frame_timer >= 2 then
+      p.frame_timer = 0
+    end
 
     -- update board cycler
     p.board_cycler:update(dt)
 
-    -- update trick cyclers
-    trick_cycler_1:update(dt)
+    -- update outline cycler for speedpin
+    p.speedpin_cycler:update(dt)
 
-    if p:get_state() == _PLAYER_STATE_ONGROUND 
-      or p:get_state() == _PLAYER_STATE_SKYUP
-      or p:get_state() == _PLAYER_STATE_SKYDOWN
-      or p:get_state() == _PLAYER_STATE_HOPUP
-      or p:get_state() == _PLAYER_STATE_HOPDOWN then
-      player_state_funcs[p:get_state()](p, dt, y_ground, ground_angle)
+    local pstate = p:get_state()
+    if pstate == _PLAYER_STATE_ONGROUND 
+      or pstate == _PLAYER_STATE_SKYUP
+      or pstate == _PLAYER_STATE_SKYDOWN
+      or pstate == _PLAYER_STATE_HOPUP
+      or pstate == _PLAYER_STATE_HOPDOWN then
+      player_state_funcs[pstate](p, dt, y_ground, ground_angle, block_input)
 
+      local f = function()
+        return p.speedpin_cycler:get_color()
+      end
       if p:get_state() == _PLAYER_STATE_ONGROUND then
         add(_FX.parts, new_part(
-          p.x - 7 - rnd(2),
-          p.y + 11 - rnd(4),
+          p.x + 4 - rnd(6),
+          p.y + 12 - rnd(4),
           function() return sin(rnd()) * -1 end,
-          function() return cos(rnd()) * 1 end,
-          {6},
+          function() return 0 end,
+          {7}, -- regular color
+          _timers.okami.ttl > 0 and f or nil, -- colorf
           nil,
-          1,
-          0.2,
+          flr(rnd(2)) + 1,
+          0.4,
+          false,
           0
         ))
       end
 
+      -- printh("player.y: "..player.y)
       return
     end
+
   end,
   get_board_center_x = function(p)
     return flr(p.x + 3)
@@ -142,7 +134,7 @@ player = {
 }
 
 player_state_funcs = {
-  on_ground = function(p, dt, y_ground, ground_angle)
+  on_ground = function(p, dt, y_ground, ground_angle, block_input)
     p.angle = ground_angle
 
     p.dx = min(p.dx_max, p.dx + p.ddx)
@@ -160,21 +152,18 @@ player_state_funcs = {
     end
 
     if btnp(5) and
+      not block_input and
       not p.boosting and
-      p.trick_state != _PLAYER_TKSTATE_TRICKING and
-      p.juice > 0 then
-        p.juice -= 1
-        p.dx_max = _PLAYER_DX_MAX_BOOSTED
-        p.boosting = true
-        _timers.boost:init(2,time())
-    elseif btnp(4) and 
-      p.trick_state != _PLAYER_TKSTATE_TRICKING and 
-      p.trick_state != _PLAYER_TKSTATE_REWARD
-      then
-      p = start_tricking(p)
-    elseif btnp(4) and
-      p.trick_state == _PLAYER_TKSTATE_TRICKING then
-      p = stop_tricking(p)
+      p.juice >= 1 then
+      if _debug.sakurai then
+        _timers.sakurai:init(0.5,time())
+        make_lines()
+        __update = _update_stop
+        __draw = _draw_stop
+      else
+        _timers.sakurai:init(0.01,time())
+      end
+        
     end
 
   end,
@@ -195,16 +184,6 @@ player_state_funcs = {
     elseif btnp(0) then
       p.angle = max(-1, p.angle - 1)
       p.airtimer = 0
-      if abs(p.dy) > 2 then
-        -- extra airres, decreased grav
-        p.dx *= _airres
-        p.dy -= (p.ddy * 0.3)
-      end
-    end
-
-    if btnp(4) and
-      p.trick_state == _PLAYER_STATE_TRICKING then
-      p = stop_tricking(p)
     end
 
     local prev_dy = p.dy
@@ -233,16 +212,6 @@ player_state_funcs = {
     elseif btnp(0) then
       p.airtimer = 0
       p.angle = max(-1, p.angle - 1)
-      if abs(p.dy) > 2 then
-        -- extra airres, decreased grav
-        p.dx *= _airres
-        p.dy -= (p.ddy * 0.3)
-      end
-    end
-
-    if btnp(4) and
-      p.trick_state == _PLAYER_TKSTATE_TRICKING then
-      p = stop_tricking(p)
     end
 
     p = move_in_y(p, y_ground)
@@ -250,6 +219,7 @@ player_state_funcs = {
     -- hop or land
     if p:near_ground(y_ground) then
 
+      -- we missed the landing! so we'll hop
       if flr(p.angle) != ground_angle then
         p.dy = -2
         -- make sure we're just above ground level first
@@ -257,6 +227,8 @@ player_state_funcs = {
         p.dx *= _PLAYER_HOP_PENALTY
         p.dx_max = _PLAYER_DX_MAX
         p:change_state(_PLAYER_STATE_HOPUP)
+        -- do the shake
+        _shake = 1
         for i=0,20 do 
           add(_FX.parts,
             new_part(
@@ -265,9 +237,11 @@ player_state_funcs = {
               function() return sin(rnd()) * 3 end,
               function() return -rnd(7) end,
               {7},
+              nil,
               rnd() > 0.8 and 6 or nil,
               3 + rnd(3),
               0.5 + rnd(0.5),
+              true,
               0.15
             ))
         end
@@ -278,29 +252,23 @@ player_state_funcs = {
         p.angle = ground_angle
         p:change_state(_PLAYER_STATE_ONGROUND)
         p.juice = min(_PLAYER_JUICE_MAX, p.juice + _PLAYER_JUICE_ADD)
-        if p.boosting then
+        if p.boosting and _debug.pinparticles then
           _timers.boost:add(_PLAYER_BOOST_BONUS)
-        end
-        for i=0,5 do 
-          add(_FX.parts,
-            new_part(
-              p.x + rnd(6),
-              p.y + 11 - rnd(2),
-              function() return sin(rnd()) * 2 end,
-              function() return -rnd(2) end,
-              {7},
-              6,
-              1 + rnd(2),
-              0.3 + rnd(0.3),
-              0
-            ))
+          _timers.okami:init(0.2,time())
         end
 
-        -- check airtimer, if it's small enough, print a message...
+        -- speed pin if timer was low enough
         if p.airtimer < _PLAYER_AIRTIMER_0 then
           p.dx = p.dx_max
           p.airtimer = 0
+          -- for stopping the speed pin cycler
+          p.pinned = true
+          _timers.speedpin:init(0.2,time())
         end
+
+        -- for stopping the pose
+        _timers.pose:init(0.25,time())
+        p.pose = true
       end
     end 
   end,
@@ -333,45 +301,14 @@ player_state_funcs = {
   end,
 }
 
+player.handle_expr_boost = function()
+  printh("called player handler")
+  player.dx_max = _PLAYER_DX_MAX
+  player.boosting = false
+end
+
 function move_in_y(p, y_ground)
   p.dy = min(_PLAYER_DY_MAX, p.dy + p.ddy)
   p.y = min(p.y + p.dy, y_ground)
-  return p
-end
-
-function start_tricking(p)
-  p.trick_state =  _PLAYER_TKSTATE_TRICKING
-  p.dx_max *= _PLAYER_TRICK_THROTTLE
-  _timers.trick:init(_PLAYER_TRICK_TTL,time())
-  local window_min = (_PLAYER_TRICK_TTL / 4) + rnd(_PLAYER_TRICK_TTL / 4)
-  _timers.trick.window_min = window_min
-  _timers.trick.window_max = window_min + _PLAYER_TRICK_TTL / (p.boosting and 8 or 4)
-  _timers.trick.points = p.boosting and 2 or 1
-  return p
-end
-
-function stop_tricking(p)
-  -- if timer.ttl is within window_min and window_max, you get some style points
-  if _timers.trick.ttl > _timers.trick.window_min and
-    _timers.trick.ttl < _timers.trick.window_max then
-    p.style += _timers.trick.points
-    trick_cycler_1.colors = {11, 7}
-  else 
-    -- deduct some speed 
-    p.dx *= 0.5
-    trick_cycler_1.colors = {8, 7}
-  end
-  _timers.trick_reward:init(1,time())
-  p.last_trick_ttl = _timers.trick.ttl
-  _timers.trick.ttl = 0
-  player.trick_state = _PLAYER_TKSTATE_REWARD
-
-  -- reset the max dx
-  if player.boosting then
-    player.dx_max = _PLAYER_DX_MAX_BOOSTED
-  else
-    player.dx_max = _PLAYER_DX_MAX
-  end
-  
   return p
 end

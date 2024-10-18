@@ -1,32 +1,444 @@
 level = {}
+_level_index = 1
+_level_count = 3
 -- Map[XPos][mapx, mapy, sprnum]
 _map_table = {}
 
--- Steep guys
-function ramp2u(r, y_base, x_curr)
-  return y_base - 2 * (x_curr - r.x_start), -3
-end
-function ramp2d(r, y_base, x_curr)
-  return y_base - 2 * (r.x_end - x_curr), 3
-end
+-- how much time to add to the remaining time at each interlevel
+_checkpoints = {32,22,20}
 
--- Shallow boys
-function ramp1u(r, y_base, x_curr)
- return y_base - ((x_curr - r.x_start) \ 2), -1
-end
-function ramp1d(r, y_base, x_curr)
- return y_base - ((r.x_end - x_curr) \ 2), 1
-end
+_configs = {
+  {
+    mountain_tile_x = 17,
+    mountain_tile_y = 1,
+    mountain_pos_y = 24,
+    tree_pos_y = 30,
+    tree_tileheight = 3,
+    foreground = false,
+    clouds = false,
+    mtn_f = function() end,
+    sky_f = function() end,
+    sun_f = function() end,
+    snow_f = function() end,
+  },
+  {
+    mountain_tile_x = 13,
+    mountain_tile_y = 3,
+    mountain_pos_y = 28,
+    tree_pos_y = 40,
+    tree_tileheight = 2,
+    foreground = true,
+    clouds = true,
+    mtn_f = function()
+      pal(6, 5)
+      pal(7, 6)
+    end,
+    sky_f = function()
+      pal(12, 9)
+    end,
+    sun_f = function()
+      circfill(112, 16, 5, 8)
+    end,
+    snow_f = function() end,
+  },
+  {
+    mountain_tile_x = 13,
+    mountain_tile_y = 3,
+    mountain_pos_y = 28,
+    tree_pos_y = 40,
+    tree_tileheight = 2,
+    foreground = true,
+    clouds = true,
+    mtn_f = function()
+      pal(6, 0)
+      pal(7, 6)
+      pal(7, 5)
+    end,
+    sky_f = function()
+      pal(12, 1)
+    end,
+    sun_f = function()
+      circfill(100, 28, 3, 7)
+    end,
+    snow_f = function()
+      pal(7, 6)
+      pal(3, 5)
+    end,
+  },
+}
+
+-- ramps
+--[[
+-- one star --
+- mini -
+bup,8,-2
+bdown,8
+- normie -
+bup,16,-2.5
+bdown,16
+- normie x2 -
+bup,16,-2.5
+bdown,16
+flat,16
+bup,16,-2.5
+bdown,16
+- flat -
+bup,16,-2.5
+flat,16
+-- two star --
+- mini -
+bup,8,-2
+bdown,8
+flat,32
+bup,8,-2
+bdown,8
+- normie -
+bup,16,-2.5
+bdown,16
+flat,8
+bup,16,-2.5
+bdown,16
+- flat -
+bup,16,-2.5
+flat,16
+bup,16,-2.5
+flat,16
+-- three star --
+- mini -
+bdown,8
+flat,32
+bup,8,-2
+bdown,8
+flat,16
+bup,8,-2
+bdown,8
+- normie -
+bup,16,-2.5
+bdown,16
+flat,8
+bup,16,-2.5
+bdown,24
+flat,16
+bup,8,-2
+bdown,32
+--]]
+_levels = {
+[[
+flat,48
+ddown,128
+flat,96
+bup,16,-2.5
+bdown,16
+flat,112
+bup,16,-2.5
+bdown,16
+flat,112
+bup,8,-2
+bdown,8
+flat,112
+bup,16,-2.5
+bdown,16
+flat,64
+bup,8,-2
+bdown,8
+flat,96
+ddown,24
+flat,64
+bup,8,-2
+bdown,8
+flat,96
+bup,16,-2.5
+flat,80
+bup,16,-2.5
+bdown,16
+flat,128
+bup,16,-2.5
+bdown,16
+flat,48
+bup,16,-2.5
+bdown,16
+flat,112
+bup,8,-2
+bdown,8
+flat,16
+bup,16,-2
+bdown,16
+flat,112
+bup,16,-2.5
+flat,48
+bup,8,-2
+bdown,8
+flat,64
+bup,16,-2.5
+flat,40
+ddown,64
+flat,64
+bup,8,-2
+bdown,8
+flat,16
+bup,16,-2.5
+flat,128]],
+[[
+flat,128
+bup,8,-2
+bdown,8
+flat,32
+bup,8,-2
+bdown,8
+flat,72
+bup,16,-2.5
+bdown,16
+flat,8
+bup,16,-2.5
+bdown,16
+flat,72
+bup,8,-2
+bdown,8
+flat,32
+bup,8,-2
+bdown,8
+flat,96
+ddown,24
+flat,8
+bup,8,-2
+bdown,8
+flat,8
+ddown,48
+flat,96
+bup,16,-2.5
+flat,48
+ddown,72
+bup,8,-2
+bdown,8
+ddown,72
+flat,32
+bup,8,-2
+ddown,64
+flat,128
+ddown,32
+flat,8
+bup,8,-2
+bdown,8
+flat,16
+bup,8,-2
+ddown,72
+flat,96
+bup,16,-2.5
+flat,96
+bup,8,-2
+bdown,8
+flat,40
+bup,8,-2
+bdown,8
+flat,16
+bup,16,-2.5
+ddown,64
+flat,96
+bup,16,-2.5
+bdown,16
+flat,8
+bup,16,-2.5
+ddown,24
+flat,16
+bup,8,-2
+ddown,32
+flat,128]],
+[[
+flat,96
+bup,8,-2
+bdown,16
+ddown,112
+flat,64
+bup,8,-2
+bdown,8
+flat,48
+bup,16,-2.5
+bdown,16
+ddown,40
+bup,8,-2
+bdown,8
+ddown,40
+flat,64
+bup,16,-2
+flat,64
+bup,16,-2.5
+bdown,8
+ddown,48
+flat,16
+bup,8,-2
+bdown,8
+ddown,96
+flat,112
+bup,8,-2
+bdown,8
+flat,16
+bup,16,-2
+flat,24
+bup,16,-2
+flat,64
+bup,8,-2
+ddown,60
+flat,60
+bup,8,-2
+bdown,8
+flat,40
+bup,8,-2
+bdown,8
+flat,40
+bup,16,-2.5
+bdown,16
+flat,8
+ddown,32
+flat,8
+bup,16,-2.5
+bdown,16
+ddown,56
+flat,8
+bup,16,-2.5
+bdown,16
+ddown,96
+flat,8
+bup,16,-2.5
+bdown,16
+ddown,56
+flat,64
+bup,16,-2.5
+bdown,16
+flat,96]]
+}
+-- type, x_length, height for flats
+-- this levelX one is pretty sick, you can ride a boost through like the entire thing..
+_levelX = [[
+flat,128
+bup,8,-1.5
+bdown,8
+flat,32
+bup,8,-2
+bdown,8
+flat,32
+bup,8,-2
+bdown,8
+flat,128
+bup,8,-2
+bdown,64
+flat,128
+bup,24,-2
+bdown,64,-2
+flat,16
+bup,24,-2
+flat,32
+bup,8,-2
+bdown,128
+flat,196]]
+--[[
+_menagMini = [[
+flat,128
+bup,8,-2
+bdown,8
+flat,128
+bup,8,-2
+bdown,8
+flat,128
+bup,8,-2
+bdown,8
+flat,32
+bup,8,-2
+bdown,8
+flat,128
+bup,8,-2
+bdown,8
+flat,32
+bup,8,-2
+bdown,8
+flat,128
+bup,8,-2
+bdown,8
+flat,32
+bup,8,-2
+bdown,8
+flat,16
+bup,8,-2
+bdown,8
+flat,128
+bup,8,-2
+bdown,8
+flat,32
+bup,8,-2
+bdown,8
+flat,16
+bup,8,-2
+bdown,8
+flat,128]]--
+--[[
+_menagFlats = [[
+flat,128
+bup,16,-2.5
+flat,128
+bup,16,-2.5
+flat,128
+bup,16,-2.5
+flat,16
+bup,16,-2.5
+flat,128
+bup,16,-2.5
+flat,16
+bup,16,-2.5
+flat,16
+bdown,24
+flat,128
+bup,16,-2.5
+flat,16
+bup,16,-2.5
+flat,16
+bdown,24
+flat,128]]--
+--[[
+_menagReg = [[
+flat,128
+bup,16,-2.5
+bdown,16
+flat,128
+bup,16,-2.5
+bdown,16
+flat,128
+bup,16,-2.5
+bdown,16
+flat,16
+bup,16,-2.5
+bdown,16
+flat,128
+bup,16,-2.5
+bdown,16
+flat,16
+bup,16,-2.5
+bdown,16
+flat,128
+bup,16,-2.5
+bdown,16
+flat,16
+bup,16,-2.5
+bdown,24
+flat,16
+bup,8,-2
+bdown,32
+flat,128
+bup,16,-2.5
+bdown,16
+flat,16
+bup,16,-2.5
+bdown,16
+flat,24
+bup,8,-2
+bdown,32
+flat,128]]--
 
 
 -- String -> []Range
-function parse_ranges(str)
-  -- 80,basic:
+function parse_ranges(str, x_base, y_base)
   local ranges = {}
   local jumps = {}
-  -- assume we start from y = Y_BASE
-  local last_flat = Y_BASE
-  local x_curr = 0
+  local last_flat = y_base
+  local x_curr = x_base
   foreach(split(str, "\n"), function(substr)
     local vals = split(substr, ",")
     local x_start = x_curr
@@ -61,7 +473,6 @@ function parse_ranges(str)
     -- {ramp_type, x_end, y_value}
       local my_flat = last_flat
       range.f = function(x_curr)
-        -- somehow this -16 value works? I have no idea why yet
         return my_flat - ((x_end - x_start) * -((x_curr - x_start) / (x_end - x_start))), 1
       end
       last_flat = last_flat + vals[2]
