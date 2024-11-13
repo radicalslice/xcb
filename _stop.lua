@@ -6,8 +6,6 @@ function _draw_stop()
   palt(11, true)
   palt(0, false)
   pal(7, 0)
-  -- pal(5, 7)
-  -- pal(6, 0)
   draw_course()
   camera(_camera_x, _camera_y)
   pal()
@@ -18,12 +16,12 @@ function _draw_stop()
 
   local colors = {9,10,12}
   foreach(_lines, function(l) 
-    printh("draw with angle: "..l.angle)
+    local sinof, cosof = sin(l.angle/360), cos(l.angle/360)
     line(
-      player.x + l.r * cos(l.angle/360),
-      player.y + l.r * sin(l.angle/360),
-      player.x + l.inner_r * cos(l.angle/360),
-      player.y + l.inner_r * sin(l.angle/360),
+      player.x + l.r * cosof,
+      player.y + l.r * sinof,
+      player.x + l.inner_r * cosof,
+      player.y + l.inner_r * sinof,
       colors[flr(rnd(#colors)) + 1]
     )
   end)
@@ -35,7 +33,6 @@ function make_lines()
   _lines = {}
   for i=1,30 do
     local r = flr(24 + rnd(32))
-    printh("make line with angle: "..i)
     _lines[i] = {
       angle = i * 13,
       r = r,

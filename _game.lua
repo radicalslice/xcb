@@ -278,7 +278,6 @@ function _draw_game()
   if _debug.msgs then
     -- draw_ctrls(12, 108, 9)
     -- player debug stuff
-    -- print("ST: "..player:get_state(), 96, 24, 10)
     -- print("X: "..flr(player.x), 56, 100, 9)
     -- print("Y: "..player.y, 56, 96, 10)
     -- print("dx: "..player.dx, 56, 106, 9)

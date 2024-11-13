@@ -227,6 +227,10 @@ player_state_funcs = {
         p.dx *= _PLAYER_HOP_PENALTY
         p.dx_max = _PLAYER_DX_MAX
         p:change_state(_PLAYER_STATE_HOPUP)
+        if p.boosting then
+          p.handle_expr_boost()
+          _timers.boost.ttl = 0
+        end
         -- do the shake
         _shake = 1
         for i=0,20 do 
@@ -302,7 +306,6 @@ player_state_funcs = {
 }
 
 player.handle_expr_boost = function()
-  printh("called player handler")
   player.dx_max = _PLAYER_DX_MAX
   player.boosting = false
 end
