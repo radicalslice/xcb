@@ -35,6 +35,7 @@ player = {
     p.pose = false
     p.pinned = false
     p.frame_timer = 0
+    p.plane = 0
   end,
   change_state = function(p, state)
     printh("State change: "..p.state.."->"..state)
@@ -56,7 +57,16 @@ player = {
 
     if player.pose and _debug.pose then base_sprite = 34 + 2*p.angle end
 
-    spr(base_sprite, p.x-10, p.y-6, 2, 2)
+    local draw_y = p.y - 4
+    if p.plane == 1 then
+      draw_y -= 6
+      -- local sx = (base_sprite % 16) * 8
+      -- local sy = (base_sprite \ 16) * 8
+      -- sspr(sx, sy, 16, 16, p.x-7, p.y-8, 14, 14)
+    end
+
+    spr(base_sprite, p.x-10, draw_y, 2, 2)
+      
     p.last_sprite = base_sprite
 
     --[[
@@ -164,6 +174,12 @@ player_state_funcs = {
         _timers.sakurai:init(0.01,time())
       end
         
+    end
+
+    if btnp(2) and p.plane == 0 then
+      p.plane = 1
+    elseif btnp(3) and p.plane == 1 then
+      p.plane = 0
     end
 
   end,

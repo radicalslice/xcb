@@ -131,6 +131,7 @@ function draw_course()
   end
 
   -- printh("P.Y, LYD: "..player.y..",".._last_y_drawn)
+  -- this is the interlevel routine, drawing after we pass the end of a level
   if player.x + 128 > level.x_max then
     local x_start = player.x > level.x_max and (player.x - (player.x % 8)) - 32 or level.x_max
     for i=x_start,x_start+144,8 do
