@@ -21,15 +21,19 @@ function anytime_init()
       config = _configs[_level_index],
     }
 
-    _map_table = load_level_map_data(level) 
+    _obsman:init()
+    _obsman:test()
 
+    _map_table, _elevations = load_level_map_data(level) 
 
     --[[
      expr_boost: Fired by boost timer to tell the player to stop boosting
+     obs_call: Fired by main game loop when player and obstacle collide
     ]]--
     _q = qico()
-    _q.add_topics("expr_boost")
+    _q.add_topics("expr_boost|obs_coll")
     _q.add_subs("expr_boost", {player.handle_expr_boost})
+    _q.add_subs("obs_coll", {player.handle_obs_coll})
 end
 
 function _init()
@@ -56,6 +60,7 @@ end
 
 function load_level_map_data(level)
   local map_table = {}
+  local elevations = {}
   local last_angle = 0 -- use this to track when there's a transition between ramp/flat
   for x_curr=0, level.x_max do
     local range = find_range(x_curr, level)
@@ -68,22 +73,25 @@ function load_level_map_data(level)
           map_table,
           gen_flat_tile(x_curr, y_updated - 8)
         )
+        add(elevations, {x_curr, y_updated})
       last_angle = 0
       elseif angle == -1 then
         local map_x = 24
         if last_angle == -1 then map_x = 25 end
         add(map_table,{x=x_curr,y=y_updated-8,map_x=map_x,map_y=0,height=5})
         last_angle = -1
+        add(elevations, {x_curr, y_updated})
       elseif angle == 1 then
         local map_x = 27
         if last_angle == -1 then map_x = 26 end
         add(map_table,{x=x_curr,y=y_updated,map_x=map_x,map_y=0,height=5})
         last_angle = 1
+        add(elevations, {x_curr, y_updated})
       end
     end
   end
 
-  return map_table
+  return map_table, elevations
 end
 
 function _update60()

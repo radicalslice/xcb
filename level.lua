@@ -3,6 +3,8 @@ _level_index = 1
 _level_count = 3
 -- Map[XPos][mapx, mapy, sprnum]
 _map_table = {}
+-- []{x_pos, y_elevation}
+_elevations = {}
 
 -- how much time to add to the remaining time at each interlevel
 _checkpoints = {32,22,20}
@@ -509,7 +511,6 @@ end
 
 -- Int -> Level -> ?Range
 function find_range(x, level)
-  local found = false
   for r in all(level.ranges) do
     if x >= r.x_start and x < r.x_end then
       return r
@@ -518,9 +519,19 @@ function find_range(x, level)
   return nil
 end
 
+-- Int -> _elevations -> y_elevation
+function find_elevation(x, es)
+  for i, j in pairs(es) do
+    if es[i+1] and x >= j[1] and x < es[i+1][1] then
+      return es[i][2]
+    end
+  end
+  -- assume last elevation if we go this far
+  return es[#es][2]
+end
+
 -- Int -> Level -> Int
 function find_jump(x, level)
-  local found = false
   for b in all(level.jumps) do
     if x >= b.x and b.used == false then
       b.used = true

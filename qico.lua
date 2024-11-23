@@ -40,9 +40,7 @@ function qico()
 
   function proc()
     for k,v in pairs(q) do
-      printh("proc event: "..v.name)
       if t[v.name] != nil then
-        printh("found subs for event: "..v.name)
         for ik,iv in pairs(t[v.name]) do
           iv(v.payload)
         end

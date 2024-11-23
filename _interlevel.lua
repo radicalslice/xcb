@@ -29,6 +29,9 @@ function _update_interlevel()
   if _timers.input_freeze.ttl == 0 and (btnp(4) or btnp(5)) then
     _level_index += 1
 
+    -- reset player x value
+    player.x = 20
+
     -- pass in last_y_drawn so the level hopefully connects to previous one...
     local ranges, jumps, x_max = parse_ranges(_levels[_level_index], flr(player.x - (flr(player.x) % 8)), _last_y_drawn + 8)
 
@@ -42,6 +45,8 @@ function _update_interlevel()
     _map_table = load_level_map_data(level) 
 
     _game_timer += _checkpoints[_level_index]
+
+    _obsman:init()
 
     printh("game state switch: interlevel->game")
     last_ts = time()

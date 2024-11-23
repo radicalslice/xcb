@@ -2,7 +2,7 @@ _bigtree_x = 0
 _mountain_x = 0
 _bigtree_dx = 0.6
 _mountain_dx = 0.2
-_camera_x_offset = 24
+_camera_x_offset = 32
 _game_timer = 0
 _frame_counter = 0
 _last_y_drawn = 0
@@ -12,7 +12,6 @@ _debug = {
   pinflash = true,
   pinparticles = true,
   pose = true,
-  idle = false,
   sakurai = true,
 }
 _timers = {}
@@ -31,6 +30,9 @@ function _update_game()
 
   _q.proc()
 
+  check_spawn(player.x)
+  _obsman:update()
+    
   _game_timer -= dt
   if _game_timer < 0 then
     _game_timer = 0
@@ -86,6 +88,15 @@ function _update_game()
   end)
 
   player:update(dt, y_ground, angle)
+
+  -- check for collision between player and obstacles
+  local pbb = player:get_bb()
+  foreach(_obsman.obstacles, function(obs)
+    local found_collides = collides_new(pbb, obs:get_bb())
+    if found_collides then
+      _q.add_event("obs_coll")
+    end
+  end)
 
   last_ts = now
 
@@ -221,10 +232,15 @@ function _draw_game()
   palt(0, false)
 
   draw_course()
+
   camera(_camera_x, _camera_y)
 
   palt()
 
+  -- draw any obstacles
+  foreach(_obsman.obstacles, function(obs)
+    obs:draw()
+  end)
 
   -- player over background
   player:draw()
@@ -279,8 +295,8 @@ function _draw_game()
   if _debug.msgs then
     -- draw_ctrls(12, 108, 9)
     -- player debug stuff
-    -- print("X: "..flr(player.x), 56, 100, 9)
-    -- print("Y: "..player.y, 56, 96, 10)
+    print("X: "..flr(player.x), 56, 100, 9)
+    print("Y: "..player.y, 56, 94, 9)
     -- print("dx: "..player.dx, 56, 106, 9)
     -- print("dx_max: "..player.dx_max, 56, 112, 9)
     -- print("juice: "..player.juice, 56, 120, 9)

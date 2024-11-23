@@ -29,13 +29,14 @@ player = {
     p.board_cycler = new_cycler(0.05, {9,10,12})
     p.speedpin_cycler = new_cycler(0.05, {9,10,12})
     p.boosting = false
-    p.juice = 0
+    p.juice = 3
     p.style = 0
     p.airtimer = 0
     p.pose = false
     p.pinned = false
     p.frame_timer = 0
     p.plane = 0
+    p.planedy = 0
   end,
   change_state = function(p, state)
     printh("State change: "..p.state.."->"..state)
@@ -51,36 +52,36 @@ player = {
       pal(0, p.speedpin_cycler:get_color())
     end
     local base_sprite = 11 + 2*p.angle
-    if p.frame_timer > 1 and p.angle == 0 and _debug.idle then
-      base_sprite = 46
+
+    if p.state == _PLAYER_STATE_ONGROUND then
+      if p.planedy > 0 then
+        base_sprite = 46
+      elseif p.planedy < 0 then
+        base_sprite = 38
+      end
     end
 
     if player.pose and _debug.pose then base_sprite = 34 + 2*p.angle end
 
     local draw_y = p.y - 4
-    if p.plane == 1 then
-      draw_y -= 6
-      -- local sx = (base_sprite % 16) * 8
-      -- local sy = (base_sprite \ 16) * 8
-      -- sspr(sx, sy, 16, 16, p.x-7, p.y-8, 14, 14)
-    end
+    draw_y -= p.plane
 
     spr(base_sprite, p.x-10, draw_y, 2, 2)
-      
+        
     p.last_sprite = base_sprite
 
-    --[[
-    for i=1,player.juice do
-      spr(96, p.x-13 - (i*2) , p.y - 11 + (i*5))
-    end
-    ]]--
+    -- draw bb
+    local bb = p:get_bb()
+    rect(bb[1],bb[2],bb[3],bb[4],11)
 
     pal()
     palt()
   end,
+  get_bb = function(p)
+    return {flr(p.x - 8), flr(p.y+7 - p.plane), flr(p.x+4), flr(p.y+11-p.plane)}
+  end,
   start_jump = function(p, boosted_dy)
     p.dy = mid(-1, boosted_dy, (p.dx / p.dx_max) * boosted_dy)
-    printh("New dy: "..p.dy)
     -- make sure we're just above ground level first
     p.y = p.y - 0.1
     p.dx -= p.dx * 0.1
@@ -117,7 +118,7 @@ player = {
       if p:get_state() == _PLAYER_STATE_ONGROUND then
         add(_FX.parts, new_part(
           p.x + 4 - rnd(6),
-          p.y + 12 - rnd(4),
+          p.y - p.plane + 12 - rnd(4),
           function() return sin(rnd()) * -1 end,
           function() return 0 end,
           {7}, -- regular color
@@ -130,7 +131,6 @@ player = {
         ))
       end
 
-      -- printh("player.y: "..player.y)
       return
     end
 
@@ -177,10 +177,16 @@ player_state_funcs = {
     end
 
     if btnp(2) and p.plane == 0 then
-      p.plane = 1
-    elseif btnp(3) and p.plane == 1 then
-      p.plane = 0
+      p.planedy = 0.5
+    elseif btnp(3) and p.plane == 6 then
+      p.planedy = -0.5
     end
+
+    p.plane += p.planedy
+    if p.plane <= 0 or p.plane >= 6 then
+      p.planedy = 0
+    end
+
 
   end,
   skyup = function(p, dt, y_ground, ground_angle)
@@ -253,7 +259,7 @@ player_state_funcs = {
           add(_FX.parts,
             new_part(
               p.x + rnd(3),
-              p.y + 11 - rnd(4),
+              p.y + p.plane + 11 - rnd(4),
               function() return sin(rnd()) * 3 end,
               function() return -rnd(7) end,
               {7},
@@ -324,6 +330,10 @@ player_state_funcs = {
 player.handle_expr_boost = function()
   player.dx_max = _PLAYER_DX_MAX
   player.boosting = false
+end
+
+player.handle_obs_coll = function()
+  player.dx = player.dx * 0.93
 end
 
 function move_in_y(p, y_ground)
