@@ -115,9 +115,9 @@ player = {
       local f = function()
         return p.speedpin_cycler:get_color()
       end
-      if p:get_state() == _PLAYER_STATE_ONGROUND then
+      if p:get_state() == _PLAYER_STATE_ONGROUND and p.planedy == 0 then
         add(_FX.parts, new_part(
-          p.x + 4 - rnd(6),
+          p.x - rnd(2),
           p.y - p.plane + 12 - rnd(4),
           function() return sin(rnd()) * -1 end,
           function() return 0 end,
@@ -178,11 +178,16 @@ player_state_funcs = {
 
     if btnp(2) and p.plane == 0 then
       p.planedy = 0.5
+      add(_FX.trails, {})
     elseif btnp(3) and p.plane == 6 then
       p.planedy = -0.5
+      add(_FX.trails, {})
     end
 
-    p.plane += p.planedy
+    if p.planedy ~= 0 then
+      p.plane += p.planedy
+      add(_FX.trails[#_FX.trails], {x=player.x, y=player.y-player.plane+10, rad=flr(rnd(2))+1})
+    end
     if p.plane <= 0 or p.plane >= 6 then
       p.planedy = 0
     end

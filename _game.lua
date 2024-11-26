@@ -87,6 +87,13 @@ function _update_game()
     end
   end)
 
+  foreach(_FX.trails, function(t) 
+    if t[1].x < player.x - 32 then
+      printh('removing trail')
+      del(_FX.trails, t)
+    end
+  end)
+
   player:update(dt, y_ground, angle)
 
   -- check for collision between player and obstacles
@@ -242,12 +249,20 @@ function _draw_game()
     obs:draw()
   end)
 
+  foreach(_FX.trails, function(t)
+    for crc in all(t) do 
+      circfill(crc.x,crc.y,crc.rad,6)  
+    end
+  end)
+
   -- player over background
   player:draw()
 
   foreach(_FX.parts, function(p)
     p:draw()
   end)
+
+
 
   camera()
 

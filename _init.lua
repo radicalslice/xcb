@@ -1,4 +1,6 @@
 -- anytime_init resets all our globals and game state
+-- used when first starting the game, and when restarting after game over or victory state
+-- NOT used during interlevel changes
 function anytime_init()
 
     player:reset()
@@ -9,6 +11,7 @@ function anytime_init()
     -- FX setup
     _FX = {
       parts = {},
+      trails = {},
     }
 
     -- parse this level to be rendered from x=0, y=Y_BASE
