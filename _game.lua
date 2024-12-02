@@ -6,7 +6,7 @@ _camera_x_offset = 32
 _game_timer = 0
 _frame_counter = 0
 _last_y_drawn = 0
-Y_BASE = 88
+Y_BASE = 80
 _debug = {
   msgs = true,
   pinflash = true,
@@ -32,6 +32,16 @@ function _update_game()
 
   check_spawn(player.x)
   _obsman:update()
+
+  -- update meter color if boosting
+  local meter_color = 12
+  local meter_width = 28
+  if player.boosting then
+  -- else
+    meter_color = player.board_cycler:get_color()
+    meter_width = 40
+  end
+  _FX.speedo:update(player.dx, player.dx_max, meter_width, meter_color)
     
   _game_timer -= dt
   if _game_timer < 0 then
@@ -88,7 +98,7 @@ function _update_game()
   end)
 
   foreach(_FX.trails, function(t) 
-    if t[1].x < player.x - 32 then
+    if t[1].x < player.x - 64 then
       printh('removing trail')
       del(_FX.trails, t)
     end
@@ -115,10 +125,11 @@ _last_camera_y_offset = 0
 _camera_x = 0
 function align_camera()
   local y_ground = Y_BASE
-  -- Look ahead to try and prep camera
-  local range = find_range(player:get_board_center_x() + 24, level)
+  -- Look ahead to try and prep camera, this is based on the ground a little bit ahead
+  -- Changed this from 24 to 48 and it made it better, somehow, on the downward slopes
+  local range = find_range(player:get_board_center_x() + 48, level)
   if range != nil then
-    y_ground, _ = range.f(player:get_board_center_x() + 24)
+    y_ground, _ = range.f(player:get_board_center_x() + 48)
   end
 
   _camera_x = player.x - _camera_x_offset
@@ -269,7 +280,7 @@ function _draw_game()
 
   -- draw menu over everything
   palt(11, true)
-  rectfill(0, 0, 9, 128, 0)
+  -- rectfill(112, 0, 128, 24, 0)
   for i=1,3 do
     spr(112, 1, 82 - (i*6))
   end
@@ -280,29 +291,20 @@ function _draw_game()
     spr(113, 1, 82 - (ceil(player.juice)*6))
   end
 
-  local meter_max = 97
-  local meter_color = 12
-  if not player.boosting then
-    meter_max = 131 - ((player.dx / player.dx_max) << 5)
-  else
-    meter_max = 118 - ((player.dx / player.dx_max) << 5)
-    meter_color = player.board_cycler:get_color()
-  end
-  rectfill(1,126,7,meter_max,meter_color)
-  rect(0,85,8,98,1)
-  rect(0,98,8,127,1)
-  for i=0,8,2 do
-    pset(i, 98, 12)
-  end
+  rectfill(0,120,128,128,0)
+  _FX.speedo:draw()
 
-  circfill(6, 4, 15, 0)
   local text_color, border_color = 12, 1
   if _game_timer < 5 then
     text_color, border_color = 8, 2
   end
+  circfill(124, 2, 20, 0)
+  circ(124, 2, 19, text_color)
+  circ(124, 2, 18, border_color)
+  -- rectfill(112, 0, 128, 24, 0)
   if _game_timer > 5 or _game_timer % 1 > 0.5 then
-    print("\^w\^t"..flr(_game_timer), 1, 2, border_color)
-    print("\^w\^t"..flr(_game_timer), 2, 3, text_color)
+    print("\^w\^t"..flr(_game_timer), 112, 2, border_color)
+    print("\^w\^t"..flr(_game_timer), 113, 3, text_color)
   end
   -- print("("..flr(time())..")", 76, 12, 9)
   -- end menu draw
@@ -310,8 +312,8 @@ function _draw_game()
   if _debug.msgs then
     -- draw_ctrls(12, 108, 9)
     -- player debug stuff
-    print("X: "..flr(player.x), 56, 100, 9)
-    print("Y: "..player.y, 56, 94, 9)
+    -- print("X: "..flr(player.x), 56, 100, 9)
+    -- print("Y: "..player.y, 56, 94, 9)
     -- print("dx: "..player.dx, 56, 106, 9)
     -- print("dx_max: "..player.dx_max, 56, 112, 9)
     -- print("juice: "..player.juice, 56, 120, 9)

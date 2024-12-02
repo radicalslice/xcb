@@ -8,10 +8,22 @@ function anytime_init()
     _level_index = 1
     _game_timer = _checkpoints[_level_index]
 
+    -- little extra code to draw the split in
+    -- the speedometer
+    local my_f = function(m)
+      rect(2,121,43,127,7)
+      line(32,121,32,127)
+      -- rect(0,98,8,127,1)
+      -- for i=0,8,2 do
+        -- pset(i, 98, 12)
+      -- end
+    end
     -- FX setup
     _FX = {
       parts = {},
       trails = {},
+      -- x,y, width,height, max_val, color, draw_frame_f
+      speedo = new_meter(3,122,32,4,_PLAYER_DX_MAX,10,my_f)
     }
 
     -- parse this level to be rendered from x=0, y=Y_BASE
@@ -46,11 +58,6 @@ function _init()
 
   init_timers()
   _timers.input_freeze:init(0.1, last_ts)
-
-  -- need this for title screen, so we'll set it up in here
-  _FX = {
-    parts = {},
-  }
 
   anytime_init()
   __update = _update_game

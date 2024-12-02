@@ -117,17 +117,17 @@ player = {
       end
       if p:get_state() == _PLAYER_STATE_ONGROUND and p.planedy == 0 then
         add(_FX.parts, new_part(
-          p.x - rnd(2),
-          p.y - p.plane + 12 - rnd(4),
+          p.x + 2 + rnd(2),
+          p.y - p.plane + 10 - rnd(2),
           function() return sin(rnd()) * -1 end,
           function() return 0 end,
           {7}, -- regular color
           _timers.okami.ttl > 0 and f or nil, -- colorf
           nil,
           flr(rnd(2)) + 1,
-          0.4,
+          0.2,
           false,
-          0
+          0.1
         ))
       end
 
