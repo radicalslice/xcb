@@ -13,10 +13,6 @@ function anytime_init()
     local my_f = function(m)
       rect(2,121,43,127,7)
       line(32,121,32,127)
-      -- rect(0,98,8,127,1)
-      -- for i=0,8,2 do
-        -- pset(i, 98, 12)
-      -- end
     end
     -- FX setup
     _FX = {
@@ -46,9 +42,10 @@ function anytime_init()
      obs_call: Fired by main game loop when player and obstacle collide
     ]]--
     _q = qico()
-    _q.add_topics("expr_boost|obs_coll")
+    _q.add_topics("expr_boost|obs_coll|timeover")
     _q.add_subs("expr_boost", {player.handle_expr_boost})
     _q.add_subs("obs_coll", {player.handle_obs_coll})
+    _q.add_subs("timeover", {player.handle_timeover})
 end
 
 function _init()

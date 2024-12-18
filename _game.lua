@@ -1,6 +1,5 @@
-_bigtree_x = 0
+_bigtree_x,_bigtree_dx = 0,0.6
 _mountain_x = 0
-_bigtree_dx = 0.6
 _mountain_dx = 0.2
 _camera_x_offset = 32
 _game_timer = 0
@@ -27,6 +26,7 @@ function _update_game()
   _timers.sakurai:update(now)
   _timers.speedpin:update(now)
   _timers.okami:update(now)
+  _timers.gameover:update(now)
 
   _q.proc()
 
@@ -43,11 +43,13 @@ function _update_game()
   end
   _FX.speedo:update(player.dx, player.dx_max, meter_width, meter_color)
     
-  _game_timer -= dt
-  if _game_timer < 0 then
-    _game_timer = 0
-    __update = _update_gameover
-    __draw = _draw_gameover
+  if _game_timer > 0 then
+    _game_timer -= dt
+  elseif _game_timer == 0 then
+    _q.add_event("timeover")
+    _game_timer -= dt
+  elseif _game_timer < 0 then
+    -- noop
   end
 
   _bigtree_x -= (_bigtree_dx * player.dx)
@@ -303,8 +305,8 @@ function _draw_game()
   circ(124, 2, 18, border_color)
   -- rectfill(112, 0, 128, 24, 0)
   if _game_timer > 5 or _game_timer % 1 > 0.5 then
-    print("\^w\^t"..flr(_game_timer), 112, 2, border_color)
-    print("\^w\^t"..flr(_game_timer), 113, 3, text_color)
+    print("\^w\^t"..flr(max(0, _game_timer)), 112, 2, border_color)
+    print("\^w\^t"..flr(max(0, _game_timer)), 113, 3, text_color)
   end
   -- print("("..flr(time())..")", 76, 12, 9)
   -- end menu draw

@@ -10,10 +10,8 @@ _PLAYER_GRAVITY = 0.15
 _PLAYER_JUICE_ADD = 0.5
 _PLAYER_JUICE_MAX = 3
 _PLAYER_AIRTIMER_0 = 0.2
-_PLAYER_BOOST_TIME = 2 --seconds
 _PLAYER_BOOST_BONUS = 1 --seconds, extra time for a successful boost landing
 _PLAYER_HOP_PENALTY = 0.7
-_friction = 0.85
 _airres = 0.99
 player = {
   reset = function(p)
@@ -91,7 +89,7 @@ player = {
   near_ground = function(p, y_ground)
    return abs(p.y - y_ground) < 1 or p.y > y_ground
   end,
-  update = function(p, dt, y_ground, ground_angle, block_input)
+  update = function(p, dt, y_ground, ground_angle)
 
     p.frame_timer += dt
     if p.frame_timer >= 2 then
@@ -110,15 +108,15 @@ player = {
       or pstate == _PLAYER_STATE_SKYDOWN
       or pstate == _PLAYER_STATE_HOPUP
       or pstate == _PLAYER_STATE_HOPDOWN then
-      player_state_funcs[pstate](p, dt, y_ground, ground_angle, block_input)
+      player_state_funcs[pstate](p, dt, y_ground, ground_angle)
 
       local f = function()
         return p.speedpin_cycler:get_color()
       end
-      if p:get_state() == _PLAYER_STATE_ONGROUND and p.planedy == 0 then
+      if p:get_state() == _PLAYER_STATE_ONGROUND and p.planedy == 0 and p.dx > 0 then
         add(_FX.parts, new_part(
-          p.x + 2 + rnd(2),
-          p.y - p.plane + 10 - rnd(2),
+          p.x + 4 - rnd(8),
+          p.y - p.plane + 14 - rnd(2),
           function() return sin(rnd()) * -1 end,
           function() return 0 end,
           {7}, -- regular color
@@ -144,25 +142,24 @@ player = {
 }
 
 player_state_funcs = {
-  on_ground = function(p, dt, y_ground, ground_angle, block_input)
+  on_ground = function(p, dt, y_ground, ground_angle)
     p.angle = ground_angle
 
     p.dx = min(p.dx_max, p.dx + p.ddx)
-
-    -- apply velocity
-    local slow_factors = {0.95, 0.9, 0.8}
-    if abs(ground_angle) >= 1 then
-      p.x += p.dx * slow_factors[abs(ground_angle)]
-    else
-      p.x += p.dx
+    if p.ddx < 0 and p.dx < 0.05 and p.dx > 0 then
+      p.dx = 0
+      p.ddx = 0
+      _timers.gameover:init(2,time())
     end
+
+    p.x += p.dx
 
     if flr(p.y) != y_ground then
       p.y = y_ground
     end
 
     if btnp(5) and
-      not block_input and
+      p.ddx > 0 and
       not p.boosting and
       p.juice >= 1 then
       if _debug.sakurai then
@@ -260,7 +257,7 @@ player_state_funcs = {
         end
         -- do the shake
         _shake = 1
-        for i=0,20 do 
+        for i=0,10 do 
           add(_FX.parts,
             new_part(
               p.x + rnd(3),
@@ -339,6 +336,12 @@ end
 
 player.handle_obs_coll = function()
   player.dx = player.dx * 0.93
+end
+
+player.handle_timeover = function()
+  printh("handling player timeover")
+  player.ddx = -0.01
+  player.boosting = false
 end
 
 function move_in_y(p, y_ground)

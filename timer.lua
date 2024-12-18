@@ -30,7 +30,6 @@ function init_timers()
   _timers.boost = new_timer(
     0,
     function(t)
-      printh("boost timer expired")
       _q.add_event("expr_boost")
     end
     )
@@ -40,7 +39,6 @@ function init_timers()
     0,
     function(t)
       -- t.ttl = 0.3
-      printh("expired pose stop")
       player.pose = false
     end
     )
@@ -49,7 +47,6 @@ function init_timers()
   _timers.sakurai = new_timer(
     0,
     function(t)
-      printh("expired sakurai stop")
       __update = _update_game
       __draw = _draw_game
       _timers.boost:init(2,time())
@@ -64,7 +61,6 @@ function init_timers()
   _timers.speedpin = new_timer(
     0,
     function(t)
-      printh("expired speed pin timer")
       player.pinned = false
     end
     )
@@ -72,24 +68,27 @@ function init_timers()
   -- for stopping the okami particles 
   _timers.okami = new_timer(
     0,
-    function(t)
-      printh("expired okami timer")
-    end
+    function(t) end
     )
   
   -- for stopping button presses from advancing
   _timers.input_freeze = new_timer(
     0,
-    function(t)
-      printh("expired input lock")
-    end
+    function(t) end
   )
 
   -- for screen transitions
   _timers.wipe = new_timer(
     0,
+    function(t) end
+  )
+
+  -- for when the timer runs out and we move to gameover state
+  _timers.gameover = new_timer(
+    0,
     function(t)
-      printh("expired wipe timer")
+      __update = _update_gameover
+      __draw = _draw_gameover
     end
   )
 end
