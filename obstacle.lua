@@ -34,16 +34,11 @@ function new_obstacle(plane, elevation)
     y = obsy,
     plane = plane,
     draw = function(obs)
-      rectfill(
-      obs.x,
-      obs.y - 8,
-      obs.x + 8,
-      obs.y,
-      obs.plane==1 and 1 or 14)
+      spr(66, obs.x, obs.y - 8)
 
       -- draw bb
-      local bb = obs:get_bb()
-      rect(bb[1],bb[2],bb[3],bb[4],11)
+      -- local bb = obs:get_bb()
+      -- rect(bb[1],bb[2],bb[3],bb[4],11)
     end,
     update = function(obs)
       -- we don't need this because the camera is already in motion!

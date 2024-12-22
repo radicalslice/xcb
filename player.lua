@@ -1,4 +1,5 @@
 _PLAYER_DX_MAX = 1.5 -- when on the ground
+_PLAYER_DDX = 0.02
 _PLAYER_DX_MAX_BOOSTED = 2.2
 _PLAYER_DY_MAX = 3
 _PLAYER_STATE_ONGROUND = "on_ground"
@@ -19,7 +20,7 @@ player = {
     p.dx_max = _PLAYER_DX_MAX
     p.y = Y_BASE -- player's actual y value
     p.dx = 0
-    p.ddx = 0.02 -- initial ddx
+    p.ddx = _PLAYER_DDX -- initial ddx
     p.dy = 1 -- give it some initial dy
     p.ddy = _PLAYER_GRAVITY
     p.angle = 0
@@ -89,7 +90,7 @@ player = {
   near_ground = function(p, y_ground)
    return abs(p.y - y_ground) < 1 or p.y > y_ground
   end,
-  update = function(p, dt, y_ground, ground_angle)
+  update = function(p, dt, y_ground, ground_angle, block_input)
 
     p.frame_timer += dt
     if p.frame_timer >= 2 then
@@ -108,7 +109,7 @@ player = {
       or pstate == _PLAYER_STATE_SKYDOWN
       or pstate == _PLAYER_STATE_HOPUP
       or pstate == _PLAYER_STATE_HOPDOWN then
-      player_state_funcs[pstate](p, dt, y_ground, ground_angle)
+      player_state_funcs[pstate](p, dt, y_ground, ground_angle, block_input)
 
       local f = function()
         return p.speedpin_cycler:get_color()
@@ -142,7 +143,7 @@ player = {
 }
 
 player_state_funcs = {
-  on_ground = function(p, dt, y_ground, ground_angle)
+  on_ground = function(p, dt, y_ground, ground_angle, block_input)
     p.angle = ground_angle
 
     p.dx = min(p.dx_max, p.dx + p.ddx)
@@ -160,6 +161,7 @@ player_state_funcs = {
 
     if btnp(5) and
       p.ddx > 0 and
+      not block_input and
       not p.boosting and
       p.juice >= 1 then
       if _debug.sakurai then

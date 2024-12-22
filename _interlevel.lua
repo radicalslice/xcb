@@ -47,6 +47,8 @@ function _update_interlevel()
     _game_timer += _checkpoints[_level_index]
 
     _obsman:init()
+    
+    player.ddx = _PLAYER_DDX
 
     printh("game state switch: interlevel->game")
     last_ts = time()
