@@ -57,8 +57,10 @@ function _init()
   _timers.input_freeze:init(0.1, last_ts)
 
   anytime_init()
-  __update = _update_game
-  __draw = _draw_game
+  -- __update = _update_game
+  -- __draw = _draw_game
+  __update = _update_title
+  __draw = _draw_title
 end
 
 function gen_flat_tile(x, y)

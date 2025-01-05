@@ -32,10 +32,13 @@ function _draw_title()
   palt()
 
   if _timers.wipe.ttl > 0 then
-    if _timers.wipe.ttl < 1 then
+    -- this ensures we draw the game to the right / after the wipe
+    -- set it to half of the value that we use to init the wipe timer below
+    if _timers.wipe.ttl < 0.25 then
       _draw_game()
     end
-    rectfill(128 + (128 * (_timers.wipe.ttl - 2)),0,256 * (_timers.wipe.ttl / 2),128,0)
+    local x0 = -128 + (256 * (_timers.wipe.ttl * 2))
+    rectfill(x0, 0, x0+128, 128, 0)
   end
 end
 
@@ -47,7 +50,7 @@ function _update_title()
 
   if _timers.input_freeze.ttl == 0 and (btnp(4) or btnp(5)) then
     anytime_init()
-    _timers.wipe:init(2, last_ts)
+    _timers.wipe:init(0.5, last_ts)
     advance_title = true
   end
 
