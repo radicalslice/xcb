@@ -281,7 +281,9 @@ player_state_funcs = {
         p.y = y_ground
         p.angle = ground_angle
         p:change_state(_PLAYER_STATE_ONGROUND)
-        p.juice = min(_PLAYER_JUICE_MAX, p.juice + _PLAYER_JUICE_ADD)
+        if not p.boosting then
+          p.juice = min(_PLAYER_JUICE_MAX, p.juice + _PLAYER_JUICE_ADD)
+        end
         if p.boosting and _debug.pinparticles then
           _timers.boost:add(_PLAYER_BOOST_BONUS)
           _timers.okami:init(0.2,time())

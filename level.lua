@@ -12,14 +12,31 @@ _checkpoints = {25,22,40}
 _configs = {
   {
     mountain_tile_x = 17,
-    mountain_tile_y = 1,
+    mountain_tile_y = 3,
+    mountain_pos_y = 24,
+    tree_pos_y = 30,
+    tree_tileheight = 0,
+    foreground = false,
+    clouds = false,
+    mtn_f = function() end,
+    sky_f = function() 
+      pal(12, 6)
+    end,
+    sun_f = function() end,
+    snow_f = function() end,
+  },
+  {
+    mountain_tile_x = 17,
+    mountain_tile_y = 3,
     mountain_pos_y = 24,
     tree_pos_y = 30,
     tree_tileheight = 3,
     foreground = false,
-    clouds = false,
+    clouds = true,
     mtn_f = function() end,
-    sky_f = function() end,
+    sky_f = function()
+      rectfill(-16,0,144,63,12)
+    end,
     sun_f = function() end,
     snow_f = function() end,
   },
@@ -37,6 +54,7 @@ _configs = {
     end,
     sky_f = function()
       pal(12, 9)
+      rectfill(-16,0,144,63,12)
     end,
     sun_f = function()
       circfill(112, 16, 5, 8)

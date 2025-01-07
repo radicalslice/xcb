@@ -79,6 +79,9 @@ function _update_game()
     else 
       _timers.boost:f()
       _timers.input_freeze:init(0.5,now)
+      player.ddx = _PLAYER_DDX
+      -- prevent the gameover time from triggering if the player has already init'd it
+      _timers.gameover.ttl = 0
       __update = _update_interlevel
       __draw = _draw_interlevel
     end
@@ -190,16 +193,18 @@ function _draw_game()
 
   camera(shakex, shakey)
 
-  -- palate swappies
-  level.config.sky_f() 
+  local config = level.config
+
+  -- palette swappies
+  config.sky_f() 
 
   -- clouds
-  if level.config.clouds then
-    map(0, 0, -16, 0, 18, 1)
-  end
+  -- if config.clouds then
+    -- map(0, 0, -16, 0, 18, 1)
+  -- end
 
   -- sky
-  rectfill(-16,0,144,63,12)
+  -- rectfill(-16,0,144,63,12)
   pal() 
 
   palt(11, true)
@@ -209,16 +214,16 @@ function _draw_game()
   -- sunset_mtns()
   -- night_mtns()
   -- sun / moon / etc
-  level.config.sun_f()
+  config.sun_f()
 
-  level.config.mtn_f()
+  config.mtn_f()
 
   for i=0,224,32 do
     map(
-      level.config.mountain_tile_x,
-      level.config.mountain_tile_y,
+      config.mountain_tile_x,
+      config.mountain_tile_y,
       _mountain_x + i,
-      level.config.mountain_pos_y,
+      config.mountain_pos_y,
       4,
       2
     )
@@ -284,13 +289,13 @@ function _draw_game()
   palt(11, true)
   -- rectfill(112, 0, 128, 24, 0)
   for i=1,3 do
-    spr(112, 1, 82 - (i*6))
+    spr(82, 1, 82 - (i*6))
   end
   for i=1,player.juice do
-    spr(96, 1, 82 - (i*6))
+    spr(67, 1, 82 - (i*6))
   end
   if player.juice % 1 == _PLAYER_JUICE_ADD then
-    spr(113, 1, 82 - (ceil(player.juice)*6))
+    spr(83, 1, 82 - (ceil(player.juice)*6))
   end
 
   rectfill(0,120,128,128,0)
