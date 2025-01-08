@@ -153,10 +153,13 @@ function draw_course()
   local last_x_drawn = 0
   for tile in all(_map_table) do 
     if tile.x < player.x + 136 then
+      local true_x = tile.x - player.x + _camera_x_offset
+      local true_y = tile.y - _camera_y
+      rectfill(true_x, true_y+8, true_x+8, 132, 7)
       map(tile.map_x,
         tile.map_y,
-        tile.x - player.x + _camera_x_offset,
-        tile.y - _camera_y,
+        true_x,
+        true_y,
         1,
         tile.height)
       last_x_drawn = tile.x
@@ -195,66 +198,72 @@ function _draw_game()
 
   local config = level.config
 
-  -- palette swappies
-  config.sky_f() 
+  if config.draw_f != nil then
+    config.draw_f()
+  else
+    -- palette swappies
+    config.sky_f() 
 
-  -- clouds
-  -- if config.clouds then
-    -- map(0, 0, -16, 0, 18, 1)
-  -- end
+    -- clouds
+    -- if config.clouds then
+      -- map(0, 0, -16, 0, 18, 1)
+    -- end
 
-  -- sky
-  -- rectfill(-16,0,144,63,12)
-  pal() 
+    -- sky
+    -- rectfill(-16,0,144,63,12)
+    pal() 
 
-  palt(11, true)
-  palt(0, false)
+    palt(11, true)
+    palt(0, false)
 
-  -- parallax-y mountain tiles
-  -- sunset_mtns()
-  -- night_mtns()
-  -- sun / moon / etc
-  config.sun_f()
+    -- parallax-y mountain tiles
+    -- sunset_mtns()
+    -- night_mtns()
+    -- sun / moon / etc
+    config.sun_f()
 
-  config.mtn_f()
+    config.mtn_f()
 
-  for i=0,224,32 do
-    map(
-      config.mountain_tile_x,
-      config.mountain_tile_y,
-      _mountain_x + i,
-      config.mountain_pos_y,
-      4,
-      2
-    )
-  end
-
-  pal()
-
-  palt(11, true)
-  palt(0, false)
-  
-
-  level.config.snow_f()
-
-  -- random trees
-  for i=0,224,32 do
-    map(9,1, _bigtree_x + i, level.config.tree_pos_y, 4, level.config.tree_tileheight)
-  end
-
-  -- Snow below trees and above course
-  rectfill(-16,52,144,128,7)
-
-  -- foreground trees
-  if level.config.foreground then
     for i=0,224,32 do
-      map(9,4, _bigtree_x + i, level.config.tree_pos_y + 12, 4, 1)
+      map(
+        config.mountain_tile_x,
+        config.mountain_tile_y,
+        _mountain_x + i,
+        config.mountain_pos_y,
+        4,
+        2
+      )
     end
-  end
-  pal()
 
-  palt(11, true)
-  palt(0, false)
+    pal()
+
+    palt(11, true)
+    palt(0, false)
+    
+
+    level.config.snow_f()
+    -- random trees
+    for i=0,224,32 do
+      map(9,1, _bigtree_x + i, level.config.tree_pos_y, 4, level.config.tree_tileheight)
+    end
+
+    -- Snow below trees and above course
+    rectfill(-16,52,144,128,7)
+
+    -- foreground trees
+    if level.config.foreground then
+      for i=0,224,32 do
+        map(9,4, _bigtree_x + i, level.config.tree_pos_y + 12, 4, 1)
+      end
+    end
+    pal()
+
+    palt(11, true)
+    palt(0, false)
+  end
+
+
+
 
   draw_course()
 

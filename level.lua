@@ -7,27 +7,34 @@ _map_table = {}
 _elevations = {}
 
 -- how much time to add to the remaining time at each interlevel
-_checkpoints = {25,22,40}
+_checkpoints = {40,40,40}
 
 _configs = {
   {
     mountain_tile_x = 17,
-    mountain_tile_y = 3,
+    mountain_tile_y = 1,
     mountain_pos_y = 24,
     tree_pos_y = 30,
-    tree_tileheight = 0,
+    tree_tileheight = 3,
     foreground = false,
     clouds = false,
-    mtn_f = function() end,
-    sky_f = function() 
-      pal(12, 6)
+    draw_f = function()
+      rectfill(0, 0, 128, 128, 6)
+      local cloudheight = 6
+      local gapheight = 3
+      local next_y = 0
+      while cloudheight > 0 do
+        rectfill(0, next_y, 128, next_y + cloudheight, 7) 
+        next_y = next_y + cloudheight + gapheight
+        cloudheight -= 1
+        gapheight += 1
+      end
+      circfill(24, 24, 4, 10)
     end,
-    sun_f = function() end,
-    snow_f = function() end,
   },
   {
     mountain_tile_x = 17,
-    mountain_tile_y = 3,
+    mountain_tile_y = 1,
     mountain_pos_y = 24,
     tree_pos_y = 30,
     tree_tileheight = 3,
@@ -37,7 +44,9 @@ _configs = {
     sky_f = function()
       rectfill(-16,0,144,63,12)
     end,
-    sun_f = function() end,
+    sun_f = function()
+      circfill(36, 14, 5, 10)
+    end,
     snow_f = function() end,
   },
   {

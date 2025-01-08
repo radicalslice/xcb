@@ -54,7 +54,7 @@ player = {
 
     if p.state == _PLAYER_STATE_ONGROUND then
       if p.planedy > 0 then
-        base_sprite = 46
+        base_sprite = 40
       elseif p.planedy < 0 then
         base_sprite = 38
       end
