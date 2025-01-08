@@ -18,6 +18,7 @@ function anytime_init()
     _FX = {
       parts = {},
       trails = {},
+      clouds = {},
       -- x,y, width,height, max_val, color, draw_frame_f
       speedo = new_meter(3,122,32,4,_PLAYER_DX_MAX,10,my_f)
     }
@@ -55,6 +56,7 @@ function _init()
 
   init_timers()
   _timers.input_freeze:init(0.1, last_ts)
+  _timers.clouds:init(0.5, last_ts)
 
   anytime_init()
   -- __update = _update_game

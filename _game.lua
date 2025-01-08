@@ -27,6 +27,7 @@ function _update_game()
   _timers.speedpin:update(now)
   _timers.okami:update(now)
   _timers.gameover:update(now)
+  _timers.clouds:update(now)
 
   _q.proc()
 
@@ -106,6 +107,14 @@ function _update_game()
     if t[1].x < player.x - 64 then
       printh('removing trail')
       del(_FX.trails, t)
+    end
+  end)
+
+  foreach(_FX.clouds, function(c) 
+    c.x -= c.dx
+    if c.x < -32 then
+      printh('removing cloud')
+      del(_FX.clouds, c)
     end
   end)
 
@@ -204,13 +213,6 @@ function _draw_game()
     -- palette swappies
     config.sky_f() 
 
-    -- clouds
-    -- if config.clouds then
-      -- map(0, 0, -16, 0, 18, 1)
-    -- end
-
-    -- sky
-    -- rectfill(-16,0,144,63,12)
     pal() 
 
     palt(11, true)
@@ -262,6 +264,12 @@ function _draw_game()
     palt(0, false)
   end
 
+  foreach(_FX.clouds, function(c) 
+    if _frame_counter % 2 == 1 then
+      spr(c.spr, c.x, c.y, c.w, 1)
+    end
+  end)
+
 
 
 
@@ -281,6 +289,7 @@ function _draw_game()
       circfill(crc.x,crc.y,crc.rad,6)  
     end
   end)
+
 
   -- player over background
   player:draw()
