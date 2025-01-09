@@ -30,6 +30,11 @@ _configs = {
         gapheight += 1
       end
       circfill(24, 24, 4, 10)
+      circ(24, 24, 6, 10)
+      circ(24, 24, 8, 10)
+      spr(98, 24, 25, 2, 1)
+      spr(98, 8, 15, 2, 1, true)
+      spr(116, 16, 20, 2, 1)
     end,
   },
   {

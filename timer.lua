@@ -84,6 +84,7 @@ function init_timers()
   )
 
   -- for emitting clouds
+  --[[
   _timers.clouds = new_timer(
     0,
     function(t)
@@ -99,6 +100,7 @@ function init_timers()
       t:init(2.3, time())
     end
   )
+  ]]--
 
   -- for when the timer runs out and we move to gameover state
   _timers.gameover = new_timer(

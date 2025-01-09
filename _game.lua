@@ -27,7 +27,7 @@ function _update_game()
   _timers.speedpin:update(now)
   _timers.okami:update(now)
   _timers.gameover:update(now)
-  _timers.clouds:update(now)
+  -- _timers.clouds:update(now)
 
   _q.proc()
 
@@ -110,6 +110,7 @@ function _update_game()
     end
   end)
 
+  --[[
   foreach(_FX.clouds, function(c) 
     c.x -= c.dx
     if c.x < -32 then
@@ -117,6 +118,7 @@ function _update_game()
       del(_FX.clouds, c)
     end
   end)
+  ]]--
 
   player:update(dt, y_ground, angle)
 
@@ -264,11 +266,13 @@ function _draw_game()
     palt(0, false)
   end
 
+  --[[
   foreach(_FX.clouds, function(c) 
     if _frame_counter % 2 == 1 then
       spr(c.spr, c.x, c.y, c.w, 1)
     end
   end)
+  --]]
 
 
 
@@ -338,6 +342,7 @@ function _draw_game()
     -- draw_ctrls(12, 108, 9)
     -- player debug stuff
     -- print("X: "..flr(player.x), 56, 100, 9)
+    print("cpu: "..stat(1), 56, 100, 9)
     -- print("Y: "..player.y, 56, 94, 9)
     -- print("dx: "..player.dx, 56, 106, 9)
     -- print("dx_max: "..player.dx_max, 56, 112, 9)
