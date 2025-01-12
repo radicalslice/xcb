@@ -20,7 +20,8 @@ function anytime_init()
       trails = {},
       -- clouds = {},
       -- x,y, width,height, max_val, color, draw_frame_f
-      speedo = new_meter(3,122,32,4,_PLAYER_DX_MAX,10,my_f)
+      speedo = new_meter(3,122,32,4,_PLAYER_DX_MAX,10,my_f),
+      snow = {},
     }
 
     -- parse this level to be rendered from x=0, y=Y_BASE
@@ -56,7 +57,7 @@ function _init()
 
   init_timers()
   _timers.input_freeze:init(0.1, last_ts)
-  -- _timers.clouds:init(0.5, last_ts)
+  _timers.snow:init(0.05, last_ts)
 
   anytime_init()
   -- __update = _update_game

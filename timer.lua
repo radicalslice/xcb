@@ -83,24 +83,19 @@ function init_timers()
     function(t) end
   )
 
-  -- for emitting clouds
-  --[[
-  _timers.clouds = new_timer(
+  -- for emitting snow
+  _timers.snow = new_timer(
     0,
     function(t)
-      local which = rnd()
-      local spr = 98
-      local y = flr(rnd(7)) * 10
-      if which > 0.5 then
-        spr = 116
-      end
-      local dx = rnd(0.3)
-      add(_FX.clouds, {x=132, y=y, dx=dx, spr=spr, w=2})
-      printh("added cloud! "..#_FX.clouds..", dx: "..dx)
-      t:init(2.3, time())
+      local y = -80 + (flr(rnd(7)) * 10)
+      local x = 90 + (flr(rnd(18)) * 8)
+      -- local y, x = 64, 64
+      local dx = 1+rnd(1)
+      add(_FX.snow, {x=x, y=y, dx=dx})
+      printh("added snow! "..#_FX.snow..", x: "..x.." y: "..y.." dx: "..dx)
+      t:init(0.05, time())
     end
   )
-  ]]--
 
   -- for when the timer runs out and we move to gameover state
   _timers.gameover = new_timer(

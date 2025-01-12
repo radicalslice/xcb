@@ -27,7 +27,9 @@ function _update_game()
   _timers.speedpin:update(now)
   _timers.okami:update(now)
   _timers.gameover:update(now)
-  -- _timers.clouds:update(now)
+  if (_level_index == 1) then
+    _timers.snow:update(now)
+  end
 
   _q.proc()
 
@@ -110,15 +112,13 @@ function _update_game()
     end
   end)
 
-  --[[
-  foreach(_FX.clouds, function(c) 
+  foreach(_FX.snow, function(c) 
     c.x -= c.dx
-    if c.x < -32 then
-      printh('removing cloud')
-      del(_FX.clouds, c)
+    c.y += c.dx
+    if c.x < -32 or c.y > 132 then
+      del(_FX.snow, c)
     end
   end)
-  ]]--
 
   player:update(dt, y_ground, angle)
 
@@ -266,15 +266,6 @@ function _draw_game()
     palt(0, false)
   end
 
-  --[[
-  foreach(_FX.clouds, function(c) 
-    if _frame_counter % 2 == 1 then
-      spr(c.spr, c.x, c.y, c.w, 1)
-    end
-  end)
-  --]]
-
-
 
 
   draw_course()
@@ -306,9 +297,12 @@ function _draw_game()
 
   camera()
 
+  palt(11, true)
+  foreach(_FX.snow, function(c) 
+    spr(118, c.x, c.y)
+  end)
 
   -- draw menu over everything
-  palt(11, true)
   -- rectfill(112, 0, 128, 24, 0)
   for i=1,3 do
     spr(82, 1, 82 - (i*6))
