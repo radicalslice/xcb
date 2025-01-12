@@ -15,7 +15,10 @@ function _update_interlevel()
     player.boosting = false
   end
   player:update(dt, player.y, player.angle, true)
-  if player.x >= level.x_max + 128 then player.x = level.x_max end
+  if player.x >= level.x_max + 128 then 
+    player.x = level.x_max
+    _FX.trails = {}
+  end
 
   foreach(_FX.parts, function(part) 
     part:update(dt)
@@ -25,12 +28,22 @@ function _update_interlevel()
   end)
 
   _timers.input_freeze:update(now)
+  if _level_index == 1 then
+    foreach(_FX.snow, function(c) 
+      c.x -= c.dx
+      c.y += c.dx
+      if c.x < -32 or c.y > 132 then
+        del(_FX.snow, c)
+      end
+    end)
+    _timers.snow:update(now)
+  end
 
   if _timers.input_freeze.ttl == 0 and (btnp(4) or btnp(5)) then
     _level_index += 1
 
     -- reset player x value
-    player.x = 20
+    player.x = 40
 
     -- pass in last_y_drawn so the level hopefully connects to previous one...
     local ranges, jumps, x_max = parse_ranges(_levels[_level_index], flr(player.x - (flr(player.x) % 8)), _last_y_drawn + 8)

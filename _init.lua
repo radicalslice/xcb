@@ -11,8 +11,8 @@ function anytime_init()
     -- little extra code to draw the split in
     -- the speedometer
     local my_f = function(m)
-      rect(2,121,43,127,7)
-      line(32,121,32,127)
+      rect(2,121,43,126,6)
+      line(32,121,32,126,6)
     end
     -- FX setup
     _FX = {
@@ -20,7 +20,7 @@ function anytime_init()
       trails = {},
       -- clouds = {},
       -- x,y, width,height, max_val, color, draw_frame_f
-      speedo = new_meter(3,122,32,4,_PLAYER_DX_MAX,10,my_f),
+      speedo = new_meter(3,121,32,4,_PLAYER_DX_MAX,10,my_f),
       snow = {},
     }
 

@@ -158,7 +158,7 @@ bdown,32
 --]]
 _levels = {
 [[
-flat,48
+flat,72
 ddown,128
 flat,96
 bup,16,-2.5
@@ -520,6 +520,8 @@ function parse_ranges(str, x_base, y_base)
     add(ranges, range)
     x_curr = x_end
   end)
+
+  -- here, add some extra flat and a downward slope to accommodate level transitions
   return ranges, jumps, x_curr
 end
 

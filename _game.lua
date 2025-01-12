@@ -184,11 +184,14 @@ function draw_course()
     local x_start = player.x > level.x_max and (player.x - (player.x % 8)) - 32 or level.x_max
     for i=x_start,x_start+144,8 do
       local tile = gen_flat_tile(i, _last_y_drawn)
+      local true_x = tile.x - player.x + _camera_x_offset
+      local true_y = tile.y - _camera_y
+      rectfill(true_x, true_y+8, true_x+8, 132, 7)
       map(
         tile.map_x,
         tile.map_y,
-        tile.x - player.x + _camera_x_offset,
-        tile.y - _camera_y,
+        true_x,
+        true_y,
         1,
         tile.height
       )
@@ -293,8 +296,6 @@ function _draw_game()
     p:draw()
   end)
 
-
-
   camera()
 
   palt(11, true)
@@ -314,7 +315,7 @@ function _draw_game()
     spr(83, 1, 82 - (ceil(player.juice)*6))
   end
 
-  rectfill(0,120,128,128,0)
+  -- rectfill(0,120,128,128,0)
   _FX.speedo:draw()
 
   local text_color, border_color = 12, 1
@@ -322,8 +323,6 @@ function _draw_game()
     text_color, border_color = 8, 2
   end
   circfill(124, 2, 20, 0)
-  circ(124, 2, 19, text_color)
-  circ(124, 2, 18, border_color)
   -- rectfill(112, 0, 128, 24, 0)
   if _game_timer > 5 or _game_timer % 1 > 0.5 then
     print("\^w\^t"..flr(max(0, _game_timer)), 112, 2, border_color)
@@ -336,7 +335,7 @@ function _draw_game()
     -- draw_ctrls(12, 108, 9)
     -- player debug stuff
     -- print("X: "..flr(player.x), 56, 100, 9)
-    print("cpu: "..stat(1), 56, 100, 9)
+    -- print("cpu: "..stat(1), 56, 100, 9)
     -- print("Y: "..player.y, 56, 94, 9)
     -- print("dx: "..player.dx, 56, 106, 9)
     -- print("dx_max: "..player.dx_max, 56, 112, 9)
