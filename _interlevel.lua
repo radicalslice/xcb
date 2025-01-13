@@ -8,15 +8,17 @@ function _draw_interlevel()
 end
 
 function _update_interlevel()
+  printh("Camera: ".._camera_x..",".._camera_y)
   local now = time()
   local dt = now - last_ts
   
   if player.boosting then
     player.boosting = false
   end
-  player:update(dt, player.y, player.angle, true)
-  if player.x >= level.x_max + 128 then 
+  player:update(dt, player.y+player.dx, 1, true)
+  if player.x >= level.x_max + 144 and not _camera_freeze then 
     player.x = level.x_max
+    player.y = _last_y_drawn + 8
     _FX.trails = {}
   end
 
@@ -39,33 +41,9 @@ function _update_interlevel()
     _timers.snow:update(now)
   end
 
-  if _timers.input_freeze.ttl == 0 and (btnp(4) or btnp(5)) then
-    _level_index += 1
-
-    -- reset player x value
-    player.x = 40
-
-    -- pass in last_y_drawn so the level hopefully connects to previous one...
-    local ranges, jumps, x_max = parse_ranges(_levels[_level_index], flr(player.x - (flr(player.x) % 8)), _last_y_drawn + 8)
-
-    level = {
-      ranges = ranges,
-      jumps = jumps,
-      x_max = x_max,
-      config = _configs[_level_index],
-    }
-
-    _map_table = load_level_map_data(level) 
-
-    _game_timer += _checkpoints[_level_index]
-
-    _obsman:init()
-    
-    player.ddx = _PLAYER_DDX
-
-    printh("game state switch: interlevel->game")
-    last_ts = time()
-    __update = _update_game
-    __draw = _draw_game
+  _timers.interlevel:update(now)
+  if _timers.input_freeze.ttl == 0 and (btnp(4) or btnp(5)) and _timers.interlevel.ttl == 0 then
+    _camera_freeze = true
+    _timers.interlevel:init(1.5, now)
   end
 end

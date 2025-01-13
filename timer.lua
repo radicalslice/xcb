@@ -92,8 +92,44 @@ function init_timers()
       -- local y, x = 64, 64
       local dx = 1+rnd(1)
       add(_FX.snow, {x=x, y=y, dx=dx})
-      printh("added snow! "..#_FX.snow..", x: "..x.." y: "..y.." dx: "..dx)
       t:init(0.05, time())
+    end
+  )
+
+  -- for the little interlevel "animation" and wipe
+  _timers.interlevel = new_timer(
+    0,
+    function(t)
+      _level_index += 1
+
+      -- reset player x value
+      player.x = 40
+
+      -- pass in last_y_drawn so the level hopefully connects to previous one...
+      -- pass in 0 for the player's x position because it doesn't matter here
+      local ranges, jumps, x_max = parse_ranges(_levels[_level_index], 0, _last_y_drawn + 8)
+
+      level = {
+        ranges = ranges,
+        jumps = jumps,
+        x_max = x_max,
+        config = _configs[_level_index],
+      }
+
+      _map_table = load_level_map_data(level) 
+
+      _game_timer += _checkpoints[_level_index]
+
+      _obsman:init()
+      
+      player.ddx = _PLAYER_DDX
+      player.dx = 0
+
+      printh("game state switch: interlevel->game")
+      last_ts = time()
+      _camera_freeze = false
+      __update = _update_game
+      __draw = _draw_game
     end
   )
 

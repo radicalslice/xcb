@@ -5,6 +5,7 @@ _camera_x_offset = 32
 _game_timer = 0
 _frame_counter = 0
 _last_y_drawn = 0
+_camera_freeze = false
 Y_BASE = 80
 _debug = {
   msgs = true,
@@ -67,29 +68,30 @@ function _update_game()
    if (_shake<0.1) then _shake=0 end
  end
 
-  local board_pos_x = player:get_board_center_x()
-  local y_ground = Y_BASE
-  local range = find_range(board_pos_x, level)
-  local angle = 0 -- assume flat ground
-  if range != nil then
-    y_ground, angle = range.f(board_pos_x)
-  else
-    cls()
-    -- force player to stop boosting
-    if _level_index == _level_count then
-      __update = _update_victory
-      __draw = _draw_victory
-    else 
-      _timers.boost:f()
-      _timers.input_freeze:init(0.5,now)
-      player.ddx = _PLAYER_DDX
-      -- prevent the gameover time from triggering if the player has already init'd it
-      _timers.gameover.ttl = 0
-      __update = _update_interlevel
-      __draw = _draw_interlevel
-    end
-    return
-  end
+ local board_pos_x = player:get_board_center_x()
+ local y_ground = Y_BASE
+ local range = find_range(board_pos_x, level)
+ local angle = 0 -- assume flat ground
+ if range != nil then
+   y_ground, angle = range.f(board_pos_x)
+ else
+   cls()
+   -- force player to stop boosting
+   if _level_index == _level_count then
+     __update = _update_victory
+     __draw = _draw_victory
+   else 
+     _timers.boost:f()
+     _timers.input_freeze:init(0.5,now)
+     player.ddx = _PLAYER_DDX
+     -- prevent the gameover time from triggering if the player has already init'd it
+     _timers.gameover.ttl = 0
+     __update = _update_interlevel
+     __draw = _draw_interlevel
+     printh("last_y_drawn: ".._last_y_drawn)
+   end
+   return
+ end
 
   -- Check for any jumps
   local added_dy = find_jump(board_pos_x + player.dx, level)
@@ -135,20 +137,19 @@ function _update_game()
 
 end
 
-_last_sprite_at = 0
 _camera_y = 0
 _last_camera_y_offset = 0
 _camera_x = 0
-function align_camera()
+function align_camera(player_x)
   local y_ground = Y_BASE
   -- Look ahead to try and prep camera, this is based on the ground a little bit ahead
   -- Changed this from 24 to 48 and it made it better, somehow, on the downward slopes
-  local range = find_range(player:get_board_center_x() + 48, level)
+  local range = find_range(player_x + 48, level)
   if range != nil then
-    y_ground, _ = range.f(player:get_board_center_x() + 48)
+    y_ground, _ = range.f(player_x + 48)
   end
 
-  _camera_x = player.x - _camera_x_offset
+  _camera_x = player_x - _camera_x_offset
   _camera_y = flr(player.y - Y_BASE)
   if player.y - y_ground < -1 then
     local adj = flr((player.y - y_ground) * 0.5)
@@ -160,11 +161,11 @@ function align_camera()
   _camera_y -= _last_camera_y_offset
 end
 
-function draw_course()
+function draw_course(player_x)
   local last_x_drawn = 0
   for tile in all(_map_table) do 
-    if tile.x < player.x + 136 then
-      local true_x = tile.x - player.x + _camera_x_offset
+    if tile.x < player_x + 136 then
+      local true_x = tile.x - player_x + _camera_x_offset
       local true_y = tile.y - _camera_y
       rectfill(true_x, true_y+8, true_x+8, 132, 7)
       map(tile.map_x,
@@ -180,29 +181,28 @@ function draw_course()
 
   -- printh("P.Y, LYD: "..player.y..",".._last_y_drawn)
   -- this is the interlevel routine, drawing after we pass the end of a level
-  if player.x + 128 > level.x_max then
-    local x_start = player.x > level.x_max and (player.x - (player.x % 8)) - 32 or level.x_max
-    for i=x_start,x_start+144,8 do
-      local tile = gen_flat_tile(i, _last_y_drawn)
-      local true_x = tile.x - player.x + _camera_x_offset
-      local true_y = tile.y - _camera_y
+  if player_x + 128 > level.x_max then
+    local x_start = level.x_max
+    local y_offset = _last_y_drawn - _camera_y + 8
+    for i=x_start,x_start+256,8 do
+      local true_x = i - player_x + _camera_x_offset
+      local true_y = _last_y_drawn - _camera_y
       rectfill(true_x, true_y+8, true_x+8, 132, 7)
       map(
-        tile.map_x,
-        tile.map_y,
+        27,
+        0,
         true_x,
-        true_y,
+        y_offset,
         1,
-        tile.height
+        5
       )
+      y_offset += 8 
     end
   end
 end
 
 function _draw_game()
   cls()
-
-  align_camera()
 
   -- add in the shake, if any
   local shakex = (4 - rnd(8)) * _shake
@@ -248,19 +248,19 @@ function _draw_game()
     palt(0, false)
     
 
-    level.config.snow_f()
+    config.snow_f()
     -- random trees
     for i=0,224,32 do
-      map(9,1, _bigtree_x + i, level.config.tree_pos_y, 4, level.config.tree_tileheight)
+      map(9,1, _bigtree_x + i, config.tree_pos_y, 4, config.tree_tileheight)
     end
 
     -- Snow below trees and above course
     rectfill(-16,52,144,128,7)
 
     -- foreground trees
-    if level.config.foreground then
+    if config.foreground then
       for i=0,224,32 do
-        map(9,4, _bigtree_x + i, level.config.tree_pos_y + 12, 4, 1)
+        map(9,4, _bigtree_x + i, config.tree_pos_y + 12, 4, 1)
       end
     end
     pal()
@@ -269,9 +269,15 @@ function _draw_game()
     palt(0, false)
   end
 
+  if not _camera_freeze then
+    draw_course(player.x)
+  else
+    draw_course(level.x_max)
+  end
 
-
-  draw_course()
+  if not _camera_freeze then
+    align_camera(player.x)
+  end
 
   camera(_camera_x, _camera_y)
 
@@ -336,7 +342,7 @@ function _draw_game()
     -- player debug stuff
     -- print("X: "..flr(player.x), 56, 100, 9)
     -- print("cpu: "..stat(1), 56, 100, 9)
-    -- print("Y: "..player.y, 56, 94, 9)
+    print("Y: "..player.y, 56, 94, 9)
     -- print("dx: "..player.dx, 56, 106, 9)
     -- print("dx_max: "..player.dx_max, 56, 112, 9)
     -- print("juice: "..player.juice, 56, 120, 9)

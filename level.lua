@@ -163,6 +163,13 @@ ddown,128
 flat,96
 bup,16,-2.5
 bdown,16
+flat,112]],
+[[
+flat,72
+ddown,128
+flat,96
+bup,16,-2.5
+bdown,16
 flat,112
 bup,16,-2.5
 bdown,16
@@ -522,6 +529,7 @@ function parse_ranges(str, x_base, y_base)
   end)
 
   -- here, add some extra flat and a downward slope to accommodate level transitions
+  -- add(ranges, 
   return ranges, jumps, x_curr
 end
 

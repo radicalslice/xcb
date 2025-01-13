@@ -1,12 +1,12 @@
 function _draw_stop()
   cls()
 
-  align_camera()
+  align_camera(player.x)
 
   palt(11, true)
   palt(0, false)
   pal(7, 0)
-  draw_course()
+  draw_course(player.x)
   camera(_camera_x, _camera_y)
   pal()
   palt()
