@@ -34,8 +34,8 @@ function anytime_init()
       config = _configs[_level_index],
     }
 
-    _obsman:init()
-    _obsman:test()
+    -- _obsman:init()
+    -- _obsman:test()
 
     _map_table, _elevations = load_level_map_data(level) 
 

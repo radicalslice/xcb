@@ -29,7 +29,7 @@ function _draw_title()
   print("\^w\^tx c b", 8, 57, 12)
 
   print("press "..BUTTON_X.." or "..BUTTON_O, 8, 107, 12)
-  palt()
+  -- palt()
 
   if _timers.wipe.ttl > 0 then
     -- this ensures we draw the game to the right / after the wipe

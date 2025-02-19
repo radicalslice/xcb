@@ -1,5 +1,6 @@
 function _draw_interlevel()
   _draw_game()
+  -- text box
   rectfill(24,32,112,72,0)
   print("level ".._level_index.." clear!", 34, 34, 9)
   print("time remaining: "..flr(_game_timer).."S", 34, 42, 9)
@@ -8,19 +9,25 @@ function _draw_interlevel()
 end
 
 function _update_interlevel()
-  printh("Camera: ".._camera_x..",".._camera_y)
   local now = time()
   local dt = now - last_ts
+
+  _bigtree_x -= (_bigtree_dx * player.dx)
+  _mountain_x -= (_mountain_dx * player.dx)
+
+  if _bigtree_x < -127 then _bigtree_x = 0 end
+  if _mountain_x < -127 then _mountain_x = 0 end
   
   if player.boosting then
     player.boosting = false
   end
-  player:update(dt, player.y+player.dx, 1, true)
-  if player.x >= level.x_max + 144 and not _camera_freeze then 
+  if player.x >= level.x_max + 144 then 
     player.x = level.x_max
-    player.y = _last_y_drawn + 8
+    player.y = _last_y_drawn
     _FX.trails = {}
   end
+  player:update(dt, player.y+player.dx, 1, true)
+  align_camera(player.x)
 
   foreach(_FX.parts, function(part) 
     part:update(dt)
@@ -43,7 +50,6 @@ function _update_interlevel()
 
   _timers.interlevel:update(now)
   if _timers.input_freeze.ttl == 0 and (btnp(4) or btnp(5)) and _timers.interlevel.ttl == 0 then
-    _camera_freeze = true
-    _timers.interlevel:init(1.5, now)
+    _timers.interlevel:init(0.2, now)
   end
 end

@@ -1,6 +1,6 @@
-_PLAYER_DX_MAX = 1.5 -- when on the ground
+_PLAYER_DX_MAX = 2.0 -- when on the ground
 _PLAYER_DDX = 0.02
-_PLAYER_DX_MAX_BOOSTED = 2.2
+_PLAYER_DX_MAX_BOOSTED = 3.2
 _PLAYER_DY_MAX = 3
 _PLAYER_STATE_ONGROUND = "on_ground"
 _PLAYER_STATE_SKYUP = "skyup"
@@ -70,8 +70,8 @@ player = {
     p.last_sprite = base_sprite
 
     -- draw bb
-    local bb = p:get_bb()
-    rect(bb[1],bb[2],bb[3],bb[4],11)
+    -- local bb = p:get_bb()
+    -- rect(bb[1],bb[2],bb[3],bb[4],11)
 
     pal()
     palt()

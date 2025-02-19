@@ -123,11 +123,12 @@ function init_timers()
       _obsman:init()
       
       player.ddx = _PLAYER_DDX
-      player.dx = 0
+      player.dx = _PLAYER_DX_MAX
 
       printh("game state switch: interlevel->game")
       last_ts = time()
       _camera_freeze = false
+      _game_state = "main"
       __update = _update_game
       __draw = _draw_game
     end

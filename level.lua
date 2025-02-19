@@ -1,13 +1,13 @@
 level = {}
 _level_index = 1
-_level_count = 3
+_level_count = 4
 -- Map[XPos][mapx, mapy, sprnum]
 _map_table = {}
 -- []{x_pos, y_elevation}
 _elevations = {}
 
 -- how much time to add to the remaining time at each interlevel
-_checkpoints = {40,40,40}
+_checkpoints = {40,40,40,40}
 
 _configs = {
   {
@@ -19,7 +19,7 @@ _configs = {
     foreground = false,
     clouds = false,
     draw_f = function()
-      rectfill(0, 0, 128, 128, 6)
+      rectfill(0, 0, 128, 128, 12)
       local cloudheight = 6
       local gapheight = 3
       local next_y = 0
@@ -163,9 +163,20 @@ ddown,128
 flat,96
 bup,16,-2.5
 bdown,16
-flat,112]],
+flat,112
+bup,16,-2.5
+bdown,16
+flat,112
+bup,8,-2
+bdown,8
+flat,96
+ddown,24
+flat,24
+bup,16,-2.5
+bdown,16
+flat,64
+ddown,128]],
 [[
-flat,72
 ddown,128
 flat,96
 bup,16,-2.5
@@ -218,7 +229,8 @@ bup,8,-2
 bdown,8
 flat,16
 bup,16,-2.5
-flat,128]],
+flat,96
+ddown,128]],
 [[
 flat,128
 bup,8,-2
@@ -283,7 +295,8 @@ ddown,24
 flat,16
 bup,8,-2
 ddown,32
-flat,128]],
+flat,96
+ddown,128]],
 [[
 flat,96
 bup,8,-2
@@ -345,7 +358,8 @@ ddown,56
 flat,64
 bup,16,-2.5
 bdown,16
-flat,96]]
+flat,96
+ddown,128]]
 }
 -- type, x_length, height for flats
 -- this levelX one is pretty sick, you can ride a boost through like the entire thing..

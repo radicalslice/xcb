@@ -6,14 +6,18 @@ _game_timer = 0
 _frame_counter = 0
 _last_y_drawn = 0
 _camera_freeze = false
+_game_state = "main"
 Y_BASE = 80
+
+
 _debug = {
-  msgs = true,
+  pose = true,
   pinflash = true,
   pinparticles = true,
-  pose = true,
   sakurai = true,
 }
+
+
 _timers = {}
 _shake = 0
 
@@ -88,7 +92,6 @@ function _update_game()
      _timers.gameover.ttl = 0
      __update = _update_interlevel
      __draw = _draw_interlevel
-     printh("last_y_drawn: ".._last_y_drawn)
    end
    return
  end
@@ -179,15 +182,14 @@ function draw_course(player_x)
     end
   end
 
-  -- printh("P.Y, LYD: "..player.y..",".._last_y_drawn)
-  -- this is the interlevel routine, drawing after we pass the end of a level
-  if player_x + 128 > level.x_max then
+  -- this is for drawing beyond the calculated end of a level
+  if player_x + 132 > level.x_max then
     local x_start = level.x_max
-    local y_offset = _last_y_drawn - _camera_y + 8
+    local y_offset = _last_y_drawn - _camera_y
     for i=x_start,x_start+256,8 do
       local true_x = i - player_x + _camera_x_offset
       local true_y = _last_y_drawn - _camera_y
-      rectfill(true_x, true_y+8, true_x+8, 132, 7)
+      rectfill(true_x, y_offset+8, true_x+8, 132, 7)
       map(
         27,
         0,
@@ -208,7 +210,9 @@ function _draw_game()
   local shakex = (4 - rnd(8)) * _shake
   local shakey = (4 - rnd(8)) * _shake
 
-  camera(shakex, shakey)
+  if shakex != 0 or shakey != 0 then
+    camera(shakex, shakey)
+  end
 
   local config = level.config
 
@@ -269,15 +273,9 @@ function _draw_game()
     palt(0, false)
   end
 
-  if not _camera_freeze then
-    draw_course(player.x)
-  else
-    draw_course(level.x_max)
-  end
+  draw_course(player.x)
 
-  if not _camera_freeze then
-    align_camera(player.x)
-  end
+  align_camera(player.x)
 
   camera(_camera_x, _camera_y)
 
@@ -337,16 +335,18 @@ function _draw_game()
   -- print("("..flr(time())..")", 76, 12, 9)
   -- end menu draw
  
+  --[[
   if _debug.msgs then
     -- draw_ctrls(12, 108, 9)
     -- player debug stuff
     -- print("X: "..flr(player.x), 56, 100, 9)
     -- print("cpu: "..stat(1), 56, 100, 9)
-    print("Y: "..player.y, 56, 94, 9)
+    -- print("Y: "..player.y, 56, 94, 9)
     -- print("dx: "..player.dx, 56, 106, 9)
     -- print("dx_max: "..player.dx_max, 56, 112, 9)
     -- print("juice: "..player.juice, 56, 120, 9)
     -- print("style: "..player.style, 56, 120, 9)
     -- print(count(_FX.parts), 56, 120, 9)
   end
+  ]]--
 end
