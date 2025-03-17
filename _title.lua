@@ -1,5 +1,3 @@
-advance_title = false
-
 function _draw_title()
   -- _draw_game()
   cls()
@@ -30,34 +28,18 @@ function _draw_title()
 
   print("press "..BUTTON_X.." or "..BUTTON_O, 8, 107, 12)
   -- palt()
-
-  if _timers.wipe.ttl > 0 then
-    -- this ensures we draw the game to the right / after the wipe
-    -- set it to half of the value that we use to init the wipe timer below
-    if _timers.wipe.ttl < 0.25 then
-      _draw_game()
-    end
-    local x0 = -128 + (256 * (_timers.wipe.ttl * 2))
-    rectfill(x0, 0, x0+128, 128, 0)
-  end
 end
 
 
 function _update_title()
-  last_ts = time()
-  _timers.input_freeze:update(last_ts)
-  _timers.wipe:update(last_ts)
+  _timers.input_freeze:update(_now)
 
-  if _timers.input_freeze.ttl == 0 and (btnp(4) or btnp(5)) then
+  _timers.interlevel:update(_now)
+
+  if _timers.input_freeze.ttl == 0 and (btnp(4) or btnp(5)) and _timers.interlevel.ttl <= 0 then
+    printh("hit it!")
     anytime_init()
-    _timers.wipe:init(0.5, last_ts)
-    advance_title = true
+    _timers.interlevel:init(0.2, _now)
+    _init_wipe(0.4)
   end
-
-  if advance_title and _timers.wipe.ttl == 0 then
-    __update = _update_game
-    __draw = _draw_game
-    advance_title = false
-  end
-
 end

@@ -10,6 +10,7 @@ __lua__
 #include _interlevel.lua
 #include _stop.lua
 #include _title.lua
+#include _wipe.lua
 #include qico.lua
 #include utils.lua
 #include player.lua

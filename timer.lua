@@ -11,12 +11,12 @@ function new_timer(now, f)
     add = function(t, addl_t)
       t.ttl += addl_t
     end,
-    update = function(t, now)
+    update = function(t)
       if t.ttl == 0 then
         return
       end
-      t.ttl = t.ttl - (now - t.last_t)
-      t.last_t = now
+      t.ttl = t.ttl - (_now - t.last_t)
+      t.last_t = _now
       if t.ttl <= 0 then
         t.ttl = 0
         t:f()
@@ -77,12 +77,6 @@ function init_timers()
     function(t) end
   )
 
-  -- for screen transitions
-  _timers.wipe = new_timer(
-    0,
-    function(t) end
-  )
-
   -- for emitting snow
   _timers.snow = new_timer(
     0,
@@ -100,8 +94,6 @@ function init_timers()
   _timers.interlevel = new_timer(
     0,
     function(t)
-      _level_index += 1
-
       -- reset player x value
       player.x = 40
 
@@ -126,8 +118,8 @@ function init_timers()
       player.dx = _PLAYER_DX_MAX
 
       printh("game state switch: interlevel->game")
-      last_ts = time()
       _camera_freeze = false
+      _interlevel_wipego = false
       _game_state = "main"
       __update = _update_game
       __draw = _draw_game

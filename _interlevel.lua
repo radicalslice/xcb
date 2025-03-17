@@ -4,14 +4,12 @@ function _draw_interlevel()
   rectfill(24,32,112,72,0)
   print("level ".._level_index.." clear!", 34, 34, 9)
   print("time remaining: "..flr(_game_timer).."S", 34, 42, 9)
-  print("time added: ".._checkpoints[_level_index+1].."S",34,50,9)
+  print("time added: ".._checkpoints[_level_index].."S",34,50,9)
   print("press "..BUTTON_X.." or "..BUTTON_O,34,60,9)
+
 end
 
-function _update_interlevel()
-  local now = time()
-  local dt = now - last_ts
-
+function _update_interlevel(dt)
   _bigtree_x -= (_bigtree_dx * player.dx)
   _mountain_x -= (_mountain_dx * player.dx)
 
@@ -36,7 +34,7 @@ function _update_interlevel()
     end
   end)
 
-  _timers.input_freeze:update(now)
+  _timers.input_freeze:update()
   if _level_index == 1 then
     foreach(_FX.snow, function(c) 
       c.x -= c.dx
@@ -45,11 +43,13 @@ function _update_interlevel()
         del(_FX.snow, c)
       end
     end)
-    _timers.snow:update(now)
+    _timers.snow:update()
   end
 
-  _timers.interlevel:update(now)
+  _timers.interlevel:update()
   if _timers.input_freeze.ttl == 0 and (btnp(4) or btnp(5)) and _timers.interlevel.ttl == 0 then
-    _timers.interlevel:init(0.2, now)
+    _timers.interlevel:init(0.2, _now)
+    _init_wipe(0.4)
+    _level_index += 1
   end
 end

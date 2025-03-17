@@ -1,5 +1,5 @@
 level = {}
-_level_index = 1
+_level_index = 0
 _level_count = 4
 -- Map[XPos][mapx, mapy, sprnum]
 _map_table = {}
@@ -158,8 +158,7 @@ bdown,32
 --]]
 _levels = {
 [[
-flat,72
-ddown,128
+ddown,256
 flat,96
 bup,16,-2.5
 bdown,16
@@ -177,7 +176,7 @@ bdown,16
 flat,64
 ddown,128]],
 [[
-ddown,128
+ddown,144
 flat,96
 bup,16,-2.5
 bdown,16
@@ -232,6 +231,7 @@ bup,16,-2.5
 flat,96
 ddown,128]],
 [[
+ddown,144
 flat,128
 bup,8,-2
 bdown,8
@@ -298,6 +298,7 @@ ddown,32
 flat,96
 ddown,128]],
 [[
+ddown,144
 flat,96
 bup,8,-2
 bdown,16
@@ -361,132 +362,6 @@ bdown,16
 flat,96
 ddown,128]]
 }
--- type, x_length, height for flats
--- this levelX one is pretty sick, you can ride a boost through like the entire thing..
-_levelX = [[
-flat,128
-bup,8,-1.5
-bdown,8
-flat,32
-bup,8,-2
-bdown,8
-flat,32
-bup,8,-2
-bdown,8
-flat,128
-bup,8,-2
-bdown,64
-flat,128
-bup,24,-2
-bdown,64,-2
-flat,16
-bup,24,-2
-flat,32
-bup,8,-2
-bdown,128
-flat,196]]
---[[
-_menagMini = [[
-flat,128
-bup,8,-2
-bdown,8
-flat,128
-bup,8,-2
-bdown,8
-flat,128
-bup,8,-2
-bdown,8
-flat,32
-bup,8,-2
-bdown,8
-flat,128
-bup,8,-2
-bdown,8
-flat,32
-bup,8,-2
-bdown,8
-flat,128
-bup,8,-2
-bdown,8
-flat,32
-bup,8,-2
-bdown,8
-flat,16
-bup,8,-2
-bdown,8
-flat,128
-bup,8,-2
-bdown,8
-flat,32
-bup,8,-2
-bdown,8
-flat,16
-bup,8,-2
-bdown,8
-flat,128]]--
---[[
-_menagFlats = [[
-flat,128
-bup,16,-2.5
-flat,128
-bup,16,-2.5
-flat,128
-bup,16,-2.5
-flat,16
-bup,16,-2.5
-flat,128
-bup,16,-2.5
-flat,16
-bup,16,-2.5
-flat,16
-bdown,24
-flat,128
-bup,16,-2.5
-flat,16
-bup,16,-2.5
-flat,16
-bdown,24
-flat,128]]--
---[[
-_menagReg = [[
-flat,128
-bup,16,-2.5
-bdown,16
-flat,128
-bup,16,-2.5
-bdown,16
-flat,128
-bup,16,-2.5
-bdown,16
-flat,16
-bup,16,-2.5
-bdown,16
-flat,128
-bup,16,-2.5
-bdown,16
-flat,16
-bup,16,-2.5
-bdown,16
-flat,128
-bup,16,-2.5
-bdown,16
-flat,16
-bup,16,-2.5
-bdown,24
-flat,16
-bup,8,-2
-bdown,32
-flat,128
-bup,16,-2.5
-bdown,16
-flat,16
-bup,16,-2.5
-bdown,16
-flat,24
-bup,8,-2
-bdown,32
-flat,128]]--
-
 
 -- String -> []Range
 function parse_ranges(str, x_base, y_base)

@@ -41,10 +41,8 @@ function make_lines()
   end
 end
 
-function _update_stop()
-  local now = time()
-  -- _update_game()
-  _timers.sakurai:update(now)
+function _update_stop(dt)
+  _timers.sakurai:update(_now)
   foreach(_lines, function(l) 
     l.inner_r *= 0.8
     l.r *= 0.90

@@ -21,19 +21,16 @@ _debug = {
 _timers = {}
 _shake = 0
 
-function _update_game()
-  local now = time()
-  local dt = now - last_ts
-
+function _update_game(dt)
   -- update timers
-  _timers.boost:update(now)
-  _timers.pose:update(now)
-  _timers.sakurai:update(now)
-  _timers.speedpin:update(now)
-  _timers.okami:update(now)
-  _timers.gameover:update(now)
+  _timers.boost:update(_now)
+  _timers.pose:update(_now)
+  _timers.sakurai:update(_now)
+  _timers.speedpin:update(_now)
+  _timers.okami:update(_now)
+  _timers.gameover:update(_now)
   if (_level_index == 1) then
-    _timers.snow:update(now)
+    _timers.snow:update(_now)
   end
 
   _q.proc()
@@ -86,7 +83,7 @@ function _update_game()
      __draw = _draw_victory
    else 
      _timers.boost:f()
-     _timers.input_freeze:init(0.5,now)
+     _timers.input_freeze:init(0.5,_now)
      player.ddx = _PLAYER_DDX
      -- prevent the gameover time from triggering if the player has already init'd it
      _timers.gameover.ttl = 0
@@ -135,9 +132,6 @@ function _update_game()
       _q.add_event("obs_coll")
     end
   end)
-
-  last_ts = now
-
 end
 
 _camera_y = 0
@@ -176,7 +170,7 @@ function draw_course(player_x)
         true_x,
         true_y,
         1,
-        tile.height)
+        5) -- height of 5, hardcoding for now
       last_x_drawn = tile.x
       _last_y_drawn = tile.y
     end
