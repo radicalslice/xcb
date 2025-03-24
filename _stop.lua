@@ -19,10 +19,10 @@ function _draw_stop()
     local sinof, cosof = sin(l.angle/360), cos(l.angle/360)
     line(
       player.x + l.r * cosof,
-      player.y + l.r * sinof,
-      player.x + l.inner_r * cosof,
-      player.y + l.inner_r * sinof,
-      colors[flr(rnd(#colors)) + 1]
+      player.y - player.plane + l.r * sinof,
+      player.x + (l.inner_r+4) * cosof,
+      player.y - player.plane + (l.inner_r+4) * sinof,
+      rnd(colors)
     )
   end)
 
