@@ -11,6 +11,7 @@ Y_BASE = 80
 
 
 _debug = {
+  msgs = true,
   pose = true,
   pinflash = true,
   pinparticles = true,
@@ -127,9 +128,12 @@ function _update_game(dt)
   -- check for collision between player and obstacles
   local pbb = player:get_bb()
   foreach(_obsman.obstacles, function(obs)
-    local found_collides = collides_new(pbb, obs:get_bb())
-    if found_collides then
-      _q.add_event("obs_coll")
+    if player.plane == obs.plane then
+      local found_collides = collides_new(pbb, obs:get_bb())
+      if found_collides then
+        _q.add_event("obs_coll")
+        printh("obs:player "..obs.plane..","..player.plane)
+      end
     end
   end)
 end
@@ -275,6 +279,7 @@ function _draw_game()
 
   palt()
 
+
   -- draw any obstacles
   foreach(_obsman.obstacles, function(obs)
     obs:draw()
@@ -285,7 +290,6 @@ function _draw_game()
       circfill(crc.x,crc.y,crc.rad,6)  
     end
   end)
-
 
   -- player over background
   player:draw()
@@ -329,18 +333,19 @@ function _draw_game()
   -- print("("..flr(time())..")", 76, 12, 9)
   -- end menu draw
  
-  --[[
   if _debug.msgs then
     -- draw_ctrls(12, 108, 9)
     -- player debug stuff
     -- print("X: "..flr(player.x), 56, 100, 9)
     -- print("cpu: "..stat(1), 56, 100, 9)
-    -- print("Y: "..player.y, 56, 94, 9)
-    -- print("dx: "..player.dx, 56, 106, 9)
+    print("plr: "..flr(player.x)..","..flr(player.y)..","..player.plane, 56, 94, 9)
+    print("cam: ".._camera_y, 56, 106, 9)
+    if #(_obsman.obstacles) > 0 then
+      print("obs[1]: ".._obsman.obstacles[1].y, 56, 114, 9)
+    end
     -- print("dx_max: "..player.dx_max, 56, 112, 9)
     -- print("juice: "..player.juice, 56, 120, 9)
     -- print("style: "..player.style, 56, 120, 9)
     -- print(count(_FX.parts), 56, 120, 9)
   end
-  ]]--
 end

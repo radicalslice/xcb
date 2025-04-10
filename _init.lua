@@ -29,24 +29,8 @@ function anytime_init()
     }
 
     -- parse this level to be rendered from x=0, y=Y_BASE
-    local ranges, jumps, x_max = parse_ranges(_levels[_level_index], 0, Y_BASE)
+    -- local ranges, jumps, x_max = parse_ranges(_levels[_level_index], 0, Y_BASE)
 
-    level = {
-      ranges = ranges,
-      jumps = jumps,
-      x_max = x_max,
-      config = _configs[_level_index],
-    }
-
-    -- _obsman:init()
-    -- _obsman:test()
-
-    _map_table, _elevations = load_level_map_data(level) 
-
-    --[[
-     expr_boost: Fired by boost timer to tell the player to stop boosting
-     obs_call: Fired by main game loop when player and obstacle collide
-    ]]--
     _q = qico()
     _q.add_topics("expr_boost|obs_coll|timeover")
     _q.add_subs("expr_boost", {player.handle_expr_boost})
@@ -74,9 +58,11 @@ function gen_flat_tile(x, y)
 end
 
 function load_level_map_data(level)
+  printh("Loading level map for ".._level_index)
   local map_table = {}
   local elevations = {}
   local last_angle = 0 -- use this to track when there's a transition between ramp/flat
+  local y_updated = 0
   for x_curr=0, level.x_max do
     local range = find_range(x_curr, level)
     if range != nil then

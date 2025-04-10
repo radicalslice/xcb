@@ -7,7 +7,7 @@ _map_table = {}
 _elevations = {}
 
 -- how much time to add to the remaining time at each interlevel
-_checkpoints = {40,40,40,40}
+_checkpoints = {15,15,15,15}
 
 _configs = {
   {
@@ -50,7 +50,7 @@ _configs = {
       rectfill(-16,0,144,63,12)
     end,
     sun_f = function()
-      circfill(36, 14, 5, 10)
+      circfill(52, 10, 5, 10)
     end,
     snow_f = function() end,
   },
@@ -71,7 +71,7 @@ _configs = {
       rectfill(-16,0,144,63,12)
     end,
     sun_f = function()
-      circfill(112, 16, 5, 8)
+      circfill(88, 20, 5, 8)
     end,
     snow_f = function() end,
   },
@@ -158,11 +158,23 @@ bdown,32
 --]]
 _levels = {
 [[
-ddown,256
-flat,96
+ddown,512
+bup,8,-2
+bdown,8
+ddown,32
+flat,256
 bup,16,-2.5
 bdown,16
+flat,256
+obs,6
 flat,112
+bup,16,-2.5
+bdown,16
+flat,256
+obs,0
+flat,176
+obs,0
+flat,256
 bup,16,-2.5
 bdown,16
 flat,112
@@ -170,9 +182,26 @@ bup,8,-2
 bdown,8
 flat,96
 ddown,24
+flat,176
+ddown,24
 flat,24
 bup,16,-2.5
 bdown,16
+flat,112
+bup,16,-2.5
+bdown,16
+flat,80
+bup,16,-2.5
+bdown,16
+flat,112
+bup,16,-2.5
+bdown,16
+flat,32
+ddown,32
+flat,176
+obs,0
+flat,80
+obs,6
 flat,64
 ddown,128]],
 [[
@@ -413,8 +442,10 @@ function parse_ranges(str, x_base, y_base)
           return my_flat, 0
       end
     end
-    add(ranges, range)
-    x_curr = x_end
+    if ramp_type != "obs" then
+      add(ranges, range)
+      x_curr = x_end
+    end
   end)
 
   -- here, add some extra flat and a downward slope to accommodate level transitions
@@ -452,7 +483,9 @@ end
 
 -- Int -> _elevations -> y_elevation
 function find_elevation(x, es)
+  -- x
   for i, j in pairs(es) do
+    -- printh("elevation pair: "..j[1]..","..j[2])
     if es[i+1] and x >= j[1] and x < es[i+1][1] then
       return es[i][2]
     end

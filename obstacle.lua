@@ -6,11 +6,18 @@ _obsman = {
   init = function(m)
     m.queue,m.obstacles = {},{}
   end,
-  test = function(m)
-    -- load up some test obstacles
-    for j=1,20 do
-      add(m.queue, new_q_obstacle(128*j + 128, flr(rnd(2))))
-    end
+  -- parses level data but only looks at the obstacles
+  parselvl = function(m,lvlstr)
+    local x_curr = 0
+    foreach(split(lvlstr, "\n"), function(substr)
+      local vals = split(substr, ",")
+      if vals[1] == "obs" then
+        printh("added  obs!"..x_curr..","..vals[2])
+        add(m.queue, new_q_obstacle(x_curr, vals[2]))
+      else
+        x_curr += vals[2]
+      end
+    end)
   end,
   update = function(m)
     foreach(m.obstacles, function(obs)
@@ -27,14 +34,15 @@ function new_q_obstacle(spawn_x, plane)
   return {spawn_x=spawn_x, plane=plane}
 end
 
-function new_obstacle(plane, elevation)
-  local obsy = (plane == 1) and elevation or (elevation - 8)
+function new_obstacle(elevation, plane)
+  local obsy = (plane == 6) and (elevation+8) or elevation
+  printh("Obstacle at elevation "..elevation.." and plane "..plane)
   return {
     x = 130 + _camera_x,
     y = obsy,
     plane = plane,
     draw = function(obs)
-      spr(66, obs.x, obs.y - 8)
+      spr(66, obs.x, obs.y)
 
       -- draw bb
       -- local bb = obs:get_bb()
@@ -45,7 +53,7 @@ function new_obstacle(plane, elevation)
       -- obs.x -= dx 
     end,
     get_bb = function(obs)
-      return {flr(obs.x)+1,flr(obs.y)-6,flr(obs.x)+7,flr(obs.y)}
+      return {flr(obs.x),flr(obs.y),flr(obs.x)+7,flr(obs.y)+5}
     end
   }
 end
@@ -56,9 +64,10 @@ function check_spawn(x_curr)
   foreach(_obsman.queue, function(obs)
     -- check the x pos and return if we need to spawn
     if x_curr + 128 > obs.spawn_x then
-      local elevation = find_elevation(x_curr+128, _elevations)
-      -- we'll use a 16px cheat to align to the course
-      add(_obsman.obstacles, new_obstacle(obs.plane, elevation + 14))
+      local elevation = find_elevation(obs.spawn_x, _elevations)
+      printh("Spawn at: "..obs.spawn_x..", elevation: "..(elevation)..", player: "..player.y)
+      -- we'll use a 14px cheat to align to the course
+      add(_obsman.obstacles, new_obstacle(elevation, obs.plane))
       del(_obsman.queue, obs)
     end
   end)

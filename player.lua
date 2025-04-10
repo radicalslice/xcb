@@ -54,16 +54,16 @@ player = {
 
     if p.state == _PLAYER_STATE_ONGROUND then
       if p.planedy > 0 then
-        base_sprite = 40
-      elseif p.planedy < 0 then
         base_sprite = 38
+      elseif p.planedy < 0 then
+        base_sprite = 40
       end
     end
 
     if player.pose and _debug.pose then base_sprite = 34 + 2*p.angle end
 
-    local draw_y = p.y - 4
-    draw_y -= p.plane
+    local draw_y = p.y - 10
+    draw_y += p.plane
 
     spr(base_sprite, p.x-10, draw_y, 2, 2)
         
@@ -77,7 +77,7 @@ player = {
     palt()
   end,
   get_bb = function(p)
-    return {flr(p.x - 8), flr(p.y+7 - p.plane), flr(p.x+4), flr(p.y+11-p.plane)}
+    return {flr(p.x - 8), flr(p.y+2+p.plane), flr(p.x+4), flr(p.y+6+p.plane)}
   end,
   start_jump = function(p, boosted_dy)
     p.dy = mid(-1, boosted_dy, (p.dx / p.dx_max) * boosted_dy)
@@ -117,7 +117,7 @@ player = {
       if p:get_state() == _PLAYER_STATE_ONGROUND and p.planedy == 0 and p.dx > 0 then
         add(_FX.parts, new_part(
           p.x + 4 - rnd(8),
-          p.y - p.plane + 14 - rnd(2),
+          p.y + p.plane + 8 - rnd(2),
           function() return sin(rnd()) * -1 end,
           function() return 0 end,
           {7}, -- regular color
@@ -175,17 +175,17 @@ player_state_funcs = {
         
     end
 
-    if btnp(2) and p.plane == 0 then
+    if btnp(3) and p.plane == 0 then
       p.planedy = 0.5
       add(_FX.trails, {})
-    elseif btnp(3) and p.plane == 6 then
+    elseif btnp(2) and p.plane == 6 then
       p.planedy = -0.5
       add(_FX.trails, {})
     end
 
     if p.planedy ~= 0 then
       p.plane += p.planedy
-      add(_FX.trails[#_FX.trails], {x=player.x, y=player.y-player.plane+10, rad=flr(rnd(2))+1})
+      add(_FX.trails[#_FX.trails], {x=player.x, y=player.y+player.plane+4, rad=flr(rnd(2))+1})
     end
     if p.plane <= 0 or p.plane >= 6 then
       p.planedy = 0
