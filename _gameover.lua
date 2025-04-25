@@ -1,6 +1,7 @@
 function _draw_gameover()
   cls()
   print("game over", 48, 64, 8)
+  print("press "..BUTTON_X.." or "..BUTTON_O.." to restart", 14, 107, 8)
 end
 
 function _update_gameover()

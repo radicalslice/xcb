@@ -1,6 +1,7 @@
 function _draw_victory()
   cls()
   print("victory!", 48, 64, 9)
+  print("press "..BUTTON_X.." or "..BUTTON_O.." to restart", 14, 107, 9)
 end
 
 function _update_victory()
