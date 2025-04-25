@@ -38,7 +38,7 @@ player = {
     p.planedy = 0
   end,
   change_state = function(p, state)
-    printh("State change: "..p.state.."->"..state)
+    -- printh("State change: "..p.state.."->"..state)
     p.state = state
   end,
   draw = function(p)
@@ -150,10 +150,15 @@ player_state_funcs = {
     if p.ddx < 0 and p.dx < 0.05 and p.dx > 0 then
       p.dx = 0
       p.ddx = 0
+      printh("player is stopped")
       _timers.gameover:init(2,time())
     end
 
-    p.x += p.dx
+    -- this works with the above to prevent player
+    -- from moving backwards
+    if p.dx > 0 then
+      p.x += p.dx
+    end
 
     if flr(p.y) != y_ground then
       p.y = y_ground
@@ -343,9 +348,8 @@ player.handle_obs_coll = function()
 end
 
 player.handle_timeover = function()
-  printh("handling player timeover")
   player.ddx = -0.01
-  player.boosting = false
+  player.handle_expr_boost()
 end
 
 function move_in_y(p, y_ground)

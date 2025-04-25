@@ -94,7 +94,6 @@ function init_timers()
   _timers.interlevel = new_timer(
     0,
     function(t)
-      printh("Interlevel timer timedout")
       -- reset player x value
       player.x = 40
 
@@ -111,7 +110,7 @@ function init_timers()
 
       _map_table, _elevations = load_level_map_data(level) 
 
-      _game_timer += _checkpoints[_level_index]
+      _game_timer.clock += _checkpoints[_level_index]
 
       _obsman:init()
       _obsman:parselvl(_levels[_level_index])

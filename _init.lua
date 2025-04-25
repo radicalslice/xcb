@@ -10,7 +10,8 @@ function anytime_init()
     player:reset()
 
     _level_index = 1
-    _game_timer = _checkpoints[_level_index]
+    _game_timer.clock = 0
+    _game_timer.expired = false
 
     -- little extra code to draw the split in
     -- the speedometer

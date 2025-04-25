@@ -1,10 +1,12 @@
+_last_level_index = 1
+
 function _draw_interlevel()
   _draw_game()
   -- text box
   rectfill(24,32,112,72,0)
-  print("level ".._level_index.." clear!", 34, 34, 9)
-  print("time remaining: "..flr(_game_timer).."S", 34, 42, 9)
-  print("time added: ".._checkpoints[_level_index].."S",34,50,9)
+  print("level ".._last_level_index.." clear!", 34, 34, 9)
+  print("time remaining: "..flr(_game_timer.clock).."S", 34, 42, 9)
+  print("time added: ".._checkpoints[_last_level_index+1].."S",34,50,9)
   print("press "..BUTTON_X.." or "..BUTTON_O,34,60,9)
 
 end

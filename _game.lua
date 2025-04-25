@@ -2,7 +2,10 @@ _bigtree_x,_bigtree_dx = 0,0.6
 _mountain_x = 0
 _mountain_dx = 0.2
 _camera_x_offset = 32
-_game_timer = 0
+_game_timer = {
+  clock = 0,
+  expired = false,
+}
 _frame_counter = 0
 _last_y_drawn = 0
 _camera_freeze = false
@@ -49,17 +52,17 @@ function _update_game(dt)
   end
   _FX.speedo:update(player.dx, player.dx_max, meter_width, meter_color)
     
-  if _game_timer > 0 then
-    _game_timer -= dt
-  elseif _game_timer == 0 then
+  if _game_timer.clock > 0 then
+    _game_timer.clock -= dt
+  elseif _game_timer.clock <= 0 and _game_timer.expired == false then
     _q.add_event("timeover")
-    _game_timer -= dt
-  elseif _game_timer < 0 then
-    -- noop
+    _game_timer.expired = true
   end
 
-  _bigtree_x -= (_bigtree_dx * player.dx)
-  _mountain_x -= (_mountain_dx * player.dx)
+  if player.dx > 0 then
+    _bigtree_x -= (_bigtree_dx * player.dx)
+    _mountain_x -= (_mountain_dx * player.dx)
+  end
 
   if _bigtree_x < -127 then _bigtree_x = 0 end
   if _mountain_x < -127 then _mountain_x = 0 end
@@ -88,6 +91,7 @@ function _update_game(dt)
      player.ddx = _PLAYER_DDX
      -- prevent the gameover time from triggering if the player has already init'd it
      _timers.gameover.ttl = 0
+     _last_level_index = _level_index
      __update = _update_interlevel
      __draw = _draw_interlevel
    end
@@ -321,14 +325,15 @@ function _draw_game()
   _FX.speedo:draw()
 
   local text_color, border_color = 12, 1
-  if _game_timer < 5 then
+  local c = _game_timer.clock
+  if c < 5 then
     text_color, border_color = 8, 2
   end
   circfill(124, 2, 20, 0)
   -- rectfill(112, 0, 128, 24, 0)
-  if _game_timer > 5 or _game_timer % 1 > 0.5 then
-    print("\^w\^t"..flr(max(0, _game_timer)), 112, 2, border_color)
-    print("\^w\^t"..flr(max(0, _game_timer)), 113, 3, text_color)
+  if c > 5 or c == 0 or c % 1 > 0.5 then
+    print("\^w\^t"..flr(max(0, c)), 112, 2, border_color)
+    print("\^w\^t"..flr(max(0, c)), 113, 3, text_color)
   end
   -- print("("..flr(time())..")", 76, 12, 9)
   -- end menu draw
@@ -338,11 +343,11 @@ function _draw_game()
     -- player debug stuff
     -- print("X: "..flr(player.x), 56, 100, 9)
     -- print("cpu: "..stat(1), 56, 100, 9)
-    print("plr: "..flr(player.x)..","..flr(player.y)..","..player.plane, 56, 94, 9)
-    print("cam: ".._camera_y, 56, 106, 9)
-    if #(_obsman.obstacles) > 0 then
-      print("obs[1]: ".._obsman.obstacles[1].y, 56, 114, 9)
-    end
+    -- print("plr: "..flr(player.x)..","..flr(player.y)..","..player.plane, 56, 94, 9)
+    -- print("cam: ".._camera_y, 56, 106, 9)
+    -- if #(_obsman.obstacles) > 0 then
+      -- print("obs[1]: ".._obsman.obstacles[1].y, 56, 114, 9)
+    -- end
     -- print("dx_max: "..player.dx_max, 56, 112, 9)
     -- print("juice: "..player.juice, 56, 120, 9)
     -- print("style: "..player.style, 56, 120, 9)

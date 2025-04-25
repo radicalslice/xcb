@@ -7,7 +7,7 @@ _map_table = {}
 _elevations = {}
 
 -- how much time to add to the remaining time at each interlevel
-_checkpoints = {15,15,15,15}
+_checkpoints = {25,15,15,15}
 
 _configs = {
   {
