@@ -28,6 +28,9 @@ function _draw_title()
 
   print("press "..BUTTON_X.." or "..BUTTON_O, 8, 107, 12)
   -- palt()
+
+  print("v0.4.0", 1, 1, 6)
+  print("@kitasuna", 92, 1, 6)
 end
 
 
@@ -37,7 +40,6 @@ function _update_title()
   _timers.interlevel:update(_now)
 
   if _timers.input_freeze.ttl == 0 and (btnp(4) or btnp(5)) and _timers.interlevel.ttl <= 0 then
-    printh("hit it!")
     anytime_init()
     _timers.interlevel:init(0.2, _now)
     _init_wipe(0.4)

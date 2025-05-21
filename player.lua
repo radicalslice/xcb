@@ -295,7 +295,8 @@ player_state_funcs = {
         end
 
         -- speed pin if timer was low enough
-        if p.airtimer < _PLAYER_AIRTIMER_0 then
+        -- and if we haven't started decelerating at the end of a level
+        if p.airtimer < _PLAYER_AIRTIMER_0 and p.ddx > 0 then
           p.dx = p.dx_max
           p.airtimer = 0
           -- for stopping the speed pin cycler

@@ -114,7 +114,6 @@ function _update_game(dt)
 
   foreach(_FX.trails, function(t) 
     if t[1].x < player.x - 64 then
-      printh('removing trail')
       del(_FX.trails, t)
     end
   end)

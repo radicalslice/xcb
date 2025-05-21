@@ -1,5 +1,5 @@
 level = {}
-_level_index = 0
+_level_index = 1
 _level_count = 4
 -- Map[XPos][mapx, mapy, sprnum]
 _map_table = {}
@@ -7,7 +7,7 @@ _map_table = {}
 _elevations = {}
 
 -- how much time to add to the remaining time at each interlevel
-_checkpoints = {25,15,15,15}
+_checkpoints = {25,20,15,12}
 
 _configs = {
   {
@@ -206,29 +206,45 @@ flat,64
 ddown,128]],
 [[
 ddown,144
-flat,96
+flat,64
+obs,0
+flat,64
+obs,6
+flat,32
 bup,16,-2.5
 bdown,16
 flat,112
 bup,16,-2.5
 bdown,16
+flat,56
+obs,0
 flat,112
 bup,8,-2
 bdown,8
-flat,112
+flat,72
+obs,0
+flat,96
 bup,16,-2.5
 bdown,16
 flat,64
 bup,8,-2
 bdown,8
-flat,96
+flat,88
+obs,0
 ddown,24
+flat,40
+obs,6
 flat,64
 bup,8,-2
 bdown,8
 flat,96
 bup,16,-2.5
-flat,80
+flat,112
+obs,0
+flat,48
+obs,6
+flat,48
+obs,0
 bup,16,-2.5
 bdown,16
 flat,128
