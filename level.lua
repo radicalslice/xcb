@@ -7,7 +7,7 @@ _map_table = {}
 _elevations = {}
 
 -- how much time to add to the remaining time at each interlevel
-_checkpoints = {25,20,15,12}
+_checkpoints = {30,32,25,20}
 
 _configs = {
   {
@@ -206,7 +206,7 @@ flat,64
 ddown,128]],
 [[
 ddown,144
-flat,64
+flat,88
 obs,0
 flat,64
 obs,6
@@ -232,7 +232,7 @@ bdown,8
 flat,88
 obs,0
 ddown,24
-flat,40
+flat,56
 obs,6
 flat,64
 bup,8,-2
@@ -254,6 +254,8 @@ flat,48
 bup,16,-2.5
 bdown,16
 flat,112
+obs,6
+flat,64
 bup,8,-2
 bdown,8
 flat,16
@@ -266,7 +268,10 @@ bup,8,-2
 bdown,8
 flat,64
 bup,16,-2.5
-flat,40
+flat,56
+obs,6
+flat,56
+obs,0
 ddown,64
 flat,64
 bup,8,-2
