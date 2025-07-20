@@ -29,14 +29,13 @@ function anytime_init()
       snow = {},
     }
 
-    -- parse this level to be rendered from x=0, y=Y_BASE
-    -- local ranges, jumps, x_max = parse_ranges(_levels[_level_index], 0, Y_BASE)
-
     _q = qico()
-    _q.add_topics("expr_boost|obs_coll|timeover")
+    _q.add_topics("expr_boost|obs_coll|timeover|playerstop|pregameover_expr")
     _q.add_subs("expr_boost", {player.handle_expr_boost})
     _q.add_subs("obs_coll", {player.handle_obs_coll})
     _q.add_subs("timeover", {player.handle_timeover})
+    _q.add_subs("playerstop", {_timermgr.handle_playerstop})
+    _q.add_subs("pregameover_expr", {_gamemgr.handle_pregameover_expr})
 end
 
 function _init()

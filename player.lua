@@ -150,8 +150,7 @@ player_state_funcs = {
     if p.ddx < 0 and p.dx < 0.05 and p.dx > 0 then
       p.dx = 0
       p.ddx = 0
-      printh("player is stopped")
-      _timers.gameover:init(2,time())
+      _q.add_event("playerstop")
     end
 
     -- this works with the above to prevent player

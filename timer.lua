@@ -118,7 +118,6 @@ function init_timers()
       player.ddx = _PLAYER_DDX
       player.dx = _PLAYER_DX_MAX
 
-      printh("game state switch: interlevel->game")
       _camera_freeze = false
       _interlevel_wipego = false
       _game_state = "main"
@@ -127,12 +126,17 @@ function init_timers()
     end
   )
 
-  -- for when the timer runs out and we move to gameover state
-  _timers.gameover = new_timer(
+  -- for when the timer runs out and we want to move to gameover state
+  _timers.pregameover = new_timer(
     0,
     function(t)
-      __update = _update_gameover
-      __draw = _draw_gameover
+      _q.add_event("pregameover_expr")
     end
   )
 end
+
+_timermgr = {
+  handle_playerstop = function()
+    _timers.pregameover:init(2,time())
+  end
+}

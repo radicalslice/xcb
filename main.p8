@@ -14,6 +14,7 @@ __lua__
 #include qico.lua
 #include utils.lua
 #include player.lua
+#include gamemgr.lua
 #include level.lua
 #include fleas.lua
 #include timer.lua

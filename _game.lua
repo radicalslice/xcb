@@ -32,7 +32,7 @@ function _update_game(dt)
   _timers.sakurai:update(_now)
   _timers.speedpin:update(_now)
   _timers.okami:update(_now)
-  _timers.gameover:update(_now)
+  _timers.pregameover:update(_now)
   if (_level_index == 1) then
     _timers.snow:update(_now)
   end
@@ -90,7 +90,7 @@ function _update_game(dt)
      _timers.input_freeze:init(0.5,_now)
      player.ddx = _PLAYER_DDX
      -- prevent the gameover time from triggering if the player has already init'd it
-     _timers.gameover.ttl = 0
+     _timers.pregameover.ttl = 0
      _last_level_index = _level_index
      __update = _update_interlevel
      __draw = _draw_interlevel
