@@ -126,6 +126,13 @@ function _update_game(dt)
     end
   end)
 
+  foreach(_FX.notifs, function(n) 
+    n:update(dt)
+    if n.ttl <= 0 then
+      del(_FX.notifs, c)
+    end
+  end)
+
   player:update(dt, y_ground, angle)
 
   -- check for collision between player and obstacles
@@ -303,6 +310,10 @@ function _draw_game()
 
   camera()
 
+  foreach(_FX.notifs, function(n)
+    n:draw()
+  end)
+
   palt(11, true)
   foreach(_FX.snow, function(c) 
     spr(118, c.x, c.y)
@@ -343,7 +354,7 @@ function _draw_game()
     -- print("X: "..flr(player.x), 56, 100, 9)
     -- print("cpu: "..stat(1), 56, 100, 9)
     -- print("plr: "..flr(player.x)..","..flr(player.y)..","..player.plane, 56, 94, 9)
-    -- print("cam: ".._camera_y, 56, 106, 9)
+    -- print("level: "..level.name, 56, 106, 9)
     -- if #(_obsman.obstacles) > 0 then
       -- print("obs[1]: ".._obsman.obstacles[1].y, 56, 114, 9)
     -- end

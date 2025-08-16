@@ -11,6 +11,7 @@ _checkpoints = {30,32,32,20}
 
 _configs = {
   {
+    name = "aTTICUS",
     mountain_tile_x = 17,
     mountain_tile_y = 1,
     mountain_pos_y = 24,
@@ -38,6 +39,7 @@ _configs = {
     end,
   },
   {
+    name = "cOINFLIP",
     mountain_tile_x = 17,
     mountain_tile_y = 1,
     mountain_pos_y = 24,
@@ -55,6 +57,7 @@ _configs = {
     snow_f = function() end,
   },
   {
+    name = "sOLAR rUN",
     mountain_tile_x = 13,
     mountain_tile_y = 3,
     mountain_pos_y = 28,
@@ -76,6 +79,7 @@ _configs = {
     snow_f = function() end,
   },
   {
+    name = "wULF dEN",
     mountain_tile_x = 13,
     mountain_tile_y = 3,
     mountain_pos_y = 28,

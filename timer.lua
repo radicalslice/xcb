@@ -102,11 +102,14 @@ function init_timers()
       local ranges, jumps, x_max = parse_ranges(_levels[_level_index], 0, _last_y_drawn + 8)
 
       level = {
+        name = _configs[_level_index].name,
         ranges = ranges,
         jumps = jumps,
         x_max = x_max,
         config = _configs[_level_index],
       }
+
+      add(_FX.notifs, new_notif(level.name))
 
       _map_table, _elevations = load_level_map_data(level) 
 
