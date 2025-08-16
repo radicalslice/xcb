@@ -92,6 +92,7 @@ function _update_game(dt)
      -- prevent the gameover time from triggering if the player has already init'd it
      _timers.pregameover.ttl = 0
      _last_level_index = _level_index
+     _up_charge,_down_charge = 0,0
      __update = _update_interlevel
      __draw = _draw_interlevel
    end

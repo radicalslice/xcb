@@ -11,7 +11,7 @@ _checkpoints = {30,32,32,20}
 
 _configs = {
   {
-    name = "aTTICUS",
+    name = "lOFT lADDER",
     mountain_tile_x = 17,
     mountain_tile_y = 1,
     mountain_pos_y = 24,
