@@ -1,21 +1,33 @@
+_last_level_index = 1
+
 function _draw_interlevel()
   _draw_game()
+  -- text box
   rectfill(24,32,112,72,0)
-  print("level ".._level_index.." clear!", 34, 34, 9)
-  print("time remaining: "..flr(_game_timer).."S", 34, 42, 9)
-  print("time added: ".._checkpoints[_level_index+1].."S",34,50,9)
+  print("level ".._last_level_index.." clear!", 34, 34, 9)
+  print("time remaining: "..flr(_game_timer.clock).."S", 34, 42, 9)
+  print("time added: ".._checkpoints[_last_level_index+1].."S",34,50,9)
   print("press "..BUTTON_X.." or "..BUTTON_O,34,60,9)
+
 end
 
-function _update_interlevel()
-  local now = time()
-  local dt = now - last_ts
+function _update_interlevel(dt)
+  _bigtree_x -= (_bigtree_dx * player.dx)
+  _mountain_x -= (_mountain_dx * player.dx)
+
+  if _bigtree_x < -127 then _bigtree_x = 0 end
+  if _mountain_x < -127 then _mountain_x = 0 end
   
   if player.boosting then
     player.boosting = false
   end
-  player:update(dt, player.y, player.angle, true)
-  if player.x >= level.x_max + 128 then player.x = level.x_max end
+  if player.x >= level.x_max + 144 then 
+    player.x = level.x_max
+    player.y = _last_y_drawn
+    _FX.trails = {}
+  end
+  player:update(dt, player.y+player.dx, 1, true)
+  align_camera(player.x)
 
   foreach(_FX.parts, function(part) 
     part:update(dt)
@@ -24,28 +36,22 @@ function _update_interlevel()
     end
   end)
 
-  _timers.input_freeze:update(now)
+  _timers.input_freeze:update()
+  if _level_index == 1 then
+    foreach(_FX.snow, function(c) 
+      c.x -= c.dx
+      c.y += c.dx
+      if c.x < -32 or c.y > 132 then
+        del(_FX.snow, c)
+      end
+    end)
+    _timers.snow:update()
+  end
 
-  if _timers.input_freeze.ttl == 0 and (btnp(4) or btnp(5)) then
+  _timers.interlevel:update()
+  if _timers.input_freeze.ttl == 0 and (btnp(4) or btnp(5)) and _timers.interlevel.ttl == 0 then
+    _timers.interlevel:init(0.2, _now)
+    _init_wipe(0.4)
     _level_index += 1
-
-    -- pass in last_y_drawn so the level hopefully connects to previous one...
-    local ranges, jumps, x_max = parse_ranges(_levels[_level_index], flr(player.x - (flr(player.x) % 8)), _last_y_drawn + 8)
-
-    level = {
-      ranges = ranges,
-      jumps = jumps,
-      x_max = x_max,
-      config = _configs[_level_index],
-    }
-
-    _map_table = load_level_map_data(level) 
-
-    _game_timer += _checkpoints[_level_index]
-
-    printh("game state switch: interlevel->game")
-    last_ts = time()
-    __update = _update_game
-    __draw = _draw_game
   end
 end

@@ -1,5 +1,6 @@
-_PLAYER_DX_MAX = 1.5 -- when on the ground
-_PLAYER_DX_MAX_BOOSTED = 2.2
+_PLAYER_DX_MAX = 2.0 -- when on the ground
+_PLAYER_DDX = 0.02
+_PLAYER_DX_MAX_BOOSTED = 3.2
 _PLAYER_DY_MAX = 3
 _PLAYER_STATE_ONGROUND = "on_ground"
 _PLAYER_STATE_SKYUP = "skyup"
@@ -10,18 +11,16 @@ _PLAYER_GRAVITY = 0.15
 _PLAYER_JUICE_ADD = 0.5
 _PLAYER_JUICE_MAX = 3
 _PLAYER_AIRTIMER_0 = 0.2
-_PLAYER_BOOST_TIME = 2 --seconds
 _PLAYER_BOOST_BONUS = 1 --seconds, extra time for a successful boost landing
 _PLAYER_HOP_PENALTY = 0.7
-_friction = 0.85
 _airres = 0.99
 player = {
   reset = function(p)
-    p.x = 20
+    p.x = 40
     p.dx_max = _PLAYER_DX_MAX
     p.y = Y_BASE -- player's actual y value
     p.dx = 0
-    p.ddx = 0.02 -- initial ddx
+    p.ddx = _PLAYER_DDX -- initial ddx
     p.dy = 1 -- give it some initial dy
     p.ddy = _PLAYER_GRAVITY
     p.angle = 0
@@ -29,15 +28,17 @@ player = {
     p.board_cycler = new_cycler(0.05, {9,10,12})
     p.speedpin_cycler = new_cycler(0.05, {9,10,12})
     p.boosting = false
-    p.juice = 0
+    p.juice = 3
     p.style = 0
     p.airtimer = 0
     p.pose = false
     p.pinned = false
     p.frame_timer = 0
+    p.plane = 0
+    p.planedy = 0
   end,
   change_state = function(p, state)
-    printh("State change: "..p.state.."->"..state)
+    -- printh("State change: "..p.state.."->"..state)
     p.state = state
   end,
   draw = function(p)
@@ -50,27 +51,36 @@ player = {
       pal(0, p.speedpin_cycler:get_color())
     end
     local base_sprite = 11 + 2*p.angle
-    if p.frame_timer > 1 and p.angle == 0 and _debug.idle then
-      base_sprite = 46
+
+    if p.state == _PLAYER_STATE_ONGROUND then
+      if p.planedy > 0 then
+        base_sprite = 38
+      elseif p.planedy < 0 then
+        base_sprite = 40
+      end
     end
 
     if player.pose and _debug.pose then base_sprite = 34 + 2*p.angle end
 
-    spr(base_sprite, p.x-10, p.y-6, 2, 2)
+    local draw_y = p.y - 10
+    draw_y += p.plane
+
+    spr(base_sprite, p.x-10, draw_y, 2, 2)
+        
     p.last_sprite = base_sprite
 
-    --[[
-    for i=1,player.juice do
-      spr(96, p.x-13 - (i*2) , p.y - 11 + (i*5))
-    end
-    ]]--
+    -- draw bb
+    -- local bb = p:get_bb()
+    -- rect(bb[1],bb[2],bb[3],bb[4],11)
 
     pal()
     palt()
   end,
+  get_bb = function(p)
+    return {flr(p.x - 8), flr(p.y+2+p.plane), flr(p.x+4), flr(p.y+6+p.plane)}
+  end,
   start_jump = function(p, boosted_dy)
     p.dy = mid(-1, boosted_dy, (p.dx / p.dx_max) * boosted_dy)
-    printh("New dy: "..p.dy)
     -- make sure we're just above ground level first
     p.y = p.y - 0.1
     p.dx -= p.dx * 0.1
@@ -104,23 +114,22 @@ player = {
       local f = function()
         return p.speedpin_cycler:get_color()
       end
-      if p:get_state() == _PLAYER_STATE_ONGROUND then
+      if p:get_state() == _PLAYER_STATE_ONGROUND and p.planedy == 0 and p.dx > 0 then
         add(_FX.parts, new_part(
-          p.x + 4 - rnd(6),
-          p.y + 12 - rnd(4),
+          p.x + 4 - rnd(8),
+          p.y + p.plane + 8 - rnd(2),
           function() return sin(rnd()) * -1 end,
           function() return 0 end,
           {7}, -- regular color
           _timers.okami.ttl > 0 and f or nil, -- colorf
           nil,
           flr(rnd(2)) + 1,
-          0.4,
+          0.2,
           false,
-          0
+          0.1
         ))
       end
 
-      -- printh("player.y: "..player.y)
       return
     end
 
@@ -138,12 +147,15 @@ player_state_funcs = {
     p.angle = ground_angle
 
     p.dx = min(p.dx_max, p.dx + p.ddx)
+    if p.ddx < 0 and p.dx < 0.05 and p.dx > 0 then
+      p.dx = 0
+      p.ddx = 0
+      _q.add_event("playerstop")
+    end
 
-    -- apply velocity
-    local slow_factors = {0.95, 0.9, 0.8}
-    if abs(ground_angle) >= 1 then
-      p.x += p.dx * slow_factors[abs(ground_angle)]
-    else
+    -- this works with the above to prevent player
+    -- from moving backwards
+    if p.dx > 0 then
       p.x += p.dx
     end
 
@@ -152,6 +164,7 @@ player_state_funcs = {
     end
 
     if btnp(5) and
+      p.ddx > 0 and
       not block_input and
       not p.boosting and
       p.juice >= 1 then
@@ -165,6 +178,23 @@ player_state_funcs = {
       end
         
     end
+
+    if btnp(3) and p.plane == 0 then
+      p.planedy = 0.5
+      add(_FX.trails, {})
+    elseif btnp(2) and p.plane == 6 then
+      p.planedy = -0.5
+      add(_FX.trails, {})
+    end
+
+    if p.planedy ~= 0 then
+      p.plane += p.planedy
+      add(_FX.trails[#_FX.trails], {x=player.x, y=player.y+player.plane+4, rad=flr(rnd(2))+1})
+    end
+    if p.plane <= 0 or p.plane >= 6 then
+      p.planedy = 0
+    end
+
 
   end,
   skyup = function(p, dt, y_ground, ground_angle)
@@ -227,13 +257,17 @@ player_state_funcs = {
         p.dx *= _PLAYER_HOP_PENALTY
         p.dx_max = _PLAYER_DX_MAX
         p:change_state(_PLAYER_STATE_HOPUP)
+        if p.boosting then
+          p.handle_expr_boost()
+          _timers.boost.ttl = 0
+        end
         -- do the shake
         _shake = 1
-        for i=0,20 do 
+        for i=0,10 do 
           add(_FX.parts,
             new_part(
               p.x + rnd(3),
-              p.y + 11 - rnd(4),
+              p.y + p.plane + 11 - rnd(4),
               function() return sin(rnd()) * 3 end,
               function() return -rnd(7) end,
               {7},
@@ -251,14 +285,17 @@ player_state_funcs = {
         p.y = y_ground
         p.angle = ground_angle
         p:change_state(_PLAYER_STATE_ONGROUND)
-        p.juice = min(_PLAYER_JUICE_MAX, p.juice + _PLAYER_JUICE_ADD)
+        if not p.boosting then
+          p.juice = min(_PLAYER_JUICE_MAX, p.juice + _PLAYER_JUICE_ADD)
+        end
         if p.boosting and _debug.pinparticles then
           _timers.boost:add(_PLAYER_BOOST_BONUS)
           _timers.okami:init(0.2,time())
         end
 
         -- speed pin if timer was low enough
-        if p.airtimer < _PLAYER_AIRTIMER_0 then
+        -- and if we haven't started decelerating at the end of a level
+        if p.airtimer < _PLAYER_AIRTIMER_0 and p.ddx > 0 then
           p.dx = p.dx_max
           p.airtimer = 0
           -- for stopping the speed pin cycler
@@ -302,9 +339,17 @@ player_state_funcs = {
 }
 
 player.handle_expr_boost = function()
-  printh("called player handler")
   player.dx_max = _PLAYER_DX_MAX
   player.boosting = false
+end
+
+player.handle_obs_coll = function()
+  player.dx = player.dx * 0.93
+end
+
+player.handle_timeover = function()
+  player.ddx = -0.01
+  player.handle_expr_boost()
 end
 
 function move_in_y(p, y_ground)

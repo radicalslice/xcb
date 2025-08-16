@@ -11,12 +11,12 @@ function new_timer(now, f)
     add = function(t, addl_t)
       t.ttl += addl_t
     end,
-    update = function(t, now)
+    update = function(t)
       if t.ttl == 0 then
         return
       end
-      t.ttl = t.ttl - (now - t.last_t)
-      t.last_t = now
+      t.ttl = t.ttl - (_now - t.last_t)
+      t.last_t = _now
       if t.ttl <= 0 then
         t.ttl = 0
         t:f()
@@ -30,7 +30,6 @@ function init_timers()
   _timers.boost = new_timer(
     0,
     function(t)
-      printh("boost timer expired")
       _q.add_event("expr_boost")
     end
     )
@@ -40,7 +39,6 @@ function init_timers()
     0,
     function(t)
       -- t.ttl = 0.3
-      printh("expired pose stop")
       player.pose = false
     end
     )
@@ -49,7 +47,6 @@ function init_timers()
   _timers.sakurai = new_timer(
     0,
     function(t)
-      printh("expired sakurai stop")
       __update = _update_game
       __draw = _draw_game
       _timers.boost:init(2,time())
@@ -64,7 +61,6 @@ function init_timers()
   _timers.speedpin = new_timer(
     0,
     function(t)
-      printh("expired speed pin timer")
       player.pinned = false
     end
     )
@@ -72,24 +68,75 @@ function init_timers()
   -- for stopping the okami particles 
   _timers.okami = new_timer(
     0,
-    function(t)
-      printh("expired okami timer")
-    end
+    function(t) end
     )
   
   -- for stopping button presses from advancing
   _timers.input_freeze = new_timer(
     0,
+    function(t) end
+  )
+
+  -- for emitting snow
+  _timers.snow = new_timer(
+    0,
     function(t)
-      printh("expired input lock")
+      local y = -80 + (flr(rnd(7)) * 10)
+      local x = 90 + (flr(rnd(18)) * 8)
+      -- local y, x = 64, 64
+      local dx = 1+rnd(1)
+      add(_FX.snow, {x=x, y=y, dx=dx})
+      t:init(0.05, time())
     end
   )
 
-  -- for screen transitions
-  _timers.wipe = new_timer(
+  -- for the little interlevel "animation" and wipe
+  _timers.interlevel = new_timer(
     0,
     function(t)
-      printh("expired wipe timer")
+      -- reset player x value
+      player.x = 40
+
+      -- pass in last_y_drawn so the level hopefully connects to previous one...
+      -- pass in 0 for the player's x position because it doesn't matter here
+      local ranges, jumps, x_max = parse_ranges(_levels[_level_index], 0, _last_y_drawn + 8)
+
+      level = {
+        ranges = ranges,
+        jumps = jumps,
+        x_max = x_max,
+        config = _configs[_level_index],
+      }
+
+      _map_table, _elevations = load_level_map_data(level) 
+
+      _game_timer.clock += _checkpoints[_level_index]
+
+      _obsman:init()
+      _obsman:parselvl(_levels[_level_index])
+      
+      player.ddx = _PLAYER_DDX
+      player.dx = _PLAYER_DX_MAX
+
+      _camera_freeze = false
+      _interlevel_wipego = false
+      _game_state = "main"
+      __update = _update_game
+      __draw = _draw_game
+    end
+  )
+
+  -- for when the timer runs out and we want to move to gameover state
+  _timers.pregameover = new_timer(
+    0,
+    function(t)
+      _q.add_event("pregameover_expr")
     end
   )
 end
+
+_timermgr = {
+  handle_playerstop = function()
+    _timers.pregameover:init(2,time())
+  end
+}

@@ -1,11 +1,13 @@
 level = {}
 _level_index = 1
-_level_count = 3
+_level_count = 4
 -- Map[XPos][mapx, mapy, sprnum]
 _map_table = {}
+-- []{x_pos, y_elevation}
+_elevations = {}
 
 -- how much time to add to the remaining time at each interlevel
-_checkpoints = {32,22,20}
+_checkpoints = {30,32,32,20}
 
 _configs = {
   {
@@ -16,9 +18,40 @@ _configs = {
     tree_tileheight = 3,
     foreground = false,
     clouds = false,
+    draw_f = function()
+      rectfill(0, 0, 128, 128, 12)
+      local cloudheight = 6
+      local gapheight = 3
+      local next_y = 0
+      while cloudheight > 0 do
+        rectfill(0, next_y, 128, next_y + cloudheight, 7) 
+        next_y = next_y + cloudheight + gapheight
+        cloudheight -= 1
+        gapheight += 1
+      end
+      circfill(24, 24, 4, 10)
+      circ(24, 24, 6, 10)
+      circ(24, 24, 8, 10)
+      spr(98, 24, 25, 2, 1)
+      spr(98, 8, 15, 2, 1, true)
+      spr(116, 16, 20, 2, 1)
+    end,
+  },
+  {
+    mountain_tile_x = 17,
+    mountain_tile_y = 1,
+    mountain_pos_y = 24,
+    tree_pos_y = 30,
+    tree_tileheight = 3,
+    foreground = false,
+    clouds = true,
     mtn_f = function() end,
-    sky_f = function() end,
-    sun_f = function() end,
+    sky_f = function()
+      rectfill(-16,0,144,63,12)
+    end,
+    sun_f = function()
+      circfill(52, 10, 5, 10)
+    end,
     snow_f = function() end,
   },
   {
@@ -35,9 +68,10 @@ _configs = {
     end,
     sky_f = function()
       pal(12, 9)
+      rectfill(-16,0,144,63,12)
     end,
     sun_f = function()
-      circfill(112, 16, 5, 8)
+      circfill(88, 20, 5, 8)
     end,
     snow_f = function() end,
   },
@@ -124,31 +158,93 @@ bdown,32
 --]]
 _levels = {
 [[
-flat,48
-ddown,128
-flat,96
-bup,16,-2.5
-bdown,16
-flat,112
-bup,16,-2.5
-bdown,16
-flat,112
+ddown,512
 bup,8,-2
 bdown,8
+ddown,32
+flat,256
+bup,16,-2.5
+bdown,16
+flat,256
+obs,6
 flat,112
 bup,16,-2.5
 bdown,16
-flat,64
+flat,256
+obs,0
+flat,176
+obs,0
+flat,256
+bup,16,-2.5
+bdown,16
+flat,112
 bup,8,-2
 bdown,8
 flat,96
 ddown,24
+flat,176
+ddown,24
+flat,24
+bup,16,-2.5
+bdown,16
+flat,112
+bup,16,-2.5
+bdown,16
+flat,80
+bup,16,-2.5
+bdown,16
+flat,112
+bup,16,-2.5
+bdown,16
+flat,32
+ddown,32
+flat,176
+obs,0
+flat,80
+obs,6
+flat,64
+ddown,128]],
+[[
+ddown,144
+flat,88
+obs,0
+flat,64
+obs,6
+flat,32
+bup,16,-2.5
+bdown,16
+flat,112
+bup,16,-2.5
+bdown,16
+flat,56
+obs,0
+flat,112
+bup,8,-2
+bdown,8
+flat,72
+obs,0
+flat,96
+bup,16,-2.5
+bdown,16
+flat,64
+bup,8,-2
+bdown,8
+flat,88
+obs,0
+ddown,24
+flat,56
+obs,6
 flat,64
 bup,8,-2
 bdown,8
 flat,96
 bup,16,-2.5
-flat,80
+flat,112
+obs,0
+flat,48
+obs,6
+flat,48
+obs,0
 bup,16,-2.5
 bdown,16
 flat,128
@@ -158,6 +254,8 @@ flat,48
 bup,16,-2.5
 bdown,16
 flat,112
+obs,6
+flat,64
 bup,8,-2
 bdown,8
 flat,16
@@ -170,41 +268,65 @@ bup,8,-2
 bdown,8
 flat,64
 bup,16,-2.5
-flat,40
+flat,56
+obs,6
+flat,56
+obs,0
 ddown,64
 flat,64
 bup,8,-2
 bdown,8
 flat,16
 bup,16,-2.5
-flat,128]],
+flat,96
+ddown,128]],
 [[
+ddown,144
 flat,128
 bup,8,-2
 bdown,8
 flat,32
 bup,8,-2
 bdown,8
-flat,72
+flat,152
 bup,16,-2.5
 bdown,16
 flat,8
 bup,16,-2.5
 bdown,16
-flat,72
+flat,152
 bup,8,-2
 bdown,8
 flat,32
 bup,8,-2
 bdown,8
-flat,96
-ddown,24
+flat,64
+obs,6
+flat,64
+obs,6
+flat,64
+bup,16,-2.5
+bdown,16
 flat,8
+bup,16,-2.5
+bdown,16
+flat,72
+obs,0
+flat,112
+bup,8,-2
+bdown,8
+flat,48
+ddown,32
+flat,16
 bup,8,-2
 bdown,8
 flat,8
 ddown,48
-flat,96
+flat,88
+obs,6
+flat,56
+obs,0
+flat,32
 bup,16,-2.5
 flat,48
 ddown,72
@@ -214,7 +336,10 @@ ddown,72
 flat,32
 bup,8,-2
 ddown,64
-flat,128
+flat,64
+obs,0
+flat,96
+obs,6
 ddown,32
 flat,8
 bup,8,-2
@@ -242,8 +367,10 @@ ddown,24
 flat,16
 bup,8,-2
 ddown,32
-flat,128]],
+flat,96
+ddown,128]],
 [[
+ddown,144
 flat,96
 bup,8,-2
 bdown,16
@@ -304,134 +431,9 @@ ddown,56
 flat,64
 bup,16,-2.5
 bdown,16
-flat,96]]
+flat,96
+ddown,128]]
 }
--- type, x_length, height for flats
--- this levelX one is pretty sick, you can ride a boost through like the entire thing..
-_levelX = [[
-flat,128
-bup,8,-1.5
-bdown,8
-flat,32
-bup,8,-2
-bdown,8
-flat,32
-bup,8,-2
-bdown,8
-flat,128
-bup,8,-2
-bdown,64
-flat,128
-bup,24,-2
-bdown,64,-2
-flat,16
-bup,24,-2
-flat,32
-bup,8,-2
-bdown,128
-flat,196]]
---[[
-_menagMini = [[
-flat,128
-bup,8,-2
-bdown,8
-flat,128
-bup,8,-2
-bdown,8
-flat,128
-bup,8,-2
-bdown,8
-flat,32
-bup,8,-2
-bdown,8
-flat,128
-bup,8,-2
-bdown,8
-flat,32
-bup,8,-2
-bdown,8
-flat,128
-bup,8,-2
-bdown,8
-flat,32
-bup,8,-2
-bdown,8
-flat,16
-bup,8,-2
-bdown,8
-flat,128
-bup,8,-2
-bdown,8
-flat,32
-bup,8,-2
-bdown,8
-flat,16
-bup,8,-2
-bdown,8
-flat,128]]--
---[[
-_menagFlats = [[
-flat,128
-bup,16,-2.5
-flat,128
-bup,16,-2.5
-flat,128
-bup,16,-2.5
-flat,16
-bup,16,-2.5
-flat,128
-bup,16,-2.5
-flat,16
-bup,16,-2.5
-flat,16
-bdown,24
-flat,128
-bup,16,-2.5
-flat,16
-bup,16,-2.5
-flat,16
-bdown,24
-flat,128]]--
---[[
-_menagReg = [[
-flat,128
-bup,16,-2.5
-bdown,16
-flat,128
-bup,16,-2.5
-bdown,16
-flat,128
-bup,16,-2.5
-bdown,16
-flat,16
-bup,16,-2.5
-bdown,16
-flat,128
-bup,16,-2.5
-bdown,16
-flat,16
-bup,16,-2.5
-bdown,16
-flat,128
-bup,16,-2.5
-bdown,16
-flat,16
-bup,16,-2.5
-bdown,24
-flat,16
-bup,8,-2
-bdown,32
-flat,128
-bup,16,-2.5
-bdown,16
-flat,16
-bup,16,-2.5
-bdown,16
-flat,24
-bup,8,-2
-bdown,32
-flat,128]]--
-
 
 -- String -> []Range
 function parse_ranges(str, x_base, y_base)
@@ -483,9 +485,14 @@ function parse_ranges(str, x_base, y_base)
           return my_flat, 0
       end
     end
-    add(ranges, range)
-    x_curr = x_end
+    if ramp_type != "obs" then
+      add(ranges, range)
+      x_curr = x_end
+    end
   end)
+
+  -- here, add some extra flat and a downward slope to accommodate level transitions
+  -- add(ranges, 
   return ranges, jumps, x_curr
 end
 
@@ -509,7 +516,6 @@ end
 
 -- Int -> Level -> ?Range
 function find_range(x, level)
-  local found = false
   for r in all(level.ranges) do
     if x >= r.x_start and x < r.x_end then
       return r
@@ -518,9 +524,21 @@ function find_range(x, level)
   return nil
 end
 
+-- Int -> _elevations -> y_elevation
+function find_elevation(x, es)
+  -- x
+  for i, j in pairs(es) do
+    -- printh("elevation pair: "..j[1]..","..j[2])
+    if es[i+1] and x >= j[1] and x < es[i+1][1] then
+      return es[i][2]
+    end
+  end
+  -- assume last elevation if we go this far
+  return es[#es][2]
+end
+
 -- Int -> Level -> Int
 function find_jump(x, level)
-  local found = false
   for b in all(level.jumps) do
     if x >= b.x and b.used == false then
       b.used = true

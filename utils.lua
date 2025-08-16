@@ -46,3 +46,19 @@ function new_cycler(cycle_ttl, colors)
     end,
   }
 end
+
+-- type BoundingBox = [float, float, float, float]
+-- As in: [x0,y0,x1,y1], the corners of the bounding box
+-- collides_new :: BoundingBox -> BoundingBox -> Bool
+function collides_new(s1,s2)
+  if (
+    s1[1] < s2[3]
+    and s1[3] > s2[1]
+    and s1[4] > s2[2]
+    and s1[2] < s2[4]
+    ) then
+    return true
+  end
+
+  return false
+end
