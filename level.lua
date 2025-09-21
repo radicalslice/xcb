@@ -12,10 +12,8 @@ _checkpoints = {30,32,32,20}
 _configs = {
   {
     name = "lOFT lADDER",
-    mountain_tile_x = 17,
-    mountain_tile_y = 1,
-    mountain_pos_y = 24,
-    tree_pos_y = 30,
+    -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x
+    tiles = { 17,1,24,30,21},
     tree_tileheight = 3,
     foreground = false,
     clouds = false,
@@ -30,7 +28,6 @@ _configs = {
         cloudheight -= 1
         gapheight += 1
       end
-      circfill(24, 24, 4, 10)
       circ(24, 24, 6, 10)
       circ(24, 24, 8, 10)
       spr(98, 24, 25, 2, 1)
@@ -40,10 +37,8 @@ _configs = {
   },
   {
     name = "cOINFLIP",
-    mountain_tile_x = 17,
-    mountain_tile_y = 1,
-    mountain_pos_y = 24,
-    tree_pos_y = 30,
+    -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x
+    tiles = { 17,1,24,30,29},
     tree_tileheight = 3,
     foreground = false,
     clouds = true,
@@ -58,10 +53,8 @@ _configs = {
   },
   {
     name = "sOLAR rUN",
-    mountain_tile_x = 13,
-    mountain_tile_y = 3,
-    mountain_pos_y = 28,
-    tree_pos_y = 40,
+    -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x
+    tiles = { 13,3,28,40,21},
     tree_tileheight = 2,
     foreground = true,
     clouds = true,
@@ -80,10 +73,8 @@ _configs = {
   },
   {
     name = "wULF dEN",
-    mountain_tile_x = 13,
-    mountain_tile_y = 3,
-    mountain_pos_y = 28,
-    tree_pos_y = 40,
+    -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x
+    tiles = { 13,3,28,40,21},
     tree_tileheight = 2,
     foreground = true,
     clouds = true,

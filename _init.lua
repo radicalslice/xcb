@@ -73,7 +73,7 @@ function load_level_map_data(level)
       if angle == 0 then
         add(
           map_table,
-          {x=x_curr,y=y_updated -8 ,map_x=21 + ((x_curr / 8) % 3),map_y=0} -- generates flat tile
+          {x=x_curr,y=y_updated -8,map_x=level.config.tiles[5] + ((x_curr / 8) % 3),map_y=0} -- generates flat tile
         )
         add(elevations, {x_curr, y_updated})
       last_angle = 0

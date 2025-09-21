@@ -246,10 +246,10 @@ function _draw_game()
 
     for i=0,224,32 do
       map(
-        config.mountain_tile_x,
-        config.mountain_tile_y,
+        config.tiles[1],
+        config.tiles[2],
         _mountain_x + i,
-        config.mountain_pos_y,
+        config.tiles[3],
         4,
         2
       )
@@ -264,7 +264,7 @@ function _draw_game()
     config.snow_f()
     -- random trees
     for i=0,224,32 do
-      map(9,1, _bigtree_x + i, config.tree_pos_y, 4, config.tree_tileheight)
+      map(9,1, _bigtree_x + i, config.tiles[4], 4, config.tree_tileheight)
     end
 
     -- Snow below trees and above course
@@ -273,7 +273,7 @@ function _draw_game()
     -- foreground trees
     if config.foreground then
       for i=0,224,32 do
-        map(9,4, _bigtree_x + i, config.tree_pos_y + 12, 4, 1)
+        map(9,4, _bigtree_x + i, config.tiles[4] + 12, 4, 1)
       end
     end
     pal()
