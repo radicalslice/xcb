@@ -78,14 +78,14 @@ function load_level_map_data(level)
         add(elevations, {x_curr, y_updated})
       last_angle = 0
       elseif angle == -1 then
-        local map_x = 24
-        if last_angle == -1 then map_x = 25 end
+        local map_x = level.config.tiles[6]
+        if last_angle == -1 then map_x +=1 end
         add(map_table,{x=x_curr,y=y_updated-8,map_x=map_x,map_y=0})
         last_angle = -1
         add(elevations, {x_curr, y_updated})
       elseif angle == 1 then
-        local map_x = 27
-        if last_angle == -1 then map_x = 26 end
+        local map_x = level.config.tiles[7]
+        if last_angle == -1 then map_x -= 1 end
         add(map_table,{x=x_curr,y=y_updated,map_x=map_x,map_y=0})
         last_angle = 1
         add(elevations, {x_curr, y_updated})

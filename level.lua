@@ -12,8 +12,8 @@ _checkpoints = {30,32,32,20}
 _configs = {
   {
     name = "lOFT lADDER",
-    -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x
-    tiles = { 17,1,24,30,21},
+    -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x,ramp left start,ramp right end,fill color for under course
+    tiles = { 17,1,24,30,29,32,35,4},
     tree_tileheight = 3,
     foreground = false,
     clouds = false,
@@ -38,7 +38,7 @@ _configs = {
   {
     name = "cOINFLIP",
     -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x
-    tiles = { 17,1,24,30,29},
+    tiles = {17,1,24,30,21,24,27,7},
     tree_tileheight = 3,
     foreground = false,
     clouds = true,
@@ -54,7 +54,7 @@ _configs = {
   {
     name = "sOLAR rUN",
     -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x
-    tiles = { 13,3,28,40,21},
+    tiles = { 13,3,28,40,21,24,27,7},
     tree_tileheight = 2,
     foreground = true,
     clouds = true,
@@ -74,7 +74,7 @@ _configs = {
   {
     name = "wULF dEN",
     -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x
-    tiles = { 13,3,28,40,21},
+    tiles = { 13,3,28,40,21,24,27,7},
     tree_tileheight = 2,
     foreground = true,
     clouds = true,
@@ -439,8 +439,7 @@ function parse_ranges(str, x_base, y_base)
   foreach(split(str, "\n"), function(substr)
     local vals = split(substr, ",")
     local x_start = x_curr
-    local ramp_type = vals[1]
-    local x_end = x_start + vals[2]
+    local ramp_type, x_end = vals[1], x_start + vals[2]
     local range = {x_start = x_start, x_end = x_end}
     -- {ramp_type, x_end, y_value, jump_dy}
     if ramp_type == "bup" then
@@ -462,8 +461,6 @@ function parse_ranges(str, x_base, y_base)
       range.f = function(x_curr)
         -- i think this -16 works because our ramps are (so far) always 16 px high and wide
         return my_flat - ((x_end - x_start) * -((x_curr - x_start) / (x_end - x_start))), 1
-        -- this one is curvy and kinda owns
-        -- return y_base - ((x_end - x_curr) * -((x_curr - x_start) / (x_end - x_start))), 2
       end
       last_flat = last_flat + vals[2]
     elseif ramp_type == "ddown" then
@@ -486,8 +483,6 @@ function parse_ranges(str, x_base, y_base)
     end
   end)
 
-  -- here, add some extra flat and a downward slope to accommodate level transitions
-  -- add(ranges, 
   return ranges, jumps, x_curr
 end
 

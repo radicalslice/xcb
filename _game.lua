@@ -179,7 +179,7 @@ function draw_course(player_x)
     if tile.x < player_x + 136 then
       local true_x = tile.x - player_x + _camera_x_offset
       local true_y = tile.y - _camera_y
-      rectfill(true_x, true_y+8, true_x+8, 132, 7)
+      rectfill(true_x, true_y+8, true_x+8, 132, level.config.tiles[8])
       map(tile.map_x,
         tile.map_y,
         true_x,
@@ -198,9 +198,9 @@ function draw_course(player_x)
     for i=x_start,x_start+256,8 do
       local true_x = i - player_x + _camera_x_offset
       local true_y = _last_y_drawn - _camera_y
-      rectfill(true_x, y_offset+8, true_x+8, 132, 7)
+      rectfill(true_x, y_offset+8, true_x+8, 132, level.config.tiles[8])
       map(
-        27,
+        level.config.tiles[7],
         0,
         true_x,
         y_offset,
