@@ -5,15 +5,8 @@ _up_charge = 0
 
 function _draw_interlevel()
   _draw_game()
-  -- text box
-  -- rectfill(24,32,112,72,0)
-  -- print("level ".._last_level_index.." clear!", 34, 34, 9)
-  -- print("time remaining: "..flr(_game_timer.clock).."S", 34, 42, 9)
-  -- print("time added: ".._checkpoints[_last_level_index+1].."S",34,50,9)
-  -- print("press "..BUTTON_X.." or "..BUTTON_O,34,60,9)
-  -- branching arrows
-  palt(0, false)
 
+  palt(0, false)
   local up_arrow_x = 55
   local down_arrow_x = 55
 
@@ -24,8 +17,8 @@ function _draw_interlevel()
     down_arrow_x += rnd(2) - 1
   end
 
-  spr(114,up_arrow_x,72 - (_up_charge * 2))
-  spr(114,down_arrow_x,81 + (_down_charge * 2),1,1,false,true)
+  spr(114,up_arrow_x,72 - (_up_charge * 4))
+  spr(114,down_arrow_x,81 + (_down_charge * 4),1,1,false,true)
   dshad("(some level a)", 65, 68)
   dshad("(some level b)", 65, 88)
   palt(0, true)
@@ -83,7 +76,7 @@ function _update_interlevel(dt)
   end
 
   _timers.interlevel:update()
-  if _timers.input_freeze.ttl == 0 and (_up_charge > 2 or _down_charge > 2) and _timers.interlevel.ttl == 0 then
+  if _timers.input_freeze.ttl == 0 and (_up_charge > 1.2 or _down_charge > 1.2) and _timers.interlevel.ttl == 0 then
     _timers.interlevel:init(0.2, _now)
     _up_charge,_down_charge = 0,0
     _init_wipe(0.4)

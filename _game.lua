@@ -298,7 +298,7 @@ function _draw_game()
 
   foreach(_FX.trails, function(t)
     for crc in all(t) do 
-      circfill(crc.x,crc.y,crc.rad,6)  
+      circfill(crc.x,crc.y,crc.rad,(config.trailcolor or 6))  
     end
   end)
 

@@ -15,6 +15,7 @@ _configs = {
     -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x,ramp left start,ramp right end,fill color for under course
     tiles = { 17,1,24,30,29,32,35,4},
     tree_tileheight = 3,
+    trailcolor = 3,
     foreground = false,
     clouds = false,
     draw_f = function()

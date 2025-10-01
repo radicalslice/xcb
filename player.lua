@@ -104,34 +104,14 @@ player = {
     p.speedpin_cycler:update(dt)
 
     local pstate = p:get_state()
-    if pstate == _PLAYER_STATE_ONGROUND 
-      or pstate == _PLAYER_STATE_SKYUP
-      or pstate == _PLAYER_STATE_SKYDOWN
-      or pstate == _PLAYER_STATE_HOPUP
-      or pstate == _PLAYER_STATE_HOPDOWN then
-      player_state_funcs[pstate](p, dt, y_ground, ground_angle, block_input)
+    -- call the state function for whatever state we're in
+    player_state_funcs[pstate](p, dt, y_ground, ground_angle, block_input)
 
-      local f = function()
-        return p.speedpin_cycler:get_color()
-      end
-      if p:get_state() == _PLAYER_STATE_ONGROUND and p.planedy == 0 and p.dx > 0 then
-        add(_FX.parts, new_part(
-          p.x + 4 - rnd(8),
-          p.y + p.plane + 8 - rnd(2),
-          function() return sin(rnd()) * -1 end,
-          function() return 0 end,
-          {7}, -- regular color
-          _timers.okami.ttl > 0 and f or nil, -- colorf
-          nil,
-          flr(rnd(2)) + 1,
-          0.2,
-          false,
-          0.1
-        ))
-      end
-
-      return
+    local f = function()
+      return p.speedpin_cycler:get_color()
     end
+
+    return
 
   end,
   get_board_center_x = function(p)
@@ -181,20 +161,37 @@ player_state_funcs = {
 
     if btnp(3) and p.plane == 0 then
       p.planedy = 0.5
-      add(_FX.trails, {})
     elseif btnp(2) and p.plane == 6 then
       p.planedy = -0.5
-      add(_FX.trails, {})
     end
 
     if p.planedy ~= 0 then
       p.plane += p.planedy
-      add(_FX.trails[#_FX.trails], {x=player.x, y=player.y+player.plane+4, rad=flr(rnd(2))+1})
     end
+    add(_FX.trails, {})
+    add(_FX.trails[#_FX.trails], {x=player.x, y=player.y+player.plane+4, rad=flr(rnd(2))+1})
+
     if p.plane <= 0 or p.plane >= 6 then
       p.planedy = 0
     end
 
+
+    -- add snow puff
+    if p.planedy == 0 and p.dx > 0 then
+      add(_FX.parts, new_part(
+          p.x + 6 - rnd(8),
+          p.y + p.plane + 6 - rnd(2),
+          function() return sin(rnd()) * -1 end,
+          function() return 0 end,
+          {7}, -- regular color
+          _timers.okami.ttl > 0 and f or nil, -- colorf
+          nil,
+          flr(rnd(2)) + 2,
+          0.4,
+          false,
+          0.1
+        ))
+    end
 
   end,
   skyup = function(p, dt, y_ground, ground_angle)

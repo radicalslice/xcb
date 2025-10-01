@@ -86,7 +86,7 @@ function new_notif(msg)
 end
 
 function dshad(str, x, y, ow)
-  local colors = {9, 10}
+  local colors = {4,9}
   if ow != nil and #ow == 2 then
     colors = ow
   end
