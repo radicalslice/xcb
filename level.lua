@@ -53,6 +53,31 @@ _configs = {
     snow_f = function() end,
   },
   {
+    name = "gREENHOUSE",
+    tiles = { 17,1,24,30,29,32,35,4},
+    tree_tileheight = 3,
+    trailcolor = 3,
+    foreground = false,
+    clouds = false,
+    draw_f = function()
+      rectfill(0, 0, 128, 128, 12)
+      local cloudheight = 6
+      local gapheight = 3
+      local next_y = 0
+      while cloudheight > 0 do
+        rectfill(0, next_y, 128, next_y + cloudheight, 7) 
+        next_y = next_y + cloudheight + gapheight
+        cloudheight -= 1
+        gapheight += 1
+      end
+      circ(24, 24, 6, 10)
+      circ(24, 24, 8, 10)
+      spr(98, 24, 25, 2, 1)
+      spr(98, 8, 15, 2, 1, true)
+      spr(116, 16, 20, 2, 1)
+    end,
+  },
+  {
     name = "sOLAR rUN",
     -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x
     tiles = { 13,3,28,40,21,24,27,7},
@@ -153,6 +178,7 @@ bup,8,-2
 bdown,32
 --]]
 _levels = {
+-- loft ladder
 [[
 ddown,512
 bup,8,-2
@@ -200,6 +226,7 @@ flat,80
 obs,6,160
 flat,64
 ddown,128]],
+-- coinflip
 [[
 ddown,144
 flat,88
@@ -275,6 +302,86 @@ bdown,8
 flat,16
 bup,16,-2.5
 flat,96
+ddown,128]],
+-- greenhouse
+[[
+ddown,144
+flat,144
+obs,6,115
+obs,6,115
+obs,6,115
+obs,6,115
+obs,6,115
+obs,6,115
+flat,128
+obs,0,115
+obs,0,115
+obs,0,115
+obs,0,115
+flat,64
+obs,6,115
+obs,6,115
+obs,6,115
+obs,6,115
+flat,128
+obs,0,115
+obs,0,115
+flat,64
+obs,6,115
+obs,6,115
+obs,6,115
+flat,48
+obs,0,115
+obs,0,115
+flat,96
+bup,8,-2,obs
+bdown,8
+flat,16
+obs,0,113
+flat,64
+obs,6,115
+obs,6,115
+flat,48
+obs,0,115
+obs,0,115
+flat,128
+obs,6,115
+obs,6,115
+obs,6,115
+flat,40
+obs,0,115
+obs,0,115
+obs,0,115
+obs,0,115
+obs,0,115
+flat,40
+obs,6,115
+flat,88
+bup,8,-2
+bdown,8
+flat,16
+obs,0,113
+flat,64
+obs,0,115
+flat,40
+obs,6,115
+flat,40
+obs,0,115
+flat,32
+bup,8,-2
+bdown,8
+flat,64
+obs,6,115
+obs,6,115
+flat,32
+obs,0,115
+obs,0,115
+flat,48
+obs,6,115
+obs,6,115
+flat,64
+bup,8,-2
+bdown,8
 ddown,128]],
 [[
 ddown,144
@@ -447,7 +554,10 @@ function parse_ranges(str, x_base, y_base)
       -- trying to shadow
       local my_flat = last_flat
       range.f = function(x_pos)
-        return my_flat - (x_pos - x_start), -1
+        return my_flat - x_pos + x_start, -1
+      end
+      if vals[4] != nil then
+        range.map = {33, 5}
       end
       local jump = {
         used = false,
@@ -460,15 +570,14 @@ function parse_ranges(str, x_base, y_base)
       local my_flat = last_flat
       -- {ramp_type, x_end, y_value}
       range.f = function(x_curr)
-        -- i think this -16 works because our ramps are (so far) always 16 px high and wide
-        return my_flat - ((x_end - x_start) * -((x_curr - x_start) / (x_end - x_start))), 1
+        return my_flat + x_curr - x_start, 1
       end
       last_flat = last_flat + vals[2]
     elseif ramp_type == "ddown" then
     -- {ramp_type, x_end, y_value}
       local my_flat = last_flat
       range.f = function(x_curr)
-        return my_flat - ((x_end - x_start) * -((x_curr - x_start) / (x_end - x_start))), 1
+        return my_flat + x_curr - x_start, 1
       end
       last_flat = last_flat + vals[2]
     elseif ramp_type == "flat" then
@@ -478,9 +587,16 @@ function parse_ranges(str, x_base, y_base)
           return my_flat, 0
       end
     end
+
     if ramp_type != "obs" then
       add(ranges, range)
       x_curr = x_end
+    elseif ramp_type == "obs" then
+      local my_flat = last_flat
+      add(ranges, {x_start = x_curr, x_end = x_curr+8, f = function(x_curr)
+        return my_flat, 0
+      end})
+      x_curr += 8
     end
   end)
 

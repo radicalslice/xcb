@@ -13,6 +13,7 @@ _obsman = {
       local vals = split(substr, ",")
       if vals[1] == "obs" then
         add(m.queue, {spawn_x=x_curr,plane=vals[2],sprite=vals[3]})
+        x_curr += 8
       else
         x_curr += vals[2]
       end
@@ -30,10 +31,14 @@ _obsman = {
 }
 
 function new_obstacle(elevation, plane, sprite)
-  local obsy = (plane == 6) and (elevation+8) or elevation
-  printh("Obstacle at elevation "..elevation.." and plane "..plane)
+  local obsy = elevation
+  if plane == 6 then
+    obsy = elevation + 8
+  elseif plane == -6 then
+    obsy = elevation - 8
+  end
   return {
-    x = 130 + _camera_x,
+    x = 126 + _camera_x,
     y = obsy,
     sprite = sprite,
     plane = plane,
@@ -61,8 +66,6 @@ function check_spawn(x_curr)
     -- check the x pos and return if we need to spawn
     if x_curr + 128 > obs.spawn_x then
       local elevation = find_elevation(obs.spawn_x, _elevations)
-      printh("Spawn at: "..obs.spawn_x..", elevation: "..(elevation)..", player: "..player.y)
-      -- we'll use a 14px cheat to align to the course
       add(_obsman.obstacles, new_obstacle(elevation, obs.plane, obs.sprite))
       del(_obsman.queue, obs)
     end

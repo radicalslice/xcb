@@ -169,7 +169,7 @@ player_state_funcs = {
       p.plane += p.planedy
     end
     add(_FX.trails, {})
-    add(_FX.trails[#_FX.trails], {x=player.x, y=player.y+player.plane+4, rad=flr(rnd(2))+1})
+    add(_FX.trails[#_FX.trails], {x=player.x, y=player.y+player.plane+4, rad=flr(rnd(2))+2})
 
     if p.plane <= 0 or p.plane >= 6 then
       p.planedy = 0

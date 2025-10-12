@@ -79,7 +79,6 @@ function new_notif(msg)
       end
     end,
     update = function(self, dt)
-      printh("ttl: "..self.ttl)
       self.ttl -= dt
     end,
   }
