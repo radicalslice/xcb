@@ -549,10 +549,10 @@ function parse_ranges(str, x_base, y_base)
     local x_start = x_curr
     local ramp_type, x_end = vals[1], x_start + vals[2]
     local range = {x_start = x_start, x_end = x_end}
+    -- pinning this value because we might modify it below
+    local my_flat = last_flat
     -- {ramp_type, x_end, y_value, jump_dy}
     if ramp_type == "bup" then
-      -- trying to shadow
-      local my_flat = last_flat
       range.f = function(x_pos)
         return my_flat - x_pos + x_start, -1
       end
@@ -567,7 +567,6 @@ function parse_ranges(str, x_base, y_base)
       last_flat = last_flat - vals[2]
       add(jumps, jump)
     elseif ramp_type == "bdown" then
-      local my_flat = last_flat
       -- {ramp_type, x_end, y_value}
       range.f = function(x_curr)
         return my_flat + x_curr - x_start, 1
@@ -575,14 +574,12 @@ function parse_ranges(str, x_base, y_base)
       last_flat = last_flat + vals[2]
     elseif ramp_type == "ddown" then
     -- {ramp_type, x_end, y_value}
-      local my_flat = last_flat
       range.f = function(x_curr)
         return my_flat + x_curr - x_start, 1
       end
       last_flat = last_flat + vals[2]
     elseif ramp_type == "flat" then
     -- {ramp_type, x_end, y_value, new_x_flat}
-      local my_flat = last_flat
       range.f = function(x_curr)
           return my_flat, 0
       end
@@ -592,7 +589,6 @@ function parse_ranges(str, x_base, y_base)
       add(ranges, range)
       x_curr = x_end
     elseif ramp_type == "obs" then
-      local my_flat = last_flat
       add(ranges, {x_start = x_curr, x_end = x_curr+8, f = function(x_curr)
         return my_flat, 0
       end})
@@ -635,7 +631,6 @@ end
 function find_elevation(x, es)
   -- x
   for i, j in pairs(es) do
-    -- printh("elevation pair: "..j[1]..","..j[2])
     if es[i+1] and x >= j[1] and x < es[i+1][1] then
       return es[i][2]
     end

@@ -58,6 +58,8 @@ function gen_flat_tile(x, y)
   return {x=x,y=y,map_x=21 + ((x / 8) % 3),map_y=0}
 end
 
+-- Indexes into the map data and returns:
+--
 function load_level_map_data(level)
   printh("Loading level map for ".._level_index)
   local map_table = {}
@@ -66,27 +68,32 @@ function load_level_map_data(level)
   local y_updated = 0
   for x_curr=0, level.x_max do
     local range = find_range(x_curr, level)
+    local map_y = 0
     if range != nil then
       y_updated, angle = range.f(x_curr)
+      if range.map != nil then
+        printh("We got ourselves a map index thing!")
+        map_y = range.map[2]
+      end
     end
     if x_curr % 8 == 0 then
       if angle == 0 then
         add(
           map_table,
-          {x=x_curr,y=y_updated -8,map_x=level.config.tiles[5] + ((x_curr / 8) % 3),map_y=0} -- generates flat tile
+          {x=x_curr,y=y_updated -8,map_x=level.config.tiles[5] + ((x_curr / 8) % 3),map_y=map_y} -- generates flat tile
         )
         add(elevations, {x_curr, y_updated})
       last_angle = 0
       elseif angle == -1 then
         local map_x = level.config.tiles[6]
         if last_angle == -1 then map_x +=1 end
-        add(map_table,{x=x_curr,y=y_updated-8,map_x=map_x,map_y=0})
+        add(map_table,{x=x_curr,y=y_updated-8,map_x=map_x,map_y=map_y})
         last_angle = -1
         add(elevations, {x_curr, y_updated})
       elseif angle == 1 then
         local map_x = level.config.tiles[7]
         if last_angle == -1 then map_x -= 1 end
-        add(map_table,{x=x_curr,y=y_updated,map_x=map_x,map_y=0})
+        add(map_table,{x=x_curr,y=y_updated,map_x=map_x,map_y=map_y})
         last_angle = 1
         add(elevations, {x_curr, y_updated})
       end
