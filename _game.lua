@@ -306,7 +306,9 @@ function _draw_game()
   player:draw()
 
   foreach(_FX.parts, function(p)
-    p:draw()
+    if _frame_counter % p.mod != 0 then
+      p:draw()
+    end
   end)
 
   camera()

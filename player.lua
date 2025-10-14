@@ -179,14 +179,14 @@ player_state_funcs = {
     -- add snow puff
     if p.planedy == 0 and p.dx > 0 then
       add(_FX.parts, new_part(
-          p.x + 6 - rnd(8),
-          p.y + p.plane + 6 - rnd(2),
+          p.x + 8 - rnd(8),
+          p.y + p.plane + 8 - rnd(2),
           function() return sin(rnd()) * -1 end,
-          function() return 0 end,
+          function() return cos(rnd()) end,
           {7}, -- regular color
           _timers.okami.ttl > 0 and f or nil, -- colorf
           nil,
-          flr(rnd(2)) + 2,
+          flr(rnd(2)) + 3,
           0.4,
           false,
           0.1

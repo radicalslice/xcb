@@ -21,7 +21,8 @@ function new_part(x, y, fvx, fvy, fillcolors, colorf, edgecolor, start_size, ttl
     size = start_size,
     max_size = start_size,
     shrink = shrink,
-    gravity = gravity
+    gravity = gravity,
+    mod = flr(rnd(4)) + 3,
   }
 
   newP.vel_x = fvx()
