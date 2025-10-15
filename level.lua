@@ -308,78 +308,35 @@ ddown,128]],
 ddown,144
 flat,144
 obs,6,115
-obs,6,115
-obs,6,115
-obs,6,115
-obs,6,115
-obs,6,115
-flat,128
-obs,0,115
-obs,0,115
-obs,0,115
-obs,0,115
-flat,64
-obs,6,115
-obs,6,115
-obs,6,115
-obs,6,115
-flat,128
-obs,0,115
-obs,0,115
-flat,64
-obs,6,115
-obs,6,115
-obs,6,115
-flat,48
-obs,0,115
+
+flat,96
 obs,0,115
 flat,96
-bup,8,-2,obs
-bdown,8
-flat,16
-obs,0,113
-flat,64
 obs,6,115
-obs,6,115
-flat,48
+flat,128
+obs,0,115
+obs,0,115
+obs,0,115
 obs,0,115
 obs,0,115
 flat,128
 obs,6,115
 obs,6,115
 obs,6,115
-flat,40
-obs,0,115
-obs,0,115
-obs,0,115
-obs,0,115
-obs,0,115
-flat,40
 obs,6,115
-flat,88
-bup,8,-2
-bdown,8
-flat,16
-obs,0,113
 flat,64
-obs,0,115
-flat,40
-obs,6,115
-flat,40
-obs,0,115
-flat,32
 bup,8,-2
 bdown,8
 flat,64
 obs,6,115
-obs,6,115
-flat,32
-obs,0,115
-obs,0,115
-flat,48
-obs,6,115
-obs,6,115
 flat,64
+obs,0,115
+flat,64
+obs,6,115
+flat,128
+bup,8,-2
+bdown,8
+flat,128
 bup,8,-2
 bdown,8
 ddown,128]],
@@ -545,6 +502,11 @@ function parse_ranges(str, x_base, y_base)
   local last_flat = y_base
   local x_curr = x_base
   foreach(split(str, "\n"), function(substr)
+    printh("Substring is: "..substr)
+    if substr == "" then
+      printh("Empty substring!")
+      return
+    end
     local vals = split(substr, ",")
     local x_start = x_curr
     local ramp_type, x_end = vals[1], x_start + vals[2]

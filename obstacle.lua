@@ -10,6 +10,9 @@ _obsman = {
   parselvl = function(m,lvlstr)
     local x_curr = 0
     foreach(split(lvlstr, "\n"), function(substr)
+      if substr == "" then
+        return
+      end
       local vals = split(substr, ",")
       if vals[1] == "obs" then
         add(m.queue, {spawn_x=x_curr,plane=vals[2],sprite=vals[3]})
