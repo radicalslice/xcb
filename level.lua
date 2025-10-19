@@ -1,6 +1,6 @@
 level = {}
 _level_index = 1
-_level_count = 4
+_level_count = 5
 -- Map[XPos][mapx, mapy, sprnum]
 _map_table = {}
 -- []{x_pos, y_elevation}
@@ -13,9 +13,8 @@ _configs = {
   {
     name = "lOFT lADDER",
     -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x,ramp left start,ramp right end,fill color for under course
-    tiles = { 17,1,24,30,29,32,35,4},
+    tiles = { 17,1,24,30,21,24,27,7},
     tree_tileheight = 3,
-    trailcolor = 3,
     foreground = false,
     draw_f = function()
       rectfill(0, 0, 128, 128, 12)
@@ -51,27 +50,16 @@ _configs = {
     snow_f = function() end,
   },
   {
-    name = "gREENHOUSE",
+    name = "iN tHE wEEDS",
     tiles = { 17,1,24,30,29,32,35,4},
     tree_tileheight = 3,
     trailcolor = 3,
     foreground = false,
     draw_f = function()
-      rectfill(0, 0, 128, 128, 12)
-      local cloudheight = 6
-      local gapheight = 3
-      local next_y = 0
-      while cloudheight > 0 do
-        rectfill(0, next_y, 128, next_y + cloudheight, 7) 
-        next_y = next_y + cloudheight + gapheight
-        cloudheight -= 1
-        gapheight += 1
-      end
-      circ(24, 24, 6, 10)
-      circ(24, 24, 8, 10)
-      spr(98, 24, 25, 2, 1)
-      spr(98, 8, 15, 2, 1, true)
-      spr(116, 16, 20, 2, 1)
+      rectfill(0, 0, 128, 20, 1) 
+      rectfill(0, 21, 128, 128, 12)
+      line(0,22,128,22,1)
+      line(0,24,128,24,1)
     end,
   },
   {
@@ -173,7 +161,6 @@ bup,8,-2
 bdown,32
 --]]
 _levels = {
--- loft ladder
 [[
 ddown,512
 bup,8,-2
@@ -298,7 +285,7 @@ flat,16
 bup,16,-2.5
 flat,96
 ddown,128]],
--- greenhouse
+-- in the weeds
 [[
 ddown,144
 flat,144
@@ -359,13 +346,13 @@ flat,96
 bup,8,-2
 bdown,8
 flat,64
+obs,0,96
 obs,0,115
 obs,0,115
-obs,0,115
-obs,0,115
+obs,0,97
 flat,32
 obs,6,115
-obs,6,115
+obs,6,97
 obs,6,115
 flat,128
 

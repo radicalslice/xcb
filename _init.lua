@@ -9,7 +9,7 @@ function anytime_init()
 
     player:reset()
 
-    _level_index = 3
+    _level_index = 1
     _game_timer.clock = 0
     _game_timer.expired = false
 

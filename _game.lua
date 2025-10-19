@@ -229,7 +229,9 @@ function _draw_game()
     config.draw_f()
   else
     -- palette swappies
-    config.sky_f() 
+    if config.sky_f != nil then
+      config.sky_f() 
+    end
 
     pal() 
 
@@ -240,9 +242,13 @@ function _draw_game()
     -- sunset_mtns()
     -- night_mtns()
     -- sun / moon / etc
-    config.sun_f()
+    if config.sun_f != nil then
+      config.sun_f()
+    end
 
-    config.mtn_f()
+    if config.mtn_f != nil then
+      config.mtn_f()
+    end
 
     for i=0,224,32 do
       map(
