@@ -10,12 +10,18 @@ _obsman = {
   parselvl = function(m,lvlstr)
     local x_curr = 0
     foreach(split(lvlstr, "\n"), function(substr)
-      if substr == "" then
+      local vals = split(substr, ",")
+      if substr == "" or vals[1] == "--" then
         return
       end
-      local vals = split(substr, ",")
       if vals[1] == "obs" then
         add(m.queue, {spawn_x=x_curr,plane=vals[2],sprite=vals[3]})
+        x_curr += 8
+      -- handle obs ramps
+      elseif vals[4] == "obs" then
+        -- using a throwaway sprite here, it will be overwritten
+        add(m.queue, {spawn_x=x_curr+26,plane=0,sprite=115})
+        add(m.queue, {spawn_x=x_curr+32,plane=0})
         x_curr += 8
       else
         x_curr += vals[2]
@@ -46,7 +52,9 @@ function new_obstacle(elevation, plane, sprite)
     sprite = sprite,
     plane = plane,
     draw = function(obs)
-      spr(obs.sprite, obs.x, obs.y)
+      if obs.sprite != nil then
+        spr(obs.sprite, obs.x, obs.y)
+      end
 
       -- draw bb
       -- local bb = obs:get_bb()

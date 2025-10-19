@@ -7,7 +7,7 @@ _map_table = {}
 _elevations = {}
 
 -- how much time to add to the remaining time at each interlevel
-_checkpoints = {30,32,32,20}
+_checkpoints = {30,55,45,20}
 
 _configs = {
   {
@@ -17,7 +17,6 @@ _configs = {
     tree_tileheight = 3,
     trailcolor = 3,
     foreground = false,
-    clouds = false,
     draw_f = function()
       rectfill(0, 0, 128, 128, 12)
       local cloudheight = 6
@@ -42,7 +41,6 @@ _configs = {
     tiles = {17,1,24,30,21,24,27,7},
     tree_tileheight = 3,
     foreground = false,
-    clouds = true,
     mtn_f = function() end,
     sky_f = function()
       rectfill(-16,0,144,63,12)
@@ -58,7 +56,6 @@ _configs = {
     tree_tileheight = 3,
     trailcolor = 3,
     foreground = false,
-    clouds = false,
     draw_f = function()
       rectfill(0, 0, 128, 128, 12)
       local cloudheight = 6
@@ -83,7 +80,6 @@ _configs = {
     tiles = { 13,3,28,40,21,24,27,7},
     tree_tileheight = 2,
     foreground = true,
-    clouds = true,
     mtn_f = function()
       pal(6, 5)
       pal(7, 6)
@@ -103,7 +99,6 @@ _configs = {
     tiles = { 13,3,28,40,21,24,27,7},
     tree_tileheight = 2,
     foreground = true,
-    clouds = true,
     mtn_f = function()
       pal(6, 0)
       pal(7, 6)
@@ -307,38 +302,191 @@ ddown,128]],
 [[
 ddown,144
 flat,144
-obs,6,115
 
+--,short weave
+obs,6,115
+flat,48
+obs,0,115
+flat,48
+obs,6,115
+flat,48
+
+--,down into long weave
+ddown,56
+flat,56
+obs,0,115
+obs,0,96
+obs,0,97
+obs,0,115
+flat,32
+obs,6,115
+obs,6,96
+obs,6,115
 flat,96
+
+
+--,short weave
+obs,6,115
+flat,48
+obs,0,115
+flat,48
+obs,6,115
+flat,48
+
+--, hop into short weave
+bup,8,-2
+bdown,8
+flat,64
+obs,0,115
+flat,48
+obs,6,115
+obs,6,96
+obs,6,115
+flat,48
+obs,0,115
+flat,48
+
+--,down into ramp into long weave
+ddown,48
+flat,32
+bup,8,-2
+bdown,8
+flat,72
+obs,6,115
+flat,48
 obs,0,115
 flat,96
-obs,6,115
-flat,128
-obs,0,115
-obs,0,115
-obs,0,115
-obs,0,115
-obs,0,115
-flat,128
-obs,6,115
-obs,6,115
-obs,6,115
-obs,6,115
-flat,64
 bup,8,-2
 bdown,8
 flat,64
-obs,6,115
-flat,64
 obs,0,115
-flat,64
+obs,0,115
+obs,0,115
+obs,0,115
+flat,32
+obs,6,115
+obs,6,115
 obs,6,115
 flat,128
+
+--,down into nothing, down time
+ddown,64
+flat,96
+
+--,down into long weave
+ddown,56
+flat,56
+obs,0,115
+obs,0,97
+obs,0,115
+obs,0,96
+flat,32
+obs,6,115
+obs,6,115
+obs,6,97
+flat,96
+
+--,first obs ramp
+bup,8,-2,obs
+bdown,8
+flat,96
+
+--,down into long weave
+ddown,56
+flat,56
+obs,6,115
+obs,6,96
+obs,6,115
+obs,6,115
+flat,32
+obs,0,115
+obs,0,97
+obs,0,115
+flat,48
+
+--,obsramps with short weave
+bup,8,-2,obs
+bdown,8
+flat,96
+obs,6,115
+flat,96
+
+
+--,ddown into obsramp into short weave
+ddown,96
+flat,48
+bup,8,-2,obs
+bdown,8
+flat,80
+obs,6,115
+flat,48
+obs,0,115
+flat,48
+obs,6,115
+flat,96
+
+--,down into short weave
+ddown,96
+flat,48
+obs,0,115
+obs,0,115
+flat,32
+obs,6,115
+obs,6,115
+obs,6,96
+obs,6,115
+flat,32
+obs,0,115
+obs,0,96
+obs,0,115
+obs,0,97
+flat,32
+
+
+--,down into coda weave
+ddown,48
+flat,96
+obs,6,115
+flat,32
+obs,0,115
+flat,32
+obs,6,115
+flat,32
+obs,0,115
+flat,24
+obs,6,115
+flat,24
 bup,8,-2
 bdown,8
-flat,128
+flat,32
+
+--,coda ramps
+ddown,96
+flat,48
 bup,8,-2
 bdown,8
+flat,48
+bup,8,-2
+bdown,8
+flat,48
+bup,8,-2
+bdown,8
+flat,96
+bup,8,-2,obs
+bdown,8
+flat,48
+obs,6,115
+obs,6,97
+obs,6,115
+obs,6,96
+obs,6,115
+flat,64
+
+--,final leap
+bup,8,-2
+bdown,8
+flat,16
+
 ddown,128]],
 [[
 ddown,144
@@ -502,12 +650,10 @@ function parse_ranges(str, x_base, y_base)
   local last_flat = y_base
   local x_curr = x_base
   foreach(split(str, "\n"), function(substr)
-    printh("Substring is: "..substr)
-    if substr == "" then
-      printh("Empty substring!")
+    local vals = split(substr, ",")
+    if substr == "" or vals[1] == "--" then
       return
     end
-    local vals = split(substr, ",")
     local x_start = x_curr
     local ramp_type, x_end = vals[1], x_start + vals[2]
     local range = {x_start = x_start, x_end = x_end}

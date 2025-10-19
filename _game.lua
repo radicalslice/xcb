@@ -143,7 +143,7 @@ function _update_game(dt)
       local found_collides = collides_new(pbb, obs:get_bb())
       if found_collides then
         _q.add_event("obs_coll")
-        printh("obs:player "..obs.plane..","..player.plane)
+        printh("obs:player "..obs.plane..","..player.plane..",".._frame_counter)
       end
     end
   end)

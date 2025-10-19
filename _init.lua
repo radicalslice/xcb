@@ -23,7 +23,6 @@ function anytime_init()
     _FX = {
       parts = {},
       trails = {},
-      -- clouds = {},
       -- x,y, width,height, max_val, color, draw_frame_f
       speedo = new_meter(3,121,32,4,_PLAYER_DX_MAX,10,my_f),
       snow = {},
