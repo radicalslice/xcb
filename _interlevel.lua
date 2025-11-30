@@ -3,6 +3,7 @@ _last_level_index = 1
 _down_charge = 0
 _up_charge = 0
 
+
 function _draw_interlevel()
   _draw_game()
 
@@ -17,12 +18,14 @@ function _draw_interlevel()
     down_arrow_x += rnd(2) - 1
   end
 
-  spr(114,up_arrow_x,72 - (_up_charge * 4))
-  spr(114,down_arrow_x,81 + (_down_charge * 4),1,1,false,true)
-  dshad("(some level a)", 65, 68)
-  dshad("(some level b)", 65, 88)
-  palt(0, true)
+  if level.config.branches != nil then
+    spr(114,up_arrow_x,72 - (_up_charge * 4))
+    spr(114,down_arrow_x,81 + (_down_charge * 4),1,1,false,true)
+    dshad(_level_configs[level.config.branches[1]].name, 65, 68)
+    dshad(_level_configs[level.config.branches[2]].name, 65, 88)
+  end
 
+  palt(0, true)
 
 end
 
@@ -78,8 +81,13 @@ function _update_interlevel(dt)
   _timers.interlevel:update()
   if _timers.input_freeze.ttl == 0 and (_up_charge > 1.2 or _down_charge > 1.2) and _timers.interlevel.ttl == 0 then
     _timers.interlevel:init(0.2, _now)
-    _up_charge,_down_charge = 0,0
     _init_wipe(0.4)
-    _level_index += 1
+    if _up_charge > 1.2 then
+      _level_index = level.config.branches[1]
+    else 
+      _level_index = level.config.branches[2]
+    end
+
+    _up_charge,_down_charge = 0,0
   end
 end

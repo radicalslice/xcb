@@ -267,7 +267,9 @@ function _draw_game()
     palt(0, false)
     
 
-    config.snow_f()
+    if config.snow_f != nil then
+      config.snow_f()
+    end
     -- random trees
     for i=0,224,32 do
       map(9,1, _bigtree_x + i, config.tiles[4], 4, config.tree_tileheight)

@@ -60,7 +60,6 @@ end
 -- Indexes into the map data and returns:
 --
 function load_level_map_data(level)
-  printh("Loading level map for ".._level_index)
   local map_table = {}
   local elevations = {}
   local last_angle = 0 -- use this to track when there's a transition between ramp/flat
@@ -71,7 +70,6 @@ function load_level_map_data(level)
     if range != nil then
       y_updated, angle = range.f(x_curr)
       if range.map != nil then
-        printh("We got ourselves a map index thing!")
         map_y = range.map[2]
       end
     end

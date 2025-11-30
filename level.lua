@@ -9,13 +9,14 @@ _elevations = {}
 -- how much time to add to the remaining time at each interlevel
 _checkpoints = {30,55,45,20}
 
-_configs = {
+_level_configs = {
   {
     name = "lOFT lADDER",
     -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x,ramp left start,ramp right end,fill color for under course
     tiles = { 17,1,24,30,21,24,27,7},
     tree_tileheight = 3,
     foreground = false,
+    branches = {2, 3},
     draw_f = function()
       rectfill(0, 0, 128, 128, 12)
       local cloudheight = 6
@@ -38,6 +39,7 @@ _configs = {
     name = "cOINFLIP",
     -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x
     tiles = {17,1,24,30,21,24,27,7},
+    branches = {4, 5},
     tree_tileheight = 3,
     foreground = false,
     mtn_f = function() end,
@@ -47,11 +49,11 @@ _configs = {
     sun_f = function()
       circfill(52, 10, 5, 10)
     end,
-    snow_f = function() end,
   },
   {
     name = "iN tHE wEEDS",
     tiles = { 17,1,24,30,29,32,35,4},
+    branches = {4, 5},
     tree_tileheight = 3,
     trailcolor = 3,
     foreground = false,
@@ -66,6 +68,7 @@ _configs = {
     name = "sOLAR rUN",
     -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x
     tiles = { 13,3,28,40,21,24,27,7},
+    branches = {6, 6},
     tree_tileheight = 2,
     foreground = true,
     mtn_f = function()
@@ -79,7 +82,25 @@ _configs = {
     sun_f = function()
       circfill(88, 20, 5, 8)
     end,
-    snow_f = function() end,
+  },
+  {
+    name = "pOLAR bUN",
+    -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x
+    tiles = { 13,3,28,40,21,24,27,7},
+    branches = {6, 6},
+    tree_tileheight = 2,
+    foreground = true,
+    mtn_f = function()
+      pal(6, 5)
+      pal(7, 6)
+    end,
+    sky_f = function()
+      pal(12, 9)
+      rectfill(-16,0,144,63,12)
+    end,
+    sun_f = function()
+      circfill(88, 20, 5, 8)
+    end,
   },
   {
     name = "wULF dEN",
@@ -175,7 +196,7 @@ flat,112
 bup,16,-2.5
 bdown,16
 flat,256
-obs,0,114
+obs,0,160
 flat,176
 obs,0,160
 flat,256
@@ -475,6 +496,7 @@ bdown,8
 flat,16
 
 ddown,128]],
+-- solar run
 [[
 ddown,144
 flat,128
@@ -564,6 +586,19 @@ bup,8,-2
 ddown,32
 flat,96
 ddown,128]],
+-- polar bun
+[[
+ddown,144
+flat,96
+bup,8,-2
+bdown,16
+ddown,112
+flat,64
+bup,8,-2
+bdown,8
+flat,48
+ddown,96]],
+-- wulff den
 [[
 ddown,144
 flat,96
