@@ -106,12 +106,14 @@ function init_timers()
         ranges = ranges,
         jumps = jumps,
         x_max = x_max,
-        config = _level_configs[_level_index],
       }
+
+      _level_config = _level_configs[_level_index]
+      printh("Level Name: ".._level_config.name)
 
       add(_FX.notifs, new_notif(_level.name))
 
-      _map_table, _elevations = load_level_map_data(_level) 
+      _map_table, _elevations = load_level_map_data() 
 
       _game_timer.clock += _checkpoints[_level_index]
 

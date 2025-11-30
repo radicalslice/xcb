@@ -91,7 +91,6 @@ function _update_game(dt)
      player.ddx = _PLAYER_DDX
      -- prevent the gameover time from triggering if the player has already init'd it
      _timers.pregameover.ttl = 0
-     _last_level_index = _level_index
      _up_charge,_down_charge = 0,0
      __update = _update_interlevel
      __draw = _draw_interlevel
@@ -179,7 +178,7 @@ function draw_course(player_x)
     if tile.x < player_x + 136 then
       local true_x = tile.x - player_x + _camera_x_offset
       local true_y = tile.y - _camera_y
-      rectfill(true_x, true_y+8, true_x+8, 132, _level.config.tiles[8])
+      rectfill(true_x, true_y+8, true_x+8, 132, _level_config.tiles[8])
       map(tile.map_x,
         tile.map_y,
         true_x,
@@ -198,9 +197,9 @@ function draw_course(player_x)
     for i=x_start,x_start+256,8 do
       local true_x = i - player_x + _camera_x_offset
       local true_y = _last_y_drawn - _camera_y
-      rectfill(true_x, y_offset+8, true_x+8, 132, _level.config.tiles[8])
+      rectfill(true_x, y_offset+8, true_x+8, 132, _level_config.tiles[8])
       map(
-        _level.config.tiles[7],
+        _level_config.tiles[7],
         0,
         true_x,
         y_offset,
@@ -223,14 +222,13 @@ function _draw_game()
     camera(shakex, shakey)
   end
 
-  local config = _level.config
 
-  if config.draw_f != nil then
-    config.draw_f()
+  if _level_config.draw_f != nil then
+    _level_config.draw_f()
   else
     -- palette swappies
-    if config.sky_f != nil then
-      config.sky_f() 
+    if _level_config.sky_f != nil then
+      _level_config.sky_f() 
     end
 
     pal() 
@@ -242,20 +240,20 @@ function _draw_game()
     -- sunset_mtns()
     -- night_mtns()
     -- sun / moon / etc
-    if config.sun_f != nil then
-      config.sun_f()
+    if _level_config.sun_f != nil then
+      _level_config.sun_f()
     end
 
-    if config.mtn_f != nil then
-      config.mtn_f()
+    if _level_config.mtn_f != nil then
+      _level_config.mtn_f()
     end
 
     for i=0,224,32 do
       map(
-        config.tiles[1],
-        config.tiles[2],
+        _level_config.tiles[1],
+        _level_config.tiles[2],
         _mountain_x + i,
-        config.tiles[3],
+        _level_config.tiles[3],
         4,
         2
       )
@@ -267,21 +265,21 @@ function _draw_game()
     palt(0, false)
     
 
-    if config.snow_f != nil then
-      config.snow_f()
+    if _level_config.snow_f != nil then
+      _level_config.snow_f()
     end
     -- random trees
     for i=0,224,32 do
-      map(9,1, _bigtree_x + i, config.tiles[4], 4, config.tree_tileheight)
+      map(9,1, _bigtree_x + i, _level_config.tiles[4], 4, _level_config.tree_tileheight)
     end
 
     -- Snow below trees and above course
     rectfill(-16,52,144,128,7)
 
     -- foreground trees
-    if config.foreground then
+    if _level_config.foreground then
       for i=0,224,32 do
-        map(9,4, _bigtree_x + i, config.tiles[4] + 12, 4, 1)
+        map(9,4, _bigtree_x + i, _level_config.tiles[4] + 12, 4, 1)
       end
     end
     pal()
@@ -306,7 +304,7 @@ function _draw_game()
 
   foreach(_FX.trails, function(t)
     for crc in all(t) do 
-      circfill(crc.x,crc.y,crc.rad,(config.trailcolor or 6))  
+      circfill(crc.x,crc.y,crc.rad,(_level_config.trailcolor or 6))  
     end
   end)
 

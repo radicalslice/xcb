@@ -1,6 +1,7 @@
 _level = {}
 _level_index = 1
 _level_count = 5
+_level_config = {}
 -- Map[XPos][mapx, mapy, sprnum]
 _map_table = {}
 -- []{x_pos, y_elevation}

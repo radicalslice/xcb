@@ -59,13 +59,13 @@ end
 
 -- Indexes into the map data and returns:
 --
-function load_level_map_data(level)
+function load_level_map_data()
   local map_table = {}
   local elevations = {}
   local last_angle = 0 -- use this to track when there's a transition between ramp/flat
   local y_updated = 0
-  for x_curr=0, level.x_max do
-    local range = find_range(x_curr, level)
+  for x_curr=0, _level.x_max do
+    local range = find_range(x_curr, _level)
     local map_y = 0
     if range != nil then
       y_updated, angle = range.f(x_curr)
@@ -77,18 +77,18 @@ function load_level_map_data(level)
       if angle == 0 then
         add(
           map_table,
-          {x=x_curr,y=y_updated -8,map_x=level.config.tiles[5] + ((x_curr / 8) % 3),map_y=map_y} -- generates flat tile
+          {x=x_curr,y=y_updated -8,map_x=_level_config.tiles[5] + ((x_curr / 8) % 3),map_y=map_y} -- generates flat tile
         )
         add(elevations, {x_curr, y_updated})
       last_angle = 0
       elseif angle == -1 then
-        local map_x = level.config.tiles[6]
+        local map_x = _level_config.tiles[6]
         if last_angle == -1 then map_x +=1 end
         add(map_table,{x=x_curr,y=y_updated-8,map_x=map_x,map_y=map_y})
         last_angle = -1
         add(elevations, {x_curr, y_updated})
       elseif angle == 1 then
-        local map_x = level.config.tiles[7]
+        local map_x = _level_config.tiles[7]
         if last_angle == -1 then map_x -= 1 end
         add(map_table,{x=x_curr,y=y_updated,map_x=map_x,map_y=map_y})
         last_angle = 1

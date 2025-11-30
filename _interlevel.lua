@@ -1,4 +1,3 @@
-_last_level_index = 1
 -- two values for tracking when the player holds down up or down arrows
 _down_charge = 0
 _up_charge = 0
@@ -18,11 +17,11 @@ function _draw_interlevel()
     down_arrow_x += rnd(2) - 1
   end
 
-  if _level.config.branches != nil then
+  if _level_config.branches != nil then
     spr(114,up_arrow_x,72 - (_up_charge * 4))
     spr(114,down_arrow_x,81 + (_down_charge * 4),1,1,false,true)
-    dshad(_level_configs[_level.config.branches[1]].name, 65, 68)
-    dshad(_level_configs[_level.config.branches[2]].name, 65, 88)
+    dshad(_level_configs[_level_config.branches[1]].name, 65, 68)
+    dshad(_level_configs[_level_config.branches[2]].name, 65, 88)
   end
 
   palt(0, true)
@@ -83,9 +82,9 @@ function _update_interlevel(dt)
     _timers.interlevel:init(0.2, _now)
     _init_wipe(0.4)
     if _up_charge > 1.2 then
-      _level_index = _level.config.branches[1]
+      _level_index = _level_config.branches[1]
     else 
-      _level_index = _level.config.branches[2]
+      _level_index = _level_config.branches[2]
     end
 
     _up_charge,_down_charge = 0,0
