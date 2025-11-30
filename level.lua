@@ -1,4 +1,4 @@
-level = {}
+_level = {}
 _level_index = 1
 _level_count = 5
 -- Map[XPos][mapx, mapy, sprnum]
@@ -7,7 +7,7 @@ _map_table = {}
 _elevations = {}
 
 -- how much time to add to the remaining time at each interlevel
-_checkpoints = {30,55,45,20}
+_checkpoints = {30,55,45,45,45,20}
 
 _level_configs = {
   {

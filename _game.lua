@@ -75,7 +75,7 @@ function _update_game(dt)
 
  local board_pos_x = player:get_board_center_x()
  local y_ground = Y_BASE
- local range = find_range(board_pos_x, level)
+ local range = find_range(board_pos_x, _level)
  local angle = 0 -- assume flat ground
  if range != nil then
    y_ground, angle = range.f(board_pos_x)
@@ -100,7 +100,7 @@ function _update_game(dt)
  end
 
   -- Check for any jumps
-  local added_dy = find_jump(board_pos_x + player.dx, level)
+  local added_dy = find_jump(board_pos_x + player.dx, _level)
   if added_dy != 0 and player:near_ground(y_ground) then
     player:start_jump(added_dy)
   end
@@ -156,7 +156,7 @@ function align_camera(player_x)
   local y_ground = Y_BASE
   -- Look ahead to try and prep camera, this is based on the ground a little bit ahead
   -- Changed this from 24 to 48 and it made it better, somehow, on the downward slopes
-  local range = find_range(player_x + 48, level)
+  local range = find_range(player_x + 48, _level)
   if range != nil then
     y_ground, _ = range.f(player_x + 48)
   end
@@ -179,7 +179,7 @@ function draw_course(player_x)
     if tile.x < player_x + 136 then
       local true_x = tile.x - player_x + _camera_x_offset
       local true_y = tile.y - _camera_y
-      rectfill(true_x, true_y+8, true_x+8, 132, level.config.tiles[8])
+      rectfill(true_x, true_y+8, true_x+8, 132, _level.config.tiles[8])
       map(tile.map_x,
         tile.map_y,
         true_x,
@@ -192,15 +192,15 @@ function draw_course(player_x)
   end
 
   -- this is for drawing beyond the calculated end of a level
-  if player_x + 132 > level.x_max then
-    local x_start = level.x_max
+  if player_x + 132 > _level.x_max then
+    local x_start = _level.x_max
     local y_offset = _last_y_drawn - _camera_y
     for i=x_start,x_start+256,8 do
       local true_x = i - player_x + _camera_x_offset
       local true_y = _last_y_drawn - _camera_y
-      rectfill(true_x, y_offset+8, true_x+8, 132, level.config.tiles[8])
+      rectfill(true_x, y_offset+8, true_x+8, 132, _level.config.tiles[8])
       map(
-        level.config.tiles[7],
+        _level.config.tiles[7],
         0,
         true_x,
         y_offset,
@@ -223,7 +223,7 @@ function _draw_game()
     camera(shakex, shakey)
   end
 
-  local config = level.config
+  local config = _level.config
 
   if config.draw_f != nil then
     config.draw_f()

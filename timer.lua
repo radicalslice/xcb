@@ -101,7 +101,7 @@ function init_timers()
       -- pass in 0 for the player's x position because it doesn't matter here
       local ranges, jumps, x_max = parse_ranges(_levels[_level_index], 0, _last_y_drawn + 8)
 
-      level = {
+      _level = {
         name = _level_configs[_level_index].name,
         ranges = ranges,
         jumps = jumps,
@@ -109,9 +109,9 @@ function init_timers()
         config = _level_configs[_level_index],
       }
 
-      add(_FX.notifs, new_notif(level.name))
+      add(_FX.notifs, new_notif(_level.name))
 
-      _map_table, _elevations = load_level_map_data(level) 
+      _map_table, _elevations = load_level_map_data(_level) 
 
       _game_timer.clock += _checkpoints[_level_index]
 
