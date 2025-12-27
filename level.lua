@@ -68,7 +68,7 @@ _level_configs = {
     end,
   },
   {
-    name = "sOLAR rUN",
+    name = "half-light",
     -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x
     tiles = { 13,3,28,40,21,24,27,7},
     branches = {6, 6},
@@ -87,22 +87,32 @@ _level_configs = {
     end,
   },
   {
-    name = "pOLAR bUN",
+    name = "iMPROBABLE",
     -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x
     tiles = { 13,3,28,40,21,24,27,7},
     branches = {6, 6},
     tree_tileheight = 2,
     foreground = true,
+    trailcolor = 5,
     mtn_f = function()
-      pal(6, 5)
+      pal(6, 0)
+      pal(7, 6)
+      pal(7, 5)
+    end,
+    course_f = function()
+      pal(6, 7)
       pal(7, 6)
     end,
     sky_f = function()
-      pal(12, 9)
-      rectfill(-16,0,144,63,12)
+      -- pal(12, 9)
+      rectfill(-16,0,144,63,2)
     end,
     sun_f = function()
-      circfill(88, 20, 5, 8)
+      circfill(88, 20, 5, 9)
+    end,
+    snow_f = function()
+      pal(7, 6)
+      pal(3, 5)
     end,
   },
   {
@@ -111,6 +121,7 @@ _level_configs = {
     tiles = { 13,3,28,40,21,24,27,7},
     tree_tileheight = 2,
     foreground = true,
+    trailcolor = 5,
     mtn_f = function()
       pal(6, 0)
       pal(7, 6)
@@ -125,6 +136,10 @@ _level_configs = {
     snow_f = function()
       pal(7, 6)
       pal(3, 5)
+    end,
+    course_f = function()
+      pal(6, 7)
+      pal(7, 6)
     end,
   },
 }

@@ -231,10 +231,7 @@ function _draw_game()
       _level_config.sky_f() 
     end
 
-    pal() 
-
-    palt(11, true)
-    palt(0, false)
+    basepal()
 
     -- parallax-y mountain tiles
     -- sunset_mtns()
@@ -259,10 +256,7 @@ function _draw_game()
       )
     end
 
-    pal()
-
-    palt(11, true)
-    palt(0, false)
+    basepal()
     
 
     if _level_config.snow_f != nil then
@@ -282,13 +276,14 @@ function _draw_game()
         map(9,4, _bigtree_x + i, _level_config.tiles[4] + 12, 4, 1)
       end
     end
-    pal()
-
-    palt(11, true)
-    palt(0, false)
+    basepal()
   end
 
+  if _level_config.course_f != nil then
+    _level_config.course_f()
+  end
   draw_course(player.x)
+  basepal()
 
   align_camera(player.x)
 
@@ -323,7 +318,7 @@ function _draw_game()
     n:draw()
   end)
 
-  palt(11, true)
+  basepal()
   foreach(_FX.snow, function(c) 
     spr(118, c.x, c.y)
   end)

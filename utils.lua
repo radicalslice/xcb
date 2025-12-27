@@ -92,3 +92,11 @@ function dshad(str, x, y, ow)
   print(str, x+1, y, colors[1])
   print(str, x, y, colors[2])
 end
+
+-- using this to reset sensible defaults
+-- after I jack up the pal for other things
+function basepal()
+    pal() 
+    palt(11, true)
+    palt(0, false)
+end
