@@ -39,11 +39,12 @@ function _draw_title()
   spr(128, 50, 50, 2, 2)
   print("\^w\^tx c b", 8, 57, 12)
 
-  print("press "..BUTTON_X.." or "..BUTTON_O, 8, 107, 12)
+  print("press "..BUTTON_X.." or "..BUTTON_O, 8, 90, 12)
   -- palt()
 
   print("v0.4.0", 1, 1, 6)
-  print("@kitasuna", 92, 1, 6)
+  print("game by @kitasuna", 8, 112, 6)
+  print("music by @mabbees", 8, 120, 6)
 
   foreach(_FX.snow, function(c) 
     spr(118, c.x, c.y)
