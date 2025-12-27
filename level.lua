@@ -59,10 +59,12 @@ _level_configs = {
     trailcolor = 3,
     foreground = false,
     draw_f = function()
-      rectfill(0, 0, 128, 20, 1) 
-      rectfill(0, 21, 128, 128, 12)
-      line(0,22,128,22,1)
-      line(0,24,128,24,1)
+      rectfill(0, 0, 128, 128, 12)
+      line(0,1,128,1,1)
+      line(0,3,128,3,1)
+      line(0,5,128,5,1)
+      circfill(52, 10, 5, 10)
+      circ(52, 10, 8, 10)
     end,
   },
   {

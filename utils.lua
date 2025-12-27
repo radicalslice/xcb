@@ -72,10 +72,10 @@ function new_notif(msg)
     ttl = 2, -- seconds, dawg
     draw = function(self)
       if self.ttl > 0 then
-        rect(128-charwidth-1, 115, 127, 127, 5)
-        rect(128-charwidth, 116, 126, 126, 6)
+        rect(128-charwidth-1, 115, 127, 127, 4)
+        rect(128-charwidth, 116, 126, 126, 9)
         rectfill(128 - charwidth+1, 117, 125, 125, 0)
-        print(msg, 132 - charwidth, 119, 7)
+        dshad(msg, 132 - charwidth, 119)
       end
     end,
     update = function(self, dt)
