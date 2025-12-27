@@ -1,6 +1,6 @@
 _level = {}
 _level_index = 1
-_level_count = 5
+_level_count = 6
 _level_config = {}
 -- Map[XPos][mapx, mapy, sprnum]
 _map_table = {}
@@ -183,6 +183,7 @@ bup,8,-2
 bdown,32
 --]]
 _levels = {
+-- loft ladder
 [[
 ddown,512
 bup,8,-2
