@@ -636,8 +636,9 @@ flat,24
 bup,16,-2
 flat,64
 bup,8,-2
-ddown,60
-flat,60
+bdown,8
+ddown,96
+flat,64
 bup,8,-2
 bdown,8
 flat,40
