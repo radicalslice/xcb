@@ -68,7 +68,7 @@ _level_configs = {
     end,
   },
   {
-    name = "half-light",
+    name = "hALF-lIGHT",
     -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x
     tiles = { 13,3,28,40,21,24,27,7},
     branches = {6, 6},
@@ -515,7 +515,7 @@ bdown,8
 flat,16
 
 ddown,128]],
--- solar run
+-- half-light
 [[
 ddown,144
 flat,128
@@ -605,18 +605,113 @@ bup,8,-2
 ddown,32
 flat,96
 ddown,128]],
--- polar bun
+-- improbable
 [[
 ddown,144
 flat,96
 bup,8,-2
+bdown,8
+flat,96
+bup,8,-2
+bdown,8
+flat,96
+bup,8,-2
+bdown,8
+flat,56
+obs,0
+flat,40
+obs,6
+flat,96
+--,imp0
+bup,8,-2
+bdown,8
+flat,16
+bup,48,-2.5
+flat,128
+obs,0
+flat,48
+obs,6
+--,backdown
+bup,8,-2
+bdown,8
+flat,16
+ddown,40
+flat,128
+obs,0
+--,imp1
+bup,16,-2.5
 bdown,16
-ddown,112
+flat,16
+bup,64,-2.5
+flat,128
+obs,0
+flat,48
+obs,6
+--,backdown
+bup,8,-2
+bdown,8
+flat,16
+ddown,40
+flat,128
+obs,0
+ddown,48
+flat,128
+--,imp2
+bup,24,-2.5
+bdown,8
+flat,16
+bup,80,-2.5
+flat,128
+obs,0
+flat,48
+obs,6
+--,backdown
+bup,8,-2
+bdown,8
+flat,16
+ddown,40
+flat,128
+obs,0
+flat,32
+obs,6
+flat,32
+obs,0
+flat,128
+--,up up up
+bup,8,-2
+bdown,8
+flat,16
+bup,32,-2.5
+flat,64
+bup,16,-2.5
+bdown,8
+flat,16
+bup,48,-2.5
+flat,64
+bup,24,-2.5
+bdown,8
+flat,16
+bup,64,-2.5
 flat,64
 bup,8,-2
 bdown,8
-flat,48
-ddown,96]],
+flat,32
+bup,8,-2
+bdown,8
+flat,32
+bup,8,-2
+bdown,8
+flat,64
+obs,0
+flat,40
+obs,6
+flat,40
+obs,0
+flat,64
+bup,8,-2
+bdown,8
+flat,32
+ddown,128]],
 -- wulff den
 [[
 ddown,144
