@@ -28,7 +28,7 @@ player = {
     p.board_cycler = new_cycler(0.05, {9,10,12})
     p.speedpin_cycler = new_cycler(0.05, {9,10,12})
     p.boosting = false
-    p.juice = 3
+    p.juice = 0
     p.style = 0
     p.airtimer = 0
     p.pose = false
@@ -92,6 +92,13 @@ player = {
   end,
   update = function(p, dt, y_ground, ground_angle, block_input)
 
+    -- sound hack, disable sparkle sound
+    -- after we reach the next part of the song
+    if stat(49) == 43 and stat(54) != _last_music_idx then
+      _last_music_idx = -1
+      sfx(-1, 3)
+      printh("stopped the sfx!")
+    end
     p.frame_timer += dt
     if p.frame_timer >= 2 then
       p.frame_timer = 0
@@ -148,15 +155,13 @@ player_state_funcs = {
       not block_input and
       not p.boosting and
       p.juice >= 1 then
-      if _debug.sakurai then
-        _timers.sakurai:init(0.5,time())
-        make_lines()
-        __update = _update_stop
-        __draw = _draw_stop
-      else
-        _timers.sakurai:init(0.01,time())
-      end
-        
+      sfx(43, 3)
+      star_mode_on()
+      _last_music_idx = stat(54)
+      _timers.sakurai:init(0.5,time())
+      make_lines()
+      __update = _update_stop
+      __draw = _draw_stop
     end
 
     if btnp(3) and p.plane == 0 then
@@ -338,6 +343,11 @@ player_state_funcs = {
 player.handle_expr_boost = function()
   player.dx_max = _PLAYER_DX_MAX
   player.boosting = false
+  -- in case they biff it while the powerup sfx is still playing
+  if stat(49) == 43 then
+    sfx(-1, 3)
+  end
+  star_mode_off()
 end
 
 player.handle_obs_coll = function()

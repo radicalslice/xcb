@@ -142,6 +142,7 @@ end
 
 _timermgr = {
   handle_playerstop = function()
+    music(-1, 1000)
     _timers.pregameover:init(2,time())
   end
 }

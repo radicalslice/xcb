@@ -8,7 +8,7 @@ _map_table = {}
 _elevations = {}
 
 -- how much time to add to the remaining time at each interlevel
-_checkpoints = {30,55,45,45,45,20}
+_checkpoints = {40,35,45,35,35,25}
 
 _level_configs = {
   {
@@ -116,7 +116,7 @@ _level_configs = {
     end,
   },
   {
-    name = "wULF dEN",
+    name = "sCOOPSYLVANIA",
     -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x
     tiles = { 13,3,28,40,21,24,27,7},
     tree_tileheight = 2,

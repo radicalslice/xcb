@@ -10,6 +10,7 @@ _frame_counter = 0
 _last_y_drawn = 0
 _camera_freeze = false
 _game_state = "main"
+_last_music_idx = -1
 Y_BASE = 80
 
 
@@ -19,6 +20,7 @@ _debug = {
   pinflash = true,
   pinparticles = true,
   sakurai = true,
+  music = true,
 }
 
 
@@ -81,20 +83,21 @@ function _update_game(dt)
    y_ground, angle = range.f(board_pos_x)
  else
    cls()
-   -- force player to stop boosting
    if _level_index == _level_count then
-     __update = _update_victory
-     __draw = _draw_victory
-   else 
-     _timers.boost:f()
+     music(-1, 200)
+     music(14, 100)
+     _timers.input_freeze:init(8,_now)
+    else 
      _timers.input_freeze:init(0.5,_now)
-     player.ddx = _PLAYER_DDX
-     -- prevent the gameover time from triggering if the player has already init'd it
-     _timers.pregameover.ttl = 0
-     _up_charge,_down_charge = 0,0
-     __update = _update_interlevel
-     __draw = _draw_interlevel
    end
+   _timers.boost:f()
+   star_mode_off()
+   player.ddx = _PLAYER_DDX
+   -- prevent the gameover time from triggering if the player has already init'd it
+   _timers.pregameover.ttl = 0
+   _up_charge,_down_charge = 0,0
+   __update = _update_interlevel
+   __draw = _draw_interlevel
    return
  end
 
@@ -113,7 +116,7 @@ function _update_game(dt)
   end)
 
   foreach(_FX.trails, function(t) 
-    if t[1].x < player.x - 64 then
+    if t[1].x < player.x - 32 then
       del(_FX.trails, t)
     end
   end)
@@ -291,7 +294,6 @@ function _draw_game()
 
   palt()
 
-
   -- draw any obstacles
   foreach(_obsman.obstacles, function(obs)
     obs:draw()
@@ -355,6 +357,7 @@ function _draw_game()
   if _debug.msgs then
     -- draw_ctrls(12, 108, 9)
     -- player debug stuff
+    -- print("lmi: ".._last_music_idx, 64, 64, 9)
     -- print("X: "..flr(player.x), 56, 100, 9)
     -- print("cpu: "..stat(1), 56, 100, 9)
     -- print("plr: "..flr(player.x)..","..flr(player.y)..","..player.plane, 56, 94, 9)

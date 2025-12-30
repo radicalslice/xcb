@@ -6,6 +6,12 @@ _last_ts = 0
 -- used when first starting the game, and when restarting after game over or victory state
 -- NOT used during interlevel changes
 function anytime_init()
+    _now = time()
+    _last_ts = _now
+
+    init_timers()
+    _timers.input_freeze:init(0.2, _last_ts)
+    _timers.snow:init(0.05, _last_ts)
 
     player:reset()
 
@@ -36,21 +42,18 @@ function anytime_init()
     _q.add_subs("timeover", {player.handle_timeover})
     _q.add_subs("playerstop", {_timermgr.handle_playerstop})
     _q.add_subs("pregameover_expr", {_gamemgr.handle_pregameover_expr})
+
+    __update = _update_title
+    __draw = _draw_title
+
+    if _debug.music then
+      music(17)
+    end
 end
 
 function _init()
   printh("--init")
-
-  _now = time()
-  _last_ts = _now
-
-  init_timers()
-  _timers.input_freeze:init(0.1, _last_ts)
-  _timers.snow:init(0.05, _last_ts)
-
   anytime_init()
-  __update = _update_title
-  __draw = _draw_title
 end
 
 function gen_flat_tile(x, y)

@@ -42,7 +42,7 @@ function _draw_title()
   print("press "..BUTTON_X.." or "..BUTTON_O, 8, 90, 12)
   -- palt()
 
-  print("v0.4.0", 1, 1, 6)
+  print("v0.5rc", 1, 1, 6)
   print("game by @kitasuna", 8, 112, 6)
   print("music by @mabbees", 8, 120, 6)
 
@@ -71,5 +71,10 @@ function _update_title()
     anytime_init()
     _timers.interlevel:init(0.2, _now)
     _init_wipe(0.4)
+    if _debug.music then
+      music(-1,100)
+      music(0,300)
+    end
+    star_mode_off()
   end
 end

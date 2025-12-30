@@ -17,7 +17,13 @@ function _draw_interlevel()
     down_arrow_x += rnd(2) - 1
   end
 
-  if _level_config.branches != nil then
+  if _level_index == _level_count and _timers.interlevel.ttl == 0 then
+    dshad("victory!", 70, 64)
+    if _timers.input_freeze.ttl == 0 then
+      dshad("press "..BUTTON_X.." or "..BUTTON_O, 58, 80)
+      dshad(" to restart", 62, 88)
+    end
+  elseif _level_config.branches != nil then
     spr(114,up_arrow_x,72 - (_up_charge * 4))
     spr(114,down_arrow_x,81 + (_down_charge * 4),1,1,false,true)
     dshad(_level_configs[_level_config.branches[1]].name, 65, 68)
@@ -65,16 +71,20 @@ function _update_interlevel(dt)
     _timers.snow:update()
   end
 
-  if btn(2) then
-    _up_charge += dt
-  elseif _up_charge > 0 then
-    _up_charge = max(0, _up_charge - (dt * 3))
-  end
+  if _level_index != _level_count then
+    if btn(2) then
+      _up_charge += dt
+    elseif _up_charge > 0 then
+      _up_charge = max(0, _up_charge - (dt * 3))
+    end
 
-  if btn(3) then
-    _down_charge += dt
-  elseif _down_charge > 0 then
-    _down_charge = max(0, _down_charge - (dt * 3))
+    if btn(3) then
+      _down_charge += dt
+    elseif _down_charge > 0 then
+      _down_charge = max(0, _down_charge - (dt * 3))
+    end
+  elseif _timers.input_freeze.ttl == 0 and (btnp(4) or btnp(5)) then
+      anytime_init()
   end
 
   _timers.interlevel:update()
