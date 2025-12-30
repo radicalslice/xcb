@@ -100,3 +100,35 @@ function basepal()
     palt(11, true)
     palt(0, false)
 end
+
+-- continue playing main level
+-- theme, but turn off channel 4
+-- so it will be muted when the
+-- next pattern starts playing
+function star_mode_off()
+  if not _debug.music then
+    return
+  end
+	local chan_id = 3
+	local bitflag = 1 << 6
+	for sfx_id=0,12 do
+		local addr = 0x3100 + 4*sfx_id + chan_id
+		poke(addr, @addr | bitflag)
+	end
+end
+
+-- play a short power up jingle
+-- then segway into the main
+-- level theme with channel 4
+-- turned on for extra 
+function star_mode_on()
+  if not _debug.music then
+    return
+  end
+	local chan_id = 3
+	local bitflag = 1 << 6
+	for sfx_id=0,12 do
+		local addr = 0x3100 + 4*sfx_id + chan_id
+		poke(addr, @addr & ~bitflag)
+	end
+end
