@@ -1,7 +1,7 @@
 _PLAYER_DX_MAX = 2.0 -- when on the ground
 _PLAYER_DDX = 0.02
 _PLAYER_DX_MAX_BOOSTED = 3.2
-_PLAYER_DX_INIT_BOOSTED = 6.4
+_PLAYER_DX_INIT_BOOSTED = 5
 _PLAYER_DY_MAX = 3
 _PLAYER_STATE_ONGROUND = "on_ground"
 _PLAYER_STATE_SKYUP = "skyup"
@@ -82,12 +82,17 @@ player = {
   get_bb = function(p)
     return {flr(p.x - 8), flr(p.y+2+p.plane), flr(p.x+4), flr(p.y+6+p.plane)}
   end,
-  start_jump = function(p, boosted_dy)
-    p.dy = mid(-1, boosted_dy, (p.dx / p.dx_max) * boosted_dy)
+  -- added_dy comes from the ramp definition
+  start_jump = function(p, added_dy)
+    if p.boosting then
+      added_dy *= 1.3
+    end
+    p.dy = mid(-1, added_dy, (p.dx / p.dx_max) * added_dy)
     -- make sure we're just above ground level first
     p.y = p.y - 0.1
     p.dx -= p.dx * 0.1
     p.airtimer = 0
+    p.angle = -1
     p:change_state(_PLAYER_STATE_SKYUP)
   end,
   near_ground = function(p, y_ground)

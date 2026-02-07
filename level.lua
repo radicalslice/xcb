@@ -707,10 +707,7 @@ flat,40
 obs,6
 flat,40
 obs,0
-flat,64
-bup,8,-2
-bdown,8
-flat,32
+flat,96
 ddown,128]],
 -- wulff den
 [[
