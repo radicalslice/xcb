@@ -49,7 +49,7 @@ function init_timers()
       _timers.boost:init(2,time())
       player.juice -= 1
       player.dx_max = _PLAYER_DX_MAX_BOOSTED
-      player.dx = _PLAYER_DX_MAX_BOOSTED
+      player.dx = _PLAYER_DX_INIT_BOOSTED
       player.boosting = true
       return t
   end

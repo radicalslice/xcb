@@ -1,6 +1,7 @@
 _PLAYER_DX_MAX = 2.0 -- when on the ground
 _PLAYER_DDX = 0.02
 _PLAYER_DX_MAX_BOOSTED = 3.2
+_PLAYER_DX_INIT_BOOSTED = 6.4
 _PLAYER_DY_MAX = 3
 _PLAYER_STATE_ONGROUND = "on_ground"
 _PLAYER_STATE_SKYUP = "skyup"
@@ -13,6 +14,7 @@ _PLAYER_JUICE_MAX = 3
 _PLAYER_AIRTIMER_0 = 0.2
 _PLAYER_BOOST_BONUS = 1 --seconds, extra time for a successful boost landing
 _PLAYER_HOP_PENALTY = 0.7
+_PLAYER_DECEL = 0.05
 _airres = 0.99
 player = {
   reset = function(p)
@@ -134,7 +136,13 @@ player_state_funcs = {
   on_ground = function(p, dt, y_ground, ground_angle, block_input)
     p.angle = ground_angle
 
-    p.dx = min(p.dx_max, p.dx + p.ddx)
+    p.dx = p.dx + p.ddx
+    -- p.dx = min(p.dx_max, p.dx + p.ddx)
+    if p.boosting and p.dx > p.dx_max then
+      p.dx -= _PLAYER_DECEL
+    else 
+      p.dx = min(p.dx_max, p.dx + p.ddx)
+    end
     if p.ddx < 0 and p.dx < 0.05 and p.dx > 0 then
       p.dx = 0
       p.ddx = 0
