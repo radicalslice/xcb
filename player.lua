@@ -40,6 +40,8 @@ player = {
     p.plane = 0
     p.planedy = 0
     p.boosting_time = 0
+    -- p.level_history = {"hALF-lIGHT", "cOINFLIP", "lOFT lADDER", "iMPROBABLE"}
+    p.level_history = {}
   end,
   change_state = function(p, state)
     -- printh("State change: "..p.state.."->"..state)
@@ -74,7 +76,7 @@ player = {
     p.last_sprite = base_sprite
 
     -- draw bb
-    -- local bb = p:get_bb()
+    -- local bb = p:get_big_bb()
     -- rect(bb[1],bb[2],bb[3],bb[4],11)
 
     pal()
@@ -82,6 +84,9 @@ player = {
   end,
   get_bb = function(p)
     return {flr(p.x - 8), flr(p.y+2+p.plane), flr(p.x+4), flr(p.y+6+p.plane)}
+  end,
+  get_big_bb = function(p)
+    return {flr(p.x - 8), flr(p.y+p.plane-12), flr(p.x+4), flr(p.y+8+p.plane)}
   end,
   -- added_dy comes from the ramp definition
   start_jump = function(p, added_dy)
@@ -202,7 +207,7 @@ player_state_funcs = {
       p.plane += p.planedy
     end
     add(_FX.trails, {})
-    add(_FX.trails[#_FX.trails], {x=player.x, y=player.y+player.plane+4, rad=flr(rnd(2))+2})
+    add(_FX.trails[#_FX.trails], {x=player.x, y=player.y+player.plane+4, rad=flr(rnd(2))+2, ttl=1})
 
     if p.plane <= 0 or p.plane >= 6 then
       p.planedy = 0
@@ -239,8 +244,8 @@ player_state_funcs = {
 
     -- tweak angle 
     if btnp(1) then
-        p.angle = min(1, p.angle + 1)
-        p.airtimer = 0
+      p.angle = min(1, p.angle + 1)
+      p.airtimer = 0
     elseif btnp(0) then
       p.angle = max(-1, p.angle - 1)
       p.airtimer = 0

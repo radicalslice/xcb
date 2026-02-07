@@ -1,10 +1,3 @@
-get_tile_from_pos = nil
-function _get_tile_from_pos(start_tile_x, start_tile_y)
-  return function(pos_x, pos_y)
-    return (pos_x \ 8) + start_tile_x, (pos_y \ 8) + start_tile_y
-  end
-end
-
 function exists(e, tbl)
   for i=1,#tbl do
     if tbl[i] == e then
@@ -75,22 +68,13 @@ function new_notif(msg)
         rect(128-charwidth-1, 115, 127, 127, 4)
         rect(128-charwidth, 116, 126, 126, 9)
         rectfill(128 - charwidth+1, 117, 125, 125, 0)
-        dshad(msg, 132 - charwidth, 119)
+        print("\^o410"..msg, 132 - charwidth, 119, 9)
       end
     end,
     update = function(self, dt)
       self.ttl -= dt
     end,
   }
-end
-
-function dshad(str, x, y, ow)
-  local colors = {4,9}
-  if ow != nil and #ow == 2 then
-    colors = ow
-  end
-  print(str, x+1, y, colors[1])
-  print(str, x, y, colors[2])
 end
 
 -- using this to reset sensible defaults

@@ -131,7 +131,8 @@ function _update_game(dt)
   end)
 
   foreach(_FX.trails, function(t) 
-    if t[1].x < player.x - 32 then
+    t[1].ttl -= dt
+    if t[1].ttl <= 0 then
       del(_FX.trails, t)
     end
   end)
@@ -164,6 +165,12 @@ function _update_game(dt)
       end
     end
   end)
+
+  -- check for collision between player and item
+  if _itemmgr.visible == true and collides_new(player:get_big_bb(), _itemmgr:get_bb()) then
+    _itemmgr.visible = false
+    _boardscore:update(_level.name, "juicebox", true)
+  end
 end
 
 _camera_y = 0
@@ -314,6 +321,9 @@ function _draw_game()
     obs:draw()
   end)
 
+  -- draw item maybe
+  _itemmgr:draw()
+
   foreach(_FX.trails, function(t)
     for crc in all(t) do 
       circfill(crc.x,crc.y,crc.rad,(_level_config.trailcolor or 6))  
@@ -372,9 +382,11 @@ function _draw_game()
   if _debug.msgs then
     -- draw_ctrls(12, 108, 9)
     -- player debug stuff
-    print("nomiss: "..(_level.score.nomiss and "true" or "false"), 64, 64, 9)
-    print("boosting t: "..player.boosting_time, 64, 70, 9)
-    -- print("X: "..flr(player.x), 56, 100, 9)
+    print("\^o7ffnomiss: "..(_level.score.nomiss and "true" or "false"), 0, 0, 9)
+    print("\^o7ffboosting t: "..player.boosting_time, 0, 6, 9)
+    print("\^o7ffjuice: "..(_level.score.juicebox and "true" or "false"), 0, 12, 9)
+    print("\^o7ffvis: "..(_itemmgr.visible and "true" or "false"), 0, 18, 9)
+    print("\^o7ffPXY: "..flr(player.x)..","..flr(player.y), 0, 24, 9)
     -- print("cpu: "..stat(1), 56, 100, 9)
     -- print("plr: "..flr(player.x)..","..flr(player.y)..","..player.plane, 56, 94, 9)
     -- print("level: "..level.name, 56, 106, 9)

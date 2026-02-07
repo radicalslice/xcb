@@ -18,16 +18,16 @@ function _draw_interlevel()
   end
 
   if _level_index == _level_count and _timers.interlevel.ttl == 0 then
-    dshad("victory!", 70, 64)
-    if _timers.input_freeze.ttl == 0 then
-      dshad("press "..BUTTON_X.." or "..BUTTON_O, 58, 80)
-      dshad(" to restart", 62, 88)
-    end
+    -- save boardscore
+    _boardscore:save()
+    __update = _update_victory
+    __draw = _draw_victory
+
   elseif _level_config.branches != nil then
     spr(114,up_arrow_x,72 - (_up_charge * 4))
     spr(114,down_arrow_x,81 + (_down_charge * 4),1,1,false,true)
-    dshad(_level_configs[_level_config.branches[1]].name, 65, 68)
-    dshad(_level_configs[_level_config.branches[2]].name, 65, 88)
+    print("\^o410".._level_configs[_level_config.branches[1]].name, 65, 68, 9)
+    print("\^o410".._level_configs[_level_config.branches[2]].name, 65, 88, 9)
   end
 
   palt(0, true)

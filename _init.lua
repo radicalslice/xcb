@@ -14,6 +14,7 @@ function anytime_init()
     _timers.snow:init(0.05, _last_ts)
 
     _boardscore = BoardScore:new()
+    _itemmgr = ItemMgr:new()
 
     player:reset()
 
@@ -45,8 +46,10 @@ function anytime_init()
     _q.add_subs("playerstop", {_timermgr.handle_playerstop})
     _q.add_subs("pregameover_expr", {_gamemgr.handle_pregameover_expr})
 
-    __update = _update_title
-    __draw = _draw_title
+     __update = _update_title
+     __draw = _draw_title
+    -- __update = _update_victory
+    -- __draw = _draw_victory
 
     if _debug.music then
       music(17)
@@ -55,6 +58,7 @@ end
 
 function _init()
   printh("--init")
+  cartdata("xcb_kitasuna_v1_0")
   anytime_init()
 end
 

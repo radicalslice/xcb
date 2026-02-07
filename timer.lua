@@ -87,6 +87,16 @@ function init_timers()
     function(t) end
   )
 
+  _timers.show_boardscore = new_timer(
+    0,
+    function(t) 
+      printh("trying to show boardscore")
+      local victory = VictoryScreen:new({header = "ur score", levels = _level_names})
+      __update = function() victory:update() end
+      __draw = function() victory:draw() end
+    end
+  )
+
   -- for emitting snow
   _timers.snow = new_timer(
     0,
@@ -106,25 +116,27 @@ function init_timers()
     function(t)
       -- reset player x value
       player.x = 40
+      player.y = Y_BASE
 
       -- pass in last_y_drawn so the level hopefully connects to previous one...
       -- pass in 0 for the player's x position because it doesn't matter here
-      local ranges, jumps, x_max = parse_ranges(_levels[_level_index], 0, _last_y_drawn + 8)
+      local ranges, jumps, x_max = parse_ranges(_levels[_level_index])
 
-      local levelname = _level_configs[_level_index].name
+      _level_config = _level_configs[_level_index]
+
+      local levelname = _level_config.name
       _level = {
         name = levelname,
         ranges = ranges,
         jumps = jumps,
         x_max = x_max,
-        score = _boardscore[levelname],
+        score = _boardscore:lookup(levelname),
         started_at = _last_ts, -- for calculating elapsed time on level
       }
 
       -- assume true for the nomiss score
       _level.score.nomiss = true
 
-      _level_config = _level_configs[_level_index]
 
       printh("Loaded boardscore: ")
       for t,v in pairs(_level.score) do
@@ -141,11 +153,14 @@ function init_timers()
       _game_timer.clock += _checkpoints[_level_index]
 
       _obsman:init()
-      _obsman:parselvl(_levels[_level_index])
+      _obsman:parselvl(_level_config)
+
+      _itemmgr:init(_level_config.item_pos)
       
       player.boosting_time = 0
       player.ddx = _PLAYER_DDX
       player.dx = _PLAYER_DX_MAX
+      add(player.level_history, _level.name)
 
       _camera_freeze = false
       _interlevel_wipego = false

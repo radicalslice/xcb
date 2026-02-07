@@ -5,17 +5,17 @@ function _draw_title()
   palt(0, false)
   rectfill(0,0,127,127,7)
   -- sky
-      rectfill(0, 0, 128, 128, 12)
+  rectfill(0, 0, 128, 128, 12)
   -- clouds
-      local cloudheight = 6
-      local gapheight = 3
-      local next_y = 0
-      while cloudheight > 0 do
-        rectfill(0, next_y, 128, next_y + cloudheight, 7) 
-        next_y = next_y + cloudheight + gapheight
-        cloudheight -= 1
-        gapheight += 1
-      end
+  local cloudheight = 6
+  local gapheight = 3
+  local next_y = 0
+  while cloudheight > 0 do
+    rectfill(0, next_y, 128, next_y + cloudheight, 7) 
+    next_y = next_y + cloudheight + gapheight
+    cloudheight -= 1
+    gapheight += 1
+  end
 
   -- new stuff
   circfill(24, 24, 4, 10)
@@ -37,14 +37,15 @@ function _draw_title()
   end
   -- dude
   spr(128, 50, 50, 2, 2)
-  print("\^w\^tx c b", 8, 57, 12)
+  print("\^w\^t\^o610x c b", 4, 57, 12)
 
-  print("press "..BUTTON_X.." or "..BUTTON_O, 8, 90, 12)
+  print("\^o610"..BUTTON_X..": sTART", 4, 90, 12)
+  print("\^o610"..BUTTON_O..": vIEW bOARDSCORE", 4, 98, 12)
   -- palt()
 
   print("v1.0-alpha", 1, 1, 6)
-  print("game by @kitasuna", 8, 112, 6)
-  print("music by @mabbees", 8, 120, 6)
+  print("game by @kitasuna", 4, 112, 6)
+  print("music by @mabbees", 4, 120, 6)
 
   foreach(_FX.snow, function(c) 
     spr(118, c.x, c.y)
@@ -57,6 +58,8 @@ function _update_title()
 
   _timers.snow:update(_now)
 
+  _timers.show_boardscore:update(_now)
+
   foreach(_FX.snow, function(c) 
     c.x -= c.dx
     c.y += c.dx
@@ -67,7 +70,12 @@ function _update_title()
 
   _timers.interlevel:update(_now)
 
-  if _timers.input_freeze.ttl == 0 and (btnp(4) or btnp(5)) and _timers.interlevel.ttl <= 0 then
+  if _timers.input_freeze.ttl == 0 and btnp(5) then
+    _init_wipe(0.4)
+    _timers.show_boardscore:init(0.2, _now)
+  end
+
+  if _timers.input_freeze.ttl == 0 and btnp(4)  and _timers.interlevel.ttl <= 0 then
     anytime_init()
     _timers.interlevel:init(0.2, _now)
     _init_wipe(0.4)

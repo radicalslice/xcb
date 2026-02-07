@@ -23,6 +23,7 @@ _level_configs = {
     name = _level_names[1],
     -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x,ramp left start,ramp right end,fill color for under course
     tiles = {17,1,24,30,21,24,27,7},
+    item_pos = {1750, 270},
     tree_tileheight = 3,
     foreground = false,
     branches = {2, 3},
@@ -48,6 +49,7 @@ _level_configs = {
     name = _level_names[2],
     -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x
     tiles = {17,1,24,30,21,24,27,7},
+    item_pos = {1040, 130},
     branches = {4, 5},
     tree_tileheight = 3,
     foreground = false,
@@ -62,6 +64,7 @@ _level_configs = {
   {
     name = _level_names[3],
     tiles = { 17,1,24,30,29,32,35,4},
+    item_pos = {2448, 350},
     branches = {4, 5},
     tree_tileheight = 3,
     trailcolor = 3,
@@ -79,6 +82,7 @@ _level_configs = {
     name = _level_names[4],
     -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x
     tiles = { 13,3,28,40,21,24,27,7},
+    item_pos = {2440, 465},
     branches = {6, 6},
     tree_tileheight = 2,
     foreground = true,
@@ -98,6 +102,7 @@ _level_configs = {
     name = _level_names[5],
     -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x
     tiles = { 13,3,28,40,21,24,27,7},
+    item_pos = {1350, 40},
     branches = {6, 6},
     tree_tileheight = 2,
     foreground = true,
@@ -127,6 +132,7 @@ _level_configs = {
     name = _level_names[6],
     -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x
     tiles = { 13,3,28,40,21,24,27,7},
+    item_pos = {1950, 720},
     tree_tileheight = 2,
     foreground = true,
     trailcolor = 5,
@@ -406,7 +412,7 @@ obs,6,97
 obs,6,115
 flat,128
 
---,down into nothing, down time
+--,short hop then down into nothing, down time
 ddown,64
 flat,96
 
@@ -429,6 +435,9 @@ bdown,8
 flat,96
 
 --,down into long weave
+bup,8,-2
+bdown,8,-2
+flat,16
 ddown,56
 flat,56
 obs,6,115
@@ -742,14 +751,12 @@ flat,64
 bup,16,-2.5
 bdown,8
 ddown,48
-flat,16
 bup,8,-2
 bdown,8
 ddown,96
 flat,112
 bup,8,-2
 bdown,8
-flat,16
 bup,16,-2
 flat,24
 bup,16,-2
@@ -766,33 +773,30 @@ bdown,8
 flat,40
 bup,16,-2.5
 bdown,16
-flat,8
 ddown,32
 flat,8
 bup,16,-2.5
 bdown,16
 ddown,56
-flat,8
 bup,16,-2.5
 bdown,16
 ddown,96
-flat,8
 bup,16,-2.5
 bdown,16
 ddown,56
 flat,64
 bup,16,-2.5
 bdown,16
-flat,96
+flat,256
 ddown,128]]
 }
 
 -- String -> []Range
-function parse_ranges(str, x_base, y_base)
+function parse_ranges(str)
   local ranges = {}
   local jumps = {}
-  local last_flat = y_base
-  local x_curr = x_base
+  local x_curr = 0
+  local last_flat = 8
   foreach(split(str, "\n"), function(substr)
     local vals = split(substr, ",")
     if substr == "" or vals[1] == "--" then
