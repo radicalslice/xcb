@@ -27,8 +27,9 @@ player = {
     p.state = _PLAYER_STATE_ONGROUND
     p.board_cycler = new_cycler(0.05, {9,10,12})
     p.speedpin_cycler = new_cycler(0.05, {9,10,12})
+    p.has_boosted = false -- has the player boosted at all this run, used for fun stuff
     p.boosting = false
-    p.juice = 0
+    p.juice = 3
     p.style = 0
     p.airtimer = 0
     p.pose = false
@@ -94,7 +95,7 @@ player = {
 
     -- sound hack, disable sparkle sound
     -- after we reach the next part of the song
-    if stat(49) == 43 and stat(54) != _last_music_idx then
+    if stat(49) == 44 and stat(54) != _last_music_idx then
       _last_music_idx = -1
       sfx(-1, 3)
       printh("stopped the sfx!")
@@ -155,13 +156,23 @@ player_state_funcs = {
       not block_input and
       not p.boosting and
       p.juice >= 1 then
-      sfx(43, 3)
-      star_mode_on()
-      _last_music_idx = stat(54)
-      _timers.sakurai:init(0.5,time())
-      make_lines()
-      __update = _update_stop
-      __draw = _draw_stop
+        local timer_length = 0.5
+        _last_music_idx = stat(54)
+        _timers.sakurai.f = sakurai_f_base
+        if not p.has_boosted then
+          p.has_boosted = true
+          music(-1)
+          timer_length = 0.8
+          _timers.sakurai.f = sakurai_f_ext
+          sfx(43, 3)
+        else 
+          sfx(44, 3) 
+        end
+        _timers.sakurai:init(timer_length,time())
+        star_mode_on()
+        make_lines()
+        __update = _update_stop
+        __draw = _draw_stop
     end
 
     if btnp(3) and p.plane == 0 then
@@ -344,7 +355,7 @@ player.handle_expr_boost = function()
   player.dx_max = _PLAYER_DX_MAX
   player.boosting = false
   -- in case they biff it while the powerup sfx is still playing
-  if stat(49) == 43 then
+  if stat(49) == 44 then
     sfx(-1, 3)
   end
   star_mode_off()

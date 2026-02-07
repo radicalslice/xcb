@@ -43,10 +43,7 @@ function init_timers()
     end
     )
 
-  -- for a sakurai stop when boosting
-  _timers.sakurai = new_timer(
-    0,
-    function(t)
+  sakurai_f_base = function(t)
       __update = _update_game
       __draw = _draw_game
       _timers.boost:init(2,time())
@@ -54,8 +51,21 @@ function init_timers()
       player.dx_max = _PLAYER_DX_MAX_BOOSTED
       player.dx = _PLAYER_DX_MAX_BOOSTED
       player.boosting = true
+      return t
+  end
+
+  sakurai_f_ext = compose(
+    sakurai_f_base,
+    function(t)
+      music(1)
     end
-    )
+  )
+
+  -- for a sakurai stop when boosting
+  _timers.sakurai = new_timer(
+    0,
+    sakurai_f_base
+  )
 
   -- for stopping the speed pin cycler
   _timers.speedpin = new_timer(

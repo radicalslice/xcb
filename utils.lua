@@ -132,3 +132,7 @@ function star_mode_on()
 		poke(addr, @addr & ~bitflag)
 	end
 end
+
+function compose(f, g)
+  return function(...) return f(g(...)) end
+end
