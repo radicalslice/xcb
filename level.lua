@@ -6,15 +6,23 @@ _level_config = {}
 _map_table = {}
 -- []{x_pos, y_elevation}
 _elevations = {}
+_level_names = {
+"lOFT lADDER",
+"cOINFLIP",
+"iN tHE wEEDS",
+"hALF-lIGHT",
+"iMPROBABLE",
+"sCOOPSYLVANIA",
+}
 
 -- how much time to add to the remaining time at each interlevel
 _checkpoints = {40,35,45,35,35,25}
 
 _level_configs = {
   {
-    name = "lOFT lADDER",
+    name = _level_names[1],
     -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x,ramp left start,ramp right end,fill color for under course
-    tiles = { 17,1,24,30,21,24,27,7},
+    tiles = {17,1,24,30,21,24,27,7},
     tree_tileheight = 3,
     foreground = false,
     branches = {2, 3},
@@ -37,7 +45,7 @@ _level_configs = {
     end,
   },
   {
-    name = "cOINFLIP",
+    name = _level_names[2],
     -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x
     tiles = {17,1,24,30,21,24,27,7},
     branches = {4, 5},
@@ -52,7 +60,7 @@ _level_configs = {
     end,
   },
   {
-    name = "iN tHE wEEDS",
+    name = _level_names[3],
     tiles = { 17,1,24,30,29,32,35,4},
     branches = {4, 5},
     tree_tileheight = 3,
@@ -68,7 +76,7 @@ _level_configs = {
     end,
   },
   {
-    name = "hALF-lIGHT",
+    name = _level_names[4],
     -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x
     tiles = { 13,3,28,40,21,24,27,7},
     branches = {6, 6},
@@ -87,7 +95,7 @@ _level_configs = {
     end,
   },
   {
-    name = "iMPROBABLE",
+    name = _level_names[5],
     -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x
     tiles = { 13,3,28,40,21,24,27,7},
     branches = {6, 6},
@@ -116,7 +124,7 @@ _level_configs = {
     end,
   },
   {
-    name = "sCOOPSYLVANIA",
+    name = _level_names[6],
     -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x
     tiles = { 13,3,28,40,21,24,27,7},
     tree_tileheight = 2,
@@ -202,15 +210,17 @@ bdown,32
 _levels = {
 -- loft ladder
 [[
-ddown,512
+ddown,256
 bup,8,-2
 bdown,8
 ddown,32
 flat,256
 bup,16,-2.5
 bdown,16
-flat,256
+flat,112
 obs,6,160
+bup,16,-2.5
+bdown,16
 flat,112
 bup,16,-2.5
 bdown,16
@@ -709,7 +719,7 @@ flat,40
 obs,0
 flat,96
 ddown,128]],
--- wulff den
+-- scoopsylvania
 [[
 ddown,144
 flat,96

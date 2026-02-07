@@ -42,7 +42,7 @@ function _draw_title()
   print("press "..BUTTON_X.." or "..BUTTON_O, 8, 90, 12)
   -- palt()
 
-  print("v0.5rc", 1, 1, 6)
+  print("v1.0-alpha", 1, 1, 6)
   print("game by @kitasuna", 8, 112, 6)
   print("music by @mabbees", 8, 120, 6)
 

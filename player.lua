@@ -39,6 +39,7 @@ player = {
     p.frame_timer = 0
     p.plane = 0
     p.planedy = 0
+    p.boosting_time = 0
   end,
   change_state = function(p, state)
     -- printh("State change: "..p.state.."->"..state)
@@ -100,6 +101,9 @@ player = {
   end,
   update = function(p, dt, y_ground, ground_angle, block_input)
 
+    if p.boosting then
+      p.boosting_time += dt
+    end
     -- sound hack, disable sparkle sound
     -- after we reach the next part of the song
     if stat(49) == 44 and stat(54) != _last_music_idx then
@@ -277,6 +281,7 @@ player_state_funcs = {
 
       -- we missed the landing! so we'll hop
       if flr(p.angle) != ground_angle then
+        _boardscore:update(_level.name, "nomiss", false)
         p.dy = -2
         -- make sure we're just above ground level first
         p.y = p.y - 0.1

@@ -96,6 +96,21 @@ function _update_game(dt)
    -- prevent the gameover time from triggering if the player has already init'd it
    _timers.pregameover.ttl = 0
    _up_charge,_down_charge = 0,0
+
+
+   -- check boosting time and update boardscore if needed
+   local boosttime = player.boosting_time / (_now - _level.started_at)
+   printh("Level boosttime: "..boosttime)
+   if boosttime > 0.66 then
+      _boardscore:update(_level.name, "boosttime", true)
+   end
+
+   -- debuggin, print boardscore for level
+   printh("Level Boardscore: ")
+   for t,v in pairs(_level.score) do
+     printh(t..":"..(v and "true" or "false")) 
+   end
+
    __update = _update_interlevel
    __draw = _draw_interlevel
    return
@@ -357,7 +372,8 @@ function _draw_game()
   if _debug.msgs then
     -- draw_ctrls(12, 108, 9)
     -- player debug stuff
-    -- print("lmi: ".._last_music_idx, 64, 64, 9)
+    print("nomiss: "..(_level.score.nomiss and "true" or "false"), 64, 64, 9)
+    print("boosting t: "..player.boosting_time, 64, 70, 9)
     -- print("X: "..flr(player.x), 56, 100, 9)
     -- print("cpu: "..stat(1), 56, 100, 9)
     -- print("plr: "..flr(player.x)..","..flr(player.y)..","..player.plane, 56, 94, 9)

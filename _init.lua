@@ -13,9 +13,11 @@ function anytime_init()
     _timers.input_freeze:init(0.2, _last_ts)
     _timers.snow:init(0.05, _last_ts)
 
+    _boardscore = BoardScore:new()
+
     player:reset()
 
-    _level_index = 5
+    _level_index = 1
     _game_timer.clock = 0
     _game_timer.expired = false
 

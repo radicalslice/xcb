@@ -13,15 +13,16 @@ __lua__
 #include _stop.lua
 #include _title.lua
 #include _wipe.lua
-#include qico.lua
-#include utils.lua
-#include player.lua
+#include boardscore.lua
+#include colors.lua
+#include fleas.lua
 #include gamemgr.lua
 #include level.lua
-#include fleas.lua
-#include timer.lua
-#include colors.lua
 #include obstacle.lua
+#include player.lua
+#include qico.lua
+#include timer.lua
+#include utils.lua
 
 __gfx__
 00000000bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb6777777766bbbbbbb0000000000000000bbbbbbb00000bbbbbbbbbbbb00000bbbbbbbbbbb00000bbb00000000
