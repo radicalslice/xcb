@@ -22,7 +22,6 @@ _timers = {}
 _shake = 0
 
 function _update_game(dt)
-  -- update timers
   _timers.boost:update(_now)
   _timers.pose:update(_now)
   _timers.sakurai:update(_now)
@@ -145,7 +144,6 @@ function _update_game(dt)
       local found_collides = collides_new(pbb, obs:get_bb())
       if found_collides then
         _q.add_event("obs_coll")
-        printh("obs:player "..obs.plane..","..player.plane..",".._frame_counter)
       end
     end
   end)
@@ -242,10 +240,6 @@ function _draw_game()
 
     basepal()
 
-    -- parallax-y mountain tiles
-    -- sunset_mtns()
-    -- night_mtns()
-    -- sun / moon / etc
     if _level_config.sun_f != nil then
       _level_config.sun_f()
     end
@@ -305,7 +299,6 @@ function _draw_game()
     obs:draw()
   end)
 
-  -- draw item maybe
   _itemmgr:draw()
 
   foreach(_FX.trails, function(t)
@@ -335,7 +328,6 @@ function _draw_game()
   end)
 
   -- draw menu over everything
-  -- rectfill(112, 0, 128, 24, 0)
   for i=1,3 do
     spr(82, 1, 82 - (i*6))
   end
@@ -346,7 +338,6 @@ function _draw_game()
     spr(83, 1, 82 - (ceil(player.juice)*6))
   end
 
-  -- rectfill(0,120,128,128,0)
   _FX.speedo:draw()
 
   local text_color, border_color = 12, 1
@@ -355,31 +346,17 @@ function _draw_game()
     text_color, border_color = 8, 2
   end
   circfill(124, 2, 20, 0)
-  -- rectfill(112, 0, 128, 24, 0)
   if c > 5 or c == 0 or c % 1 > 0.5 then
     print("\^w\^t"..flr(max(0, c)), 112, 2, border_color)
     print("\^w\^t"..flr(max(0, c)), 113, 3, text_color)
   end
-  -- print("("..flr(time())..")", 76, 12, 9)
   -- end menu draw
  
   if _debug.msgs then
-    -- draw_ctrls(12, 108, 9)
-    -- player debug stuff
-    print("\^o7ffnomiss: "..(_level.score.nomiss and "true" or "false"), 0, 0, 9)
-    print("\^o7ffboosting t: "..player.boosting_time, 0, 6, 9)
-    print("\^o7ffjuice: "..(_level.score.juicebox and "true" or "false"), 0, 12, 9)
-    print("\^o7ffvis: "..(_itemmgr.visible and "true" or "false"), 0, 18, 9)
-    print("\^o7ffPXY: "..flr(player.x)..","..flr(player.y), 0, 24, 9)
-    -- print("cpu: "..stat(1), 56, 100, 9)
-    -- print("plr: "..flr(player.x)..","..flr(player.y)..","..player.plane, 56, 94, 9)
-    -- print("level: "..level.name, 56, 106, 9)
-    -- if #(_obsman.obstacles) > 0 then
-      -- print("obs[1]: ".._obsman.obstacles[1].y, 56, 114, 9)
-    -- end
-    -- print("dx_max: "..player.dx_max, 56, 112, 9)
-    -- print("juice: "..player.juice, 56, 120, 9)
-    -- print("style: "..player.style, 56, 120, 9)
-    -- print(count(_FX.parts), 56, 120, 9)
+    -- print("\^o7ffnomiss: "..(_level.score.nomiss and "true" or "false"), 0, 0, 9)
+    -- print("\^o7ffboosting t: "..player.boosting_time, 0, 6, 9)
+    -- print("\^o7ffjuice: "..(_level.score.juicebox and "true" or "false"), 0, 12, 9)
+    -- print("\^o7ffvis: "..(_itemmgr.visible and "true" or "false"), 0, 18, 9)
+    -- print("\^o7ffPXY: "..flr(player.x)..","..flr(player.y), 0, 24, 9)
   end
 end

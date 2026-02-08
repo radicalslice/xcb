@@ -36,15 +36,12 @@ player = {
     p.airtimer = 0
     p.pose = false
     p.pinned = false
-    p.frame_timer = 0
     p.plane = 0
     p.planedy = 0
     p.boosting_time = 0
-    -- p.level_history = {"hALF-lIGHT", "cOINFLIP", "lOFT lADDER", "iMPROBABLE"}
     p.level_history = {}
   end,
   change_state = function(p, state)
-    -- printh("State change: "..p.state.."->"..state)
     p.state = state
   end,
   draw = function(p)
@@ -114,11 +111,6 @@ player = {
     if stat(49) == 44 and stat(54) != _last_music_idx then
       _last_music_idx = -1
       sfx(-1, 3)
-      printh("stopped the sfx!")
-    end
-    p.frame_timer += dt
-    if p.frame_timer >= 2 then
-      p.frame_timer = 0
     end
 
     -- update board cycler

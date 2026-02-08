@@ -7,7 +7,6 @@ function new_timer(now, f)
       t.ttl = ttl
       t.last_t = last_t
     end,
-    -- add allows us to add some add'l time to the timer
     add = function(t, addl_t)
       t.ttl += addl_t
     end,

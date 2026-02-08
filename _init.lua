@@ -64,8 +64,6 @@ function gen_flat_tile(x, y)
   return {x=x,y=y,map_x=21 + ((x / 8) % 3),map_y=0}
 end
 
--- Indexes into the map data and returns:
---
 function load_level_map_data()
   local map_table = {}
   local elevations = {}

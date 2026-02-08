@@ -70,32 +70,6 @@ function new_part(x, y, fvx, fvy, fillcolors, colorf, edgecolor, start_size, ttl
   return newP
 end
 
--- Let's pull this into some code generation stuff later...
--- This is for a vertical meter
---[[
-function new_meter(x, y, width, height, max_val, color, draw_frame_f)
-  return {
-    color = color,
-    curr_val = 0,
-    max_val = max_val,
-    draw_frame_f = draw_frame_f,
-    x = x,
-    y = y,
-    width = width,
-    height = height,
-    update = function(m, curr_val, max_val, height, color)
-      m.curr_val = curr_val
-      m.max_val = max_val
-      m.color = color
-      m.height = height
-    end,
-    draw = function(m)
-      rectfill(m.x,m.y,m.x+m.width,m.y-(m.curr_val / m.max_val) * m.height,m.color)
-      draw_frame_f(m)
-    end,
-  }
-end
-]]--
 -- Horizontal meter
 function new_meter(x, y, width, height, max_val, color, draw_frame_f)
   return {
