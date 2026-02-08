@@ -143,6 +143,7 @@ function _update_game(dt)
     if player.plane == obs.plane then
       local found_collides = collides_new(pbb, obs:get_bb())
       if found_collides then
+        sfx(4, 3)
         _q.add_event("obs_coll")
       end
     end
@@ -151,6 +152,7 @@ function _update_game(dt)
   -- check for collision between player and item
   if _itemmgr.visible == true and collides_new(player:get_big_bb(), _itemmgr:get_bb()) then
     _itemmgr.visible = false
+    sfx(3, 3)
     _boardscore:update(_level.name, "juicebox", true)
   end
 end

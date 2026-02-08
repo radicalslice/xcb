@@ -75,6 +75,12 @@ function _update_interlevel(dt)
   end
 
   if _level_index != _level_count then
+    if not btn(2) and not btn(3) then
+      sfx(5, -2)
+    elseif stat(19) != 5 and _timers.interlevel.ttl == 0 and (btn(2) or btn(3)) then
+      sfx(5, 3)
+    end
+
     if btn(2) then
       _up_charge += dt
     elseif _up_charge > 0 then
@@ -93,6 +99,7 @@ function _update_interlevel(dt)
   _timers.interlevel:update()
   if _timers.input_freeze.ttl == 0 and (_up_charge > 1.2 or _down_charge > 1.2) and _timers.interlevel.ttl == 0 then
     _timers.interlevel:init(0.2, _now)
+    sfx(5, -2)
     _init_wipe(0.4)
     if _up_charge > 1.2 then
       _level_index = _level_config.branches[1]

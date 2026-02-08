@@ -97,6 +97,7 @@ player = {
     p.airtimer = 0
     p.angle = -1
     p:change_state(_PLAYER_STATE_SKYUP)
+    sfx(6,3)
   end,
   near_ground = function(p, y_ground)
    return abs(p.y - y_ground) < 1 or p.y > y_ground
@@ -190,8 +191,10 @@ player_state_funcs = {
     end
 
     if btnp(3) and p.plane == 0 then
+      sfx(48,3)
       p.planedy = 0.5
     elseif btnp(2) and p.plane == 6 then
+      sfx(48,3)
       p.planedy = -0.5
     end
 
@@ -289,6 +292,7 @@ player_state_funcs = {
           p.handle_expr_boost()
           _timers.boost.ttl = 0
         end
+        sfx(0,3)
         -- do the shake
         _shake = 1
         for i=0,10 do 
@@ -329,6 +333,9 @@ player_state_funcs = {
           -- for stopping the speed pin cycler
           p.pinned = true
           _timers.speedpin:init(0.2,time())
+          sfx(1,3)
+        else
+          sfx(2,3)
         end
 
         -- for stopping the pose

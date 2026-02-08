@@ -90,9 +90,6 @@ end
 -- so it will be muted when the
 -- next pattern starts playing
 function star_mode_off()
-  if not _debug.music then
-    return
-  end
 	local chan_id = 3
 	local bitflag = 1 << 6
 	for sfx_id=0,12 do
@@ -106,9 +103,6 @@ end
 -- level theme with channel 4
 -- turned on for extra 
 function star_mode_on()
-  if not _debug.music then
-    return
-  end
 	local chan_id = 3
 	local bitflag = 1 << 6
 	for sfx_id=0,12 do

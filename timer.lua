@@ -129,6 +129,7 @@ function init_timers()
       -- pass in 0 for the player's x position because it doesn't matter here
       local ranges, jumps, x_max = parse_ranges(_levels[_level_index])
 
+      printh("Loading config for level ".._level_index)
       _level_config = _level_configs[_level_index]
 
       local levelname = _level_config.name
@@ -160,7 +161,7 @@ function init_timers()
       _game_timer.clock += _checkpoints[_level_index]
 
       _obsman:init()
-      _obsman:parselvl(_level_config)
+      _obsman:parselvl(_levels[_level_index])
 
       _itemmgr:init(_level_config.item_pos)
       
