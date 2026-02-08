@@ -19,9 +19,12 @@ function _draw_interlevel()
 
   if _level_index == _level_count and _timers.interlevel.ttl == 0 then
     -- save boardscore
-    _boardscore:save()
-    __update = _update_victory
-    __draw = _draw_victory
+    _savedboardscore:merge(_boardscore)
+    _savedboardscore:save()
+
+    local victory = VictoryScreen:new({header = "nice boardin'!", levels = player.level_history})
+    __update = function() victory:update() end
+    __draw = function() victory:draw() end
 
   elseif _level_config.branches != nil then
     spr(114,up_arrow_x,72 - (_up_charge * 4))

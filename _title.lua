@@ -79,10 +79,8 @@ function _update_title()
     anytime_init()
     _timers.interlevel:init(0.2, _now)
     _init_wipe(0.4)
-    if _debug.music then
-      music(-1,100)
-      music(0,300)
-    end
+    music(-1,100)
+    music(0,300)
     star_mode_off()
   end
 end

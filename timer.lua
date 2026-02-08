@@ -90,10 +90,18 @@ function init_timers()
   _timers.show_boardscore = new_timer(
     0,
     function(t) 
-      printh("trying to show boardscore")
-      local victory = VictoryScreen:new({header = "ur score", levels = _level_names})
+      local victory = VictoryScreen:new({header = "all boardscore", levels = _level_names})
       __update = function() victory:update() end
       __draw = function() victory:draw() end
+    end
+  )
+
+  _timers.show_title = new_timer(
+    0,
+    function(t) 
+      anytime_init()
+      __update = _update_title
+      __draw = _draw_title
     end
   )
 

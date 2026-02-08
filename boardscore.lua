@@ -1,6 +1,5 @@
 BoardScore = {}
 function BoardScore:new(o)
-  printh("called boardscore:new")
   local base = {}
   for n in all(_level_names) do 
     add(base, {
@@ -17,13 +16,27 @@ function BoardScore:new(o)
 end
 
 function BoardScore:load()
- -- load from local
+  -- load from local
+  for i, level_name in ipairs(_level_names) do
+    local score = dget(i) 
+    -- printh("Got score "..score.." for level "..level_name)
+    local level = self:lookup(level_name)
+    if score & 1 > 0 then
+      level["nomiss"] = true 
+    end
+    if score & 1 << 1 > 0 then
+      level["boosttime"] = true 
+    end
+    if score & 1 << 2 > 0 then
+      level["juicebox"] = true 
+    end
+  end
 end
 
 function BoardScore:save()
   --save to local
   for i, level in ipairs(self) do -- foreach level...
-    printh("saving level index: "..i)
+    -- printh("saving level index: "..i)
     local score = 0     
     for k, val in pairs(level) do
       if k == "nomiss" and val then
@@ -36,9 +49,8 @@ function BoardScore:save()
         score |= 1 << 2
       end
     end
-    printh("level has score: "..score)
     dset(i, score)
-    printh("saved level score")
+    -- printh("Saved score "..score.." for level "..level.name)
   end
 end
 
@@ -58,29 +70,15 @@ function BoardScore:update(level_name, key, value)
   end
 end
 
-function BoardScore:getLevelTotal()
-
-end
-
-function BoardScore:getAllTotal()
-
-end
-
 -- for adding current run to previous runs
 function BoardScore:merge(run)
-  for level_name, scores in pairs(run) do
-    for score_name, v in pairs(scores) do
-      self[level_name][score_name] = v or self[score_name][v]
+  for i=1,#run do
+    -- printh("Got run level: "..run[i].name)
+    local self_level = self:lookup(run[i].name)
+    for score_name, val in pairs(run[i]) do
+      if score_name != "name" then
+        self_level[score_name] = val or self_level[score_name]
+      end
     end
   end
 end
-
---[[
-  "levelname": {
-    "whatever": true,
-    "another": false,
-  }
-  nomisses - don't biff any jumps
-  juicebox - the thing you have to get on each level)
-  boosttime - boosting for N% of total level time
-]]--

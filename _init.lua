@@ -6,54 +6,52 @@ _last_ts = 0
 -- used when first starting the game, and when restarting after game over or victory state
 -- NOT used during interlevel changes
 function anytime_init()
-    _now = time()
-    _last_ts = _now
+  _now = time()
+  _last_ts = _now
 
-    init_timers()
-    _timers.input_freeze:init(0.2, _last_ts)
-    _timers.snow:init(0.05, _last_ts)
+  init_timers()
+  _timers.input_freeze:init(0.2, _last_ts)
+  _timers.snow:init(0.05, _last_ts)
 
-    _boardscore = BoardScore:new()
-    _itemmgr = ItemMgr:new()
+  _boardscore = BoardScore:new()
+  _savedboardscore = BoardScore:new()
+  _savedboardscore:load()
+  _itemmgr = ItemMgr:new()
 
-    player:reset()
+  player:reset()
 
-    _level_index = 1
-    _game_timer.clock = 0
-    _game_timer.expired = false
+  _level_index = 1
+  _game_timer.clock = 0
+  _game_timer.expired = false
 
-    -- little extra code to draw the split in
-    -- the speedometer
-    local my_f = function(m)
-      rect(2,121,43,126,6)
-      line(32,121,32,126,6)
-    end
-    -- FX setup
-    _FX = {
-      parts = {},
-      trails = {},
-      -- x,y, width,height, max_val, color, draw_frame_f
-      speedo = new_meter(3,121,32,4,_PLAYER_DX_MAX,10,my_f),
-      snow = {},
-      notifs = {},
-    }
+  -- little extra code to draw the split in
+  -- the speedometer
+  local my_f = function(m)
+    rect(2,121,43,126,6)
+    line(32,121,32,126,6)
+  end
+  -- FX setup
+  _FX = {
+    parts = {},
+    trails = {},
+    -- x,y, width,height, max_val, color, draw_frame_f
+    speedo = new_meter(3,121,32,4,_PLAYER_DX_MAX,10,my_f),
+    snow = {},
+    notifs = {},
+  }
 
-    _q = qico()
-    _q.add_topics("expr_boost|obs_coll|timeover|playerstop|pregameover_expr")
-    _q.add_subs("expr_boost", {player.handle_expr_boost})
-    _q.add_subs("obs_coll", {player.handle_obs_coll})
-    _q.add_subs("timeover", {player.handle_timeover})
-    _q.add_subs("playerstop", {_timermgr.handle_playerstop})
-    _q.add_subs("pregameover_expr", {_gamemgr.handle_pregameover_expr})
+  _q = qico()
+  _q.add_topics("expr_boost|obs_coll|timeover|playerstop|pregameover_expr")
+  _q.add_subs("expr_boost", {player.handle_expr_boost})
+  _q.add_subs("obs_coll", {player.handle_obs_coll})
+  _q.add_subs("timeover", {player.handle_timeover})
+  _q.add_subs("playerstop", {_timermgr.handle_playerstop})
+  _q.add_subs("pregameover_expr", {_gamemgr.handle_pregameover_expr})
 
-     __update = _update_title
-     __draw = _draw_title
-    -- __update = _update_victory
-    -- __draw = _draw_victory
+  __update = _update_title
+  __draw = _draw_title
 
-    if _debug.music then
-      music(17)
-    end
+  music(17)
 end
 
 function _init()

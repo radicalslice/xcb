@@ -53,7 +53,7 @@ player = {
     if p.boosting then
       pal(8, p.board_cycler:get_color())
     end
-    if p.pinned and _debug.pinflash then
+    if p.pinned then
       pal(0, p.speedpin_cycler:get_color())
     end
     local base_sprite = 11 + 2*p.angle
@@ -66,7 +66,7 @@ player = {
       end
     end
 
-    if player.pose and _debug.pose then base_sprite = 34 + 2*p.angle end
+    if player.pose then base_sprite = 34 + 2*p.angle end
 
     local draw_y = p.y - 10
     draw_y += p.plane
@@ -106,7 +106,7 @@ player = {
   end,
   update = function(p, dt, y_ground, ground_angle, block_input)
 
-    if p.boosting then
+    if p.boosting or _timers.sakurai.ttl > 0 then
       p.boosting_time += dt
     end
     -- sound hack, disable sparkle sound
@@ -324,7 +324,7 @@ player_state_funcs = {
         if not p.boosting then
           p.juice = min(_PLAYER_JUICE_MAX, p.juice + _PLAYER_JUICE_ADD)
         end
-        if p.boosting and _debug.pinparticles then
+        if p.boosting then
           _timers.boost:add(_PLAYER_BOOST_BONUS)
           _timers.okami:init(0.2,time())
         end

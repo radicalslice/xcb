@@ -13,14 +13,8 @@ _game_state = "main"
 _last_music_idx = -1
 Y_BASE = 80
 
-
 _debug = {
   msgs = true,
-  pose = true,
-  pinflash = true,
-  pinparticles = true,
-  sakurai = true,
-  music = true,
 }
 
 
@@ -44,11 +38,9 @@ function _update_game(dt)
   check_spawn(player.x)
   _obsman:update()
 
-  -- update meter color if boosting
   local meter_color = 12
   local meter_width = 28
   if player.boosting then
-  -- else
     meter_color = player.board_cycler:get_color()
     meter_width = 40
   end
@@ -98,17 +90,9 @@ function _update_game(dt)
    _up_charge,_down_charge = 0,0
 
 
-   -- check boosting time and update boardscore if needed
    local boosttime = player.boosting_time / (_now - _level.started_at)
-   printh("Level boosttime: "..boosttime)
    if boosttime > 0.66 then
       _boardscore:update(_level.name, "boosttime", true)
-   end
-
-   -- debuggin, print boardscore for level
-   printh("Level Boardscore: ")
-   for t,v in pairs(_level.score) do
-     printh(t..":"..(v and "true" or "false")) 
    end
 
    __update = _update_interlevel

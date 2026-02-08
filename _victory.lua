@@ -18,10 +18,10 @@ function VictoryScreen:draw()
   local x = 8
 
   for i, level in ipairs(self.levels) do
-    local x = ((i-1) % 2 == 0 and 72 or 8)
+    local x = ((i-1) % 2 ~= 0 and 72 or 8)
     local y = 14 + (((i-1) \ 2) * 35)
     print("\^o410"..level, x, y, 9) 
-    print_boardscore(_boardscore:lookup(level), x, y+6)
+    print_boardscore(_savedboardscore:lookup(level), x, y+6)
   end
 
   --[[
@@ -36,13 +36,16 @@ function VictoryScreen:draw()
   --]]
 
   -- if _timers.input_freeze.ttl == 0 then
-  print("\^o410press "..BUTTON_X.." or "..BUTTON_O.." to return to title", 8, 120, 9)
+  print("\^o410"..BUTTON_X.."/"..BUTTON_O..": return to title", 20, 120, 9)
   -- end
 end
 
 function VictoryScreen:update()
+  _timers.show_title:update(_now)
+
   if btnp(4) or btnp(5) then
-    anytime_init()
+    _init_wipe(0.4)
+    _timers.show_title:init(0.2, _now)
   end
 end
 
