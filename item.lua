@@ -7,14 +7,12 @@ function ItemMgr:new(o)
 end
 
 function ItemMgr:init(pos)
-  printh("itemmgr init, called with "..pos[1]..","..pos[2])
   self.x = pos[1]
   self.y = pos[2]
   self.visible = true
 end
 
 function ItemMgr:update(dt)
-  -- maybe don't need this?
 end
 
 function ItemMgr:get_bb()
@@ -27,9 +25,9 @@ function ItemMgr:draw()
   end
   palt(11, true)
   palt(0, false)
-  spr(163, self.x, self.y, 1, 2)
+  spr(157, self.x, self.y, 1, 2)
   palt()
-  local bb = self:get_bb()
-  rect(bb[1],bb[2],bb[3],bb[4],11)
+  -- local bb = self:get_bb()
+  -- rect(bb[1],bb[2],bb[3],bb[4],11)
 end
 

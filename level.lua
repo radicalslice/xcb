@@ -7,12 +7,12 @@ _map_table = {}
 -- []{x_pos, y_elevation}
 _elevations = {}
 _level_names = {
+"sCOOPSYLVANIA",
 "lOFT lADDER",
 "cOINFLIP",
 "iN tHE wEEDS",
 "hALF-lIGHT",
 "iMPROBABLE",
-"sCOOPSYLVANIA",
 }
 
 -- how much time to add to the remaining time at each interlevel
@@ -165,16 +165,16 @@ flat,256
 bup,16,-2.5
 bdown,16
 flat,112
-obs,6,160
+obs,6,181
 bup,16,-2.5
 bdown,16
 flat,112
 bup,16,-2.5
 bdown,16
 flat,256
-obs,0,160
+obs,0,181
 flat,176
-obs,0,160
+obs,0,181
 flat,256
 bup,16,-2.5
 bdown,16
@@ -200,18 +200,18 @@ bdown,16
 flat,32
 bdown,32
 flat,176
-obs,0,160
+obs,0,181
 flat,80
-obs,6,160
+obs,6,181
 flat,64
 bdown,128]],
 -- coinflip
 [[
 bdown,144
 flat,88
-obs,0,160
+obs,0,181
 flat,64
-obs,6,160
+obs,6,181
 flat,32
 bup,16,-2.5
 bdown,16
@@ -219,12 +219,12 @@ flat,112
 bup,16,-2.5
 bdown,16
 flat,56
-obs,0,160
+obs,0,181
 flat,112
 bup,8,-2
 bdown,8
 flat,72
-obs,0,160
+obs,0,181
 flat,96
 bup,16,-2.5
 bdown,16
@@ -232,21 +232,21 @@ flat,64
 bup,8,-2
 bdown,8
 flat,88
-obs,0,160
+obs,0,181
 bdown,24
 flat,56
-obs,6,160
+obs,6,181
 flat,64
 bup,8,-2
 bdown,8
 flat,96
 bup,16,-2.5
 flat,112
-obs,0,160
+obs,0,181
 flat,48
-obs,6,160
+obs,6,181
 flat,48
-obs,0,160
+obs,0,181
 bup,16,-2.5
 bdown,16
 flat,128
@@ -256,7 +256,7 @@ flat,48
 bup,16,-2.5
 bdown,16
 flat,112
-obs,6,160
+obs,6,181
 flat,64
 bup,8,-2
 bdown,8
@@ -271,9 +271,9 @@ bdown,8
 flat,64
 bup,16,-2.5
 flat,56
-obs,6,160
+obs,6,181
 flat,56
-obs,0,160
+obs,0,181
 bdown,64
 flat,64
 bup,8,-2
@@ -497,9 +497,9 @@ flat,32
 bup,8,-2
 bdown,8
 flat,64
-obs,6,160
+obs,6,181
 flat,64
-obs,6,160
+obs,6,181
 flat,64
 bup,16,-2.5
 bdown,16
@@ -507,7 +507,7 @@ flat,8
 bup,16,-2.5
 bdown,16
 flat,72
-obs,0,160
+obs,0,181
 flat,112
 bup,8,-2
 bdown,8
@@ -519,9 +519,9 @@ bdown,8
 flat,8
 bdown,48
 flat,88
-obs,6,160
+obs,6,181
 flat,56
-obs,0,160
+obs,0,181
 flat,32
 bup,16,-2.5
 flat,48
@@ -533,9 +533,9 @@ flat,32
 bup,8,-2
 bdown,64
 flat,64
-obs,0,160
+obs,0,181
 flat,96
-obs,6,160
+obs,6,181
 bdown,32
 flat,8
 bup,8,-2

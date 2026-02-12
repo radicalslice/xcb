@@ -16,7 +16,7 @@ _obsman = {
       end
       if vals[1] == "obs" then
         printh("Got one!")
-        add(m.queue, {spawn_x=x_curr,plane=vals[2],sprite=vals[3] and vals[3] or 160})
+        add(m.queue, {spawn_x=x_curr,plane=vals[2],sprite=vals[3] and vals[3] or 181})
         x_curr += 8
       -- handle obs ramps
       elseif vals[4] == "obs" then

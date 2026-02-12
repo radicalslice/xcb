@@ -57,22 +57,21 @@ function collides_new(s1,s2)
 end
 
 function new_notif(msg)
-  -- Count length of string
-  -- Add padding to left and right
-  local charwidth = #msg * 5
   return {
     msg = msg,
     ttl = 2, -- seconds, dawg
     draw = function(self)
       if self.ttl > 0 then
-        rect(128-charwidth-1, 115, 127, 127, 4)
-        rect(128-charwidth, 116, 126, 126, 9)
-        rectfill(128 - charwidth+1, 117, 125, 125, 0)
-        print("\^o410"..msg, 132 - charwidth, 119, 9)
+        rect(64-1, 105, 127, 127, 9)
+        rect(64, 106, 126, 126, 7)
+        rectfill(64+1, 107, 125, 125, 0)
+        spr(160, 69, 109, 6, 1)
+        spr(176, 117, 110)
+        print("\^o9ff"..msg, 69, 119, 7)
       end
     end,
     update = function(self, dt)
-      self.ttl -= dt
+      -- self.ttl -= dt
     end,
   }
 end
@@ -85,10 +84,6 @@ function basepal()
     palt(0, false)
 end
 
--- continue playing main level
--- theme, but turn off channel 4
--- so it will be muted when the
--- next pattern starts playing
 function star_mode_off()
 	local chan_id = 3
 	local bitflag = 1 << 6
@@ -98,10 +93,6 @@ function star_mode_off()
 	end
 end
 
--- play a short power up jingle
--- then segway into the main
--- level theme with channel 4
--- turned on for extra 
 function star_mode_on()
 	local chan_id = 3
 	local bitflag = 1 << 6

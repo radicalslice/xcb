@@ -7,8 +7,8 @@ function _draw_interlevel()
   _draw_game()
 
   palt(0, false)
-  local up_arrow_x = 55
-  local down_arrow_x = 55
+  local up_arrow_x = 67
+  local down_arrow_x = 67
 
   if btn(2) then
     up_arrow_x += rnd(2) - 1
@@ -27,10 +27,11 @@ function _draw_interlevel()
     __draw = function() victory:draw() end
 
   elseif _level_config.branches != nil then
-    spr(114,up_arrow_x,72 - (_up_charge * 4))
-    spr(114,down_arrow_x,81 + (_down_charge * 4),1,1,false,true)
-    print("\^o410".._level_configs[_level_config.branches[1]].name, 65, 68, 9)
-    print("\^o410".._level_configs[_level_config.branches[2]].name, 65, 88, 9)
+    print("\^o9ffHOLD",64,78,7)
+    spr(114,up_arrow_x,69 - (_up_charge * 4))
+    spr(114,down_arrow_x,85 + (_down_charge * 4),1,1,false,true)
+    print("\^o9ff".._level_configs[_level_config.branches[1]].name, 77, 67, 7)
+    print("\^o9ff".._level_configs[_level_config.branches[2]].name, 77, 90, 7)
   end
 
   palt(0, true)

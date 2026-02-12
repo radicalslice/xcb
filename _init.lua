@@ -51,7 +51,7 @@ function anytime_init()
   __update = _update_title
   __draw = _draw_title
 
-  music(17)
+  -- music(17)
 end
 
 function _init()

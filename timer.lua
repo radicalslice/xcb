@@ -146,13 +146,9 @@ function init_timers()
       _level.score.nomiss = true
 
 
-      printh("Loaded boardscore: ")
       for t,v in pairs(_level.score) do
         printh(t..":"..(v and "true" or "false")) 
       end
-
-      printh("Level started at ".._level.started_at)
-
 
       add(_FX.notifs, new_notif(_level.name))
 

@@ -52,7 +52,7 @@ end
 function print_boardscore(score, x, y)
   for t, v in pairs(score) do
     if t != "name" then 
-      spr((v and 164 or 165), x+2, y)
+      spr((v and 158 or 174), x+2, y)
       print(t, x+12, y + 3, (v and 7 or 5))
       y+=9
     end

@@ -75,8 +75,8 @@ function _update_game(dt)
  else
    cls()
    if _level_index == _level_count then
-     music(-1, 200)
-     music(14, 100)
+     -- music(-1, 200)
+     -- music(14, 100)
      _timers.input_freeze:init(8,_now)
     else 
      _timers.input_freeze:init(0.5,_now)
