@@ -3,7 +3,8 @@ VictoryScreen = {}
 function VictoryScreen:new(o)
   o = o or {
     header = "nice boardin'!",
-    levels = {}
+    levels = {},
+    score = _savedboardscore
   }
   setmetatable(o, self)
   self.__index = self
@@ -13,30 +14,19 @@ end
 function VictoryScreen:draw()
   cls()
   palt(11, false)
-  print("\^w\^t\^o410"..self.header, 12, 0, 9)
+  print("\^w\^t\^o9ff"..self.header, 11, 1, 7)
   local y = 18
   local x = 8
 
   for i, level in ipairs(self.levels) do
     local x = ((i-1) % 2 ~= 0 and 72 or 8)
     local y = 14 + (((i-1) \ 2) * 35)
-    print("\^o410"..level, x, y, 9) 
-    print_boardscore(_savedboardscore:lookup(level), x, y+6)
+    print("\^o9ff"..level, x, y, 7) 
+    print_boardscore(self.score:lookup(level), x, y+6)
   end
 
-  --[[
-  print("\^o410"..player.level_history[2], 72, 18, 9) 
-  print_boardscore(_boardscore:lookup(player.level_history[2]), 72, 24)
-
-  print("\^o410"..player.level_history[3], 8, 54, 9) 
-  print_boardscore(_boardscore:lookup(player.level_history[3]), 8, 60)
-
-  print("\^o410"..player.level_history[4], 72, 54, 9) 
-  print_boardscore(_boardscore:lookup(player.level_history[4]), 72, 60)
-  --]]
-
   -- if _timers.input_freeze.ttl == 0 then
-  print("\^o410"..BUTTON_X.."/"..BUTTON_O..": return to title", 20, 120, 9)
+  print("\^o9ff"..BUTTON_X.."/"..BUTTON_O..": return to title", 20, 120, 7)
   -- end
 end
 

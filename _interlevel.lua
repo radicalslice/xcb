@@ -7,8 +7,8 @@ function _draw_interlevel()
   _draw_game()
 
   palt(0, false)
-  local up_arrow_x = 67
-  local down_arrow_x = 67
+  local up_arrow_x = 66
+  local down_arrow_x = 66
 
   if btn(2) then
     up_arrow_x += rnd(2) - 1
@@ -17,21 +17,12 @@ function _draw_interlevel()
     down_arrow_x += rnd(2) - 1
   end
 
-  if _level_index == _level_count and _timers.interlevel.ttl == 0 then
-    -- save boardscore
-    _savedboardscore:merge(_boardscore)
-    _savedboardscore:save()
-
-    local victory = VictoryScreen:new({header = "nice boardin'!", levels = player.level_history})
-    __update = function() victory:update() end
-    __draw = function() victory:draw() end
-
-  elseif _level_config.branches != nil then
-    print("\^o9ffHOLD",64,78,7)
+  if _level_config.branches != nil then
+    print("\^o9ffHOLD",63,78,7)
     spr(114,up_arrow_x,69 - (_up_charge * 4))
     spr(114,down_arrow_x,85 + (_down_charge * 4),1,1,false,true)
-    print("\^o9ff".._level_configs[_level_config.branches[1]].name, 77, 67, 7)
-    print("\^o9ff".._level_configs[_level_config.branches[2]].name, 77, 90, 7)
+    print("\^o9ff".._level_configs[_level_config.branches[1]].name, 76, 67, 7)
+    print("\^o9ff".._level_configs[_level_config.branches[2]].name, 76, 90, 7)
   end
 
   palt(0, true)
@@ -75,7 +66,8 @@ function _update_interlevel(dt)
     _timers.snow:update()
   end
 
-  if _level_index != _level_count then
+  if _level_config.branches != nil then
+    -- play or stop arrow charing sfx
     if not btn(2) and not btn(3) then
       sfx(5, -2)
     elseif stat(19) != 5 and _timers.interlevel.ttl == 0 and (btn(2) or btn(3)) then
@@ -93,21 +85,30 @@ function _update_interlevel(dt)
     elseif _down_charge > 0 then
       _down_charge = max(0, _down_charge - (dt * 3))
     end
-  elseif _timers.input_freeze.ttl == 0 and (btnp(4) or btnp(5)) then
-      anytime_init()
   end
 
   _timers.interlevel:update()
-  if _timers.input_freeze.ttl == 0 and (_up_charge > 1.2 or _down_charge > 1.2) and _timers.interlevel.ttl == 0 then
+
+  if _level_index == 5 or _level_index == 6 then
+    -- do nothing, just wait for victory screen
+    _timers.show_boardscore2:update()
+    return
+  end
+
+  if (_up_charge > 1.2 or _down_charge > 1.2 or _level_config.branches == nil) and _wipe_ttl == 0 then
     _timers.interlevel:init(0.2, _now)
     sfx(5, -2)
     _init_wipe(0.4)
-    if _up_charge > 1.2 then
+
+    if _level_config.branches == nil then
+      _level_index += 1
+      _maptrails:add(_level_config.notif_f1)
+    elseif _up_charge > 1.2 then
       _level_index = _level_config.branches[1]
+      _maptrails:add(_level_config.notif_f1up)
     else 
       _level_index = _level_config.branches[2]
+      _maptrails:add(_level_config.notif_f1down)
     end
-
-    _up_charge,_down_charge = 0,0
   end
 end

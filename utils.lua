@@ -68,10 +68,14 @@ function new_notif(msg)
         spr(160, 69, 109, 6, 1)
         spr(176, 117, 110)
         print("\^o9ff"..msg, 69, 119, 7)
+        _maptrails:draw()
+        if flr(self.ttl * 60) % 10 < 7 then
+          _level_config.notif_f0()
+        end
       end
     end,
     update = function(self, dt)
-      -- self.ttl -= dt
+      self.ttl -= dt
     end,
   }
 end

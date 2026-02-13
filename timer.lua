@@ -43,20 +43,20 @@ function init_timers()
     )
 
   sakurai_f_base = function(t)
-      __update = _update_game
-      __draw = _draw_game
-      _timers.boost:init(2,time())
-      player.juice -= 1
-      player.dx_max = _PLAYER_DX_MAX_BOOSTED
-      player.dx = _PLAYER_DX_INIT_BOOSTED
-      player.boosting = true
-      return t
+    __update = _update_game
+    __draw = _draw_game
+    _timers.boost:init(2,time())
+    player.juice -= 1
+    player.dx_max = _PLAYER_DX_MAX_BOOSTED
+    player.dx = _PLAYER_DX_INIT_BOOSTED
+    player.boosting = true
+    return t
   end
 
   sakurai_f_ext = compose(
     sakurai_f_base,
     function(t)
-      music(1)
+      -- music(1)
     end
   )
 
@@ -89,7 +89,16 @@ function init_timers()
   _timers.show_boardscore = new_timer(
     0,
     function(t) 
-      local victory = VictoryScreen:new({header = "all boardscore", levels = _level_names})
+      local victory = VictoryScreen:new({header = "all boardscore", levels = _level_names, score = _savedboardscore})
+      __update = function() victory:update() end
+      __draw = function() victory:draw() end
+    end
+  )
+
+  _timers.show_boardscore2 = new_timer(
+    0,
+    function(t) 
+      local victory = VictoryScreen:new({header = "nice boardin'!", levels = player.level_history, score = _boardscore})
       __update = function() victory:update() end
       __draw = function() victory:draw() end
     end
@@ -110,7 +119,6 @@ function init_timers()
     function(t)
       local y = -80 + (flr(rnd(7)) * 10)
       local x = 90 + (flr(rnd(18)) * 8)
-      -- local y, x = 64, 64
       local dx = 1+rnd(1)
       add(_FX.snow, {x=x, y=y, dx=dx})
       t:init(0.05, time())
@@ -129,7 +137,6 @@ function init_timers()
       -- pass in 0 for the player's x position because it doesn't matter here
       local ranges, jumps, x_max = parse_ranges(_levels[_level_index])
 
-      printh("Loading config for level ".._level_index)
       _level_config = _level_configs[_level_index]
 
       local levelname = _level_config.name
@@ -145,10 +152,6 @@ function init_timers()
       -- assume true for the nomiss score
       _level.score.nomiss = true
 
-
-      for t,v in pairs(_level.score) do
-        printh(t..":"..(v and "true" or "false")) 
-      end
 
       add(_FX.notifs, new_notif(_level.name))
 
@@ -166,9 +169,8 @@ function init_timers()
       player.dx = _PLAYER_DX_MAX
       add(player.level_history, _level.name)
 
-      _camera_freeze = false
-      _interlevel_wipego = false
-      _game_state = "main"
+      _up_charge,_down_charge = 0,0
+
       __update = _update_game
       __draw = _draw_game
     end
@@ -185,7 +187,7 @@ end
 
 _timermgr = {
   handle_playerstop = function()
-    music(-1, 1000)
+    -- music(-1, 1000)
     _timers.pregameover:init(2,time())
   end
 }

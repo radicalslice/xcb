@@ -6,7 +6,6 @@ _obsman = {
   init = function(m)
     m.queue,m.obstacles = {},{}
   end,
-  -- parses level data but only looks at the obstacles
   parselvl = function(m,lvlstr)
     local x_curr = 0
     foreach(split(lvlstr, "\n"), function(substr)
@@ -15,7 +14,6 @@ _obsman = {
         return
       end
       if vals[1] == "obs" then
-        printh("Got one!")
         add(m.queue, {spawn_x=x_curr,plane=vals[2],sprite=vals[3] and vals[3] or 181})
         x_curr += 8
       -- handle obs ramps
@@ -28,11 +26,9 @@ _obsman = {
         x_curr += vals[2]
       end
     end)
-    printh("Added "..#m.queue.." obstacles")
   end,
   update = function(m)
     foreach(m.obstacles, function(obs)
-      obs:update()
       if obs.x < player.x - 32 then
         del(m.obstacles, obs)
       end
@@ -58,13 +54,6 @@ function new_obstacle(elevation, plane, sprite)
         spr(obs.sprite, obs.x, obs.y)
       end
 
-      -- draw bb
-      -- local bb = obs:get_bb()
-      -- rect(bb[1],bb[2],bb[3],bb[4],11)
-    end,
-    update = function(obs)
-      -- we don't need this because the camera is already in motion!
-      -- obs.x -= dx 
     end,
     get_bb = function(obs)
       return {flr(obs.x),flr(obs.y),flr(obs.x)+7,flr(obs.y)+5}

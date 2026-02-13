@@ -15,6 +15,7 @@ function _update_wipe(dt)
 end
 
 function _init_wipe(ttl)
+  printh("called init wipe...")
   _wipe_ttl = ttl
   _wipe_ttl0 = ttl
 end

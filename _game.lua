@@ -8,15 +8,12 @@ _game_timer = {
 }
 _frame_counter = 0
 _last_y_drawn = 0
-_camera_freeze = false
-_game_state = "main"
 _last_music_idx = -1
 Y_BASE = 80
 
 _debug = {
   msgs = true,
 }
-
 
 _timers = {}
 _shake = 0
@@ -73,30 +70,30 @@ function _update_game(dt)
  if range != nil then
    y_ground, angle = range.f(board_pos_x)
  else
-   cls()
-   if _level_index == _level_count then
-     -- music(-1, 200)
-     -- music(14, 100)
-     _timers.input_freeze:init(8,_now)
-    else 
-     _timers.input_freeze:init(0.5,_now)
-   end
    _timers.boost:f()
    star_mode_off()
    player.ddx = _PLAYER_DDX
    -- prevent the gameover time from triggering if the player has already init'd it
    _timers.pregameover.ttl = 0
-   _up_charge,_down_charge = 0,0
-
 
    local boosttime = player.boosting_time / (_now - _level.started_at)
    if boosttime > 0.66 then
       _boardscore:update(_level.name, "boosttime", true)
    end
 
+   if _level_index == 5 or _level_index == 6 then
+     -- music(-1, 200)
+     -- music(14, 100)
+     -- show boardscore a couple seconds after finishing
+     _timers.show_boardscore2:init(3,_now)
+      _savedboardscore:merge(_boardscore)
+      _savedboardscore:save()
+   end
+
    __update = _update_interlevel
    __draw = _draw_interlevel
    return
+
  end
 
   -- Check for any jumps
@@ -359,6 +356,6 @@ function _draw_game()
     -- print("\^o7ffboosting t: "..player.boosting_time, 0, 6, 9)
     -- print("\^o7ffjuice: "..(_level.score.juicebox and "true" or "false"), 0, 12, 9)
     -- print("\^o7ffvis: "..(_itemmgr.visible and "true" or "false"), 0, 18, 9)
-    -- print("\^o7ffPXY: "..flr(player.x)..","..flr(player.y), 0, 24, 9)
+    print("\^o7ffPXY: "..flr(player.x)..","..flr(player.y), 0, 24, 9)
   end
 end

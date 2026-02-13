@@ -70,12 +70,12 @@ function _update_title()
 
   _timers.interlevel:update(_now)
 
-  if _timers.input_freeze.ttl == 0 and btnp(5) then
+  if _timers.input_freeze.ttl == 0 and btnp(4) then
     _init_wipe(0.4)
     _timers.show_boardscore:init(0.2, _now)
   end
 
-  if _timers.input_freeze.ttl == 0 and btnp(4)  and _timers.interlevel.ttl <= 0 then
+  if _timers.input_freeze.ttl == 0 and btnp(5)  and _timers.interlevel.ttl <= 0 then
     anytime_init()
     _timers.interlevel:init(0.2, _now)
     _init_wipe(0.4)

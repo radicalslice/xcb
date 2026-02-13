@@ -17,6 +17,7 @@ function anytime_init()
   _savedboardscore = BoardScore:new()
   _savedboardscore:load()
   _itemmgr = ItemMgr:new()
+  _maptrails = MapTrails:new()
 
   player:reset()
 

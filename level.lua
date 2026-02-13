@@ -1,18 +1,17 @@
 _level = {}
 _level_index = 1
-_level_count = 6
 _level_config = {}
 -- Map[XPos][mapx, mapy, sprnum]
 _map_table = {}
 -- []{x_pos, y_elevation}
 _elevations = {}
 _level_names = {
-"sCOOPSYLVANIA",
 "lOFT lADDER",
 "cOINFLIP",
 "iN tHE wEEDS",
 "hALF-lIGHT",
 "iMPROBABLE",
+"sCOOPSYLVANIA",
 }
 
 -- how much time to add to the remaining time at each interlevel
@@ -26,7 +25,15 @@ _level_configs = {
     item_pos = {1750, 270},
     tree_tileheight = 3,
     foreground = false,
-    branches = {2, 3},
+    notif_f0 = function()
+      rectfill(69, 111, 70, 113, 9)
+    end,
+    notif_f1 = function()
+      rectfill(69, 111, 70, 113, 9)
+      for x=72,78,2 do
+        pset(x, 112, 9)
+      end
+    end,
     draw_f = function()
       rectfill(0, 0, 128, 128, 12)
       local cloudheight = 6
@@ -49,10 +56,20 @@ _level_configs = {
     name = _level_names[2],
     tiles = {17,1,24,30,21,24,27,7},
     item_pos = {1040, 130},
-    branches = {4, 5},
+    branches = {3, 4},
     tree_tileheight = 3,
+    notif_f0 = function()
+      rectfill(80, 111, 81, 113, 9)
+    end,
+    notif_f1up = function()
+      rectfill(80, 111, 81, 113, 9)
+      spr(177, 77, 109, 2, 1)
+    end,
+    notif_f1down = function()
+      rectfill(80, 111, 81, 113, 9)
+      spr(193, 77, 109, 2, 1)
+    end,
     foreground = false,
-    mtn_f = function() end,
     sky_f = function()
       rectfill(-16,0,144,63,12)
     end,
@@ -64,10 +81,22 @@ _level_configs = {
     name = _level_names[3],
     tiles = { 17,1,24,30,29,32,35,4},
     item_pos = {2448, 350},
-    branches = {4, 5},
+    branches = {5, 6},
     tree_tileheight = 3,
     trailcolor = 3,
     foreground = false,
+    notif_f0 = function()
+      rectfill(93, 109, 94, 111, 9)
+    end,
+    notif_f1up = function()
+      rectfill(93, 109, 94, 111, 9)
+      spr(179, 93, 109, 2, 1)
+    end,
+    notif_f1down = function()
+      rectfill(93, 109, 94, 111, 9)
+      spr(179, 93, 109, 2, 1)
+      spr(196, 101, 109, 2, 1)
+    end,
     draw_f = function()
       rectfill(0, 0, 128, 128, 12)
       line(0,1,128,1,1)
@@ -81,8 +110,20 @@ _level_configs = {
     name = _level_names[4],
     tiles = { 13,3,28,40,21,24,27,7},
     item_pos = {2440, 465},
-    branches = {6, 6},
+    branches = {5, 6},
     tree_tileheight = 2,
+    notif_f0 = function()
+      rectfill(93, 113, 94, 115, 9)
+    end,
+    notif_f1up = function()
+      rectfill(93, 113, 94, 115, 9)
+      spr(180, 101, 109)
+      spr(195, 93, 109)
+    end,
+    notif_f1down = function()
+      rectfill(93, 113, 94, 115, 9)
+      spr(195, 93, 109, 2, 1)
+    end,
     foreground = true,
     mtn_f = function()
       pal(6, 5)
@@ -100,10 +141,12 @@ _level_configs = {
     name = _level_names[5],
     tiles = { 13,3,28,40,21,24,27,7},
     item_pos = {1350, 40},
-    branches = {6, 6},
     tree_tileheight = 2,
     foreground = true,
     trailcolor = 5,
+    notif_f0 = function()
+      rectfill(107, 109, 108, 111, 9)
+    end,
     mtn_f = function()
       pal(6, 0)
       pal(7, 6)
@@ -132,6 +175,9 @@ _level_configs = {
     tree_tileheight = 2,
     foreground = true,
     trailcolor = 5,
+    notif_f0 = function()
+      rectfill(107, 113, 108, 115, 9)
+    end,
     mtn_f = function()
       pal(6, 0)
       pal(7, 6)
