@@ -281,7 +281,7 @@ obs,0,181
 flat,96
 bup,16,-2.5
 bdown,16
-flat,64
+flat,96
 bup,8,-2
 bdown,8
 flat,88
