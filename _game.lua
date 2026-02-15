@@ -77,6 +77,7 @@ function _update_game(dt)
    _timers.pregameover.ttl = 0
 
    local boosttime = player.boosting_time / (_now - _level.started_at)
+   printh("Boosttime: "..boosttime)
    if boosttime > 0.66 then
       _boardscore:update(_level.name, "boosttime", true)
    end
