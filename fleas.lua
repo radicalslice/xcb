@@ -88,7 +88,7 @@ function new_meter(x, y, width, height, max_val, color, draw_frame_f)
       m.width = width
     end,
     draw = function(m)
-      rectfill(m.x,m.y,m.x+(m.curr_val / m.max_val) * m.width,m.y+m.height,m.color)
+      rectfill(m.x,m.y,m.x+(min(m.max_val, m.curr_val) / m.max_val) * m.width,m.y+m.height,m.color)
       draw_frame_f(m)
     end,
   }
