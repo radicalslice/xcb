@@ -80,7 +80,7 @@ _level_configs = {
   {
     name = _level_names[3],
     tiles = { 17,1,24,30,29,32,35,4},
-    item_pos = {2448, 350},
+    item_pos = {2342, 320},
     branches = {5, 6},
     tree_tileheight = 3,
     trailcolor = 3,
@@ -338,19 +338,23 @@ bdown,128]],
 -- in the weeds
 [[
 bdown,144
-flat,144
+flat,64
+bup,8,-2
+bdown,8
 
 --,short weave
 obs,6,115
-flat,48
+flat,64
 obs,0,115
 flat,48
 obs,6,115
 flat,48
 
 --,down into long weave
+bup,8,-2
+bdown,8
 bdown,56
-flat,56
+flat,48
 obs,0,115
 obs,0,96
 obs,0,97
@@ -359,7 +363,11 @@ flat,32
 obs,6,115
 obs,6,96
 obs,6,115
-flat,96
+bup,8,-2
+bdown,8
+flat,80
+bup,8,-2
+bdown,8
 
 
 --,short weave
@@ -390,7 +398,7 @@ bup,8,-2
 bdown,8
 flat,72
 obs,6,115
-flat,48
+flat,96
 obs,0,115
 flat,96
 bup,8,-2
@@ -400,18 +408,22 @@ obs,0,96
 obs,0,115
 obs,0,115
 obs,0,97
-flat,32
+bup,8,-2
+bdown,8
+flat,64
 obs,6,115
 obs,6,97
 obs,6,115
-flat,128
+flat,64
 
 --,short hop then down into nothing, down time
-bdown,64
-flat,96
+bdown,48
+flat,32
 
 --,down into long weave
-bdown,56
+bup,8,-2
+bdown,8
+bdown,48
 flat,56
 obs,0,115
 obs,0,97
@@ -421,25 +433,23 @@ flat,32
 obs,6,115
 obs,6,115
 obs,6,97
-flat,96
+flat,80
 
 --,first obs ramp
 bup,8,-2,obs
 bdown,8
+--,10
 flat,96
 
 --,down into long weave
 bup,8,-2
-bdown,8,-2
+bdown,8
 flat,16
 bdown,56
 flat,56
 obs,6,115
-obs,6,96
 obs,6,115
-obs,6,115
-flat,32
-obs,0,115
+flat,56
 obs,0,97
 obs,0,115
 flat,48
@@ -449,11 +459,11 @@ bup,8,-2,obs
 bdown,8
 flat,96
 obs,6,115
-flat,96
+flat,64
 
 
 --,bdown into obsramp into short weave
-bdown,96
+bdown,32
 flat,48
 bup,8,-2,obs
 bdown,8
@@ -463,7 +473,9 @@ flat,48
 obs,0,115
 flat,48
 obs,6,115
-flat,96
+flat,64
+bup,8,-2
+bdown,8
 
 --,down into short weave
 bdown,96
