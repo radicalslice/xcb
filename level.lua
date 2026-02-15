@@ -171,7 +171,7 @@ _level_configs = {
   {
     name = _level_names[6],
     tiles = { 13,3,28,40,21,24,27,7},
-    item_pos = {1950, 720},
+    item_pos = {364, 140},
     tree_tileheight = 2,
     foreground = true,
     trailcolor = 5,
@@ -733,12 +733,12 @@ flat,96
 bdown,128]],
 -- scoopsylvania
 [[
-bdown,144
+bdown,136
 flat,96
 bup,8,-2
 bdown,16
-bdown,112
-flat,64
+bdown,96
+flat,80
 bup,8,-2
 bdown,8
 flat,48
@@ -757,10 +757,10 @@ bdown,48
 bup,8,-2
 bdown,8
 bdown,96
-flat,112
+flat,96
 bup,8,-2
 bdown,8
-bup,16,-2
+bup,32,-2
 flat,24
 bup,16,-2
 flat,64
