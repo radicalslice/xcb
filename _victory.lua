@@ -4,7 +4,8 @@ function VictoryScreen:new(o)
   o = o or {
     header = "nice boardin'!",
     levels = {},
-    score = _savedboardscore
+    score = _savedboardscore,
+    from_title = false,
   }
   setmetatable(o, self)
   self.__index = self
@@ -32,10 +33,15 @@ end
 
 function VictoryScreen:update()
   _timers.show_title:update(_now)
+  _timers.show_title2:update(_now)
 
   if btnp(4) or btnp(5) then
     _init_wipe(0.4)
-    _timers.show_title:init(0.2, _now)
+    if self.from_title then
+      _timers.show_title2:init(0.2, _now)
+    else
+      _timers.show_title:init(0.2, _now)
+    end
   end
 end
 

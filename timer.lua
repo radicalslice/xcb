@@ -89,7 +89,7 @@ function init_timers()
   _timers.show_boardscore = new_timer(
     0,
     function(t) 
-      local victory = VictoryScreen:new({header = "all boardscore", levels = _level_names, score = _savedboardscore})
+      local victory = VictoryScreen:new({header = "all boardscore", levels = _level_names, score = _savedboardscore, from_title=false})
       __update = function() victory:update() end
       __draw = function() victory:draw() end
     end
@@ -98,7 +98,7 @@ function init_timers()
   _timers.show_boardscore2 = new_timer(
     0,
     function(t) 
-      local victory = VictoryScreen:new({header = "nice boardin'!", levels = player.level_history, score = _boardscore})
+      local victory = VictoryScreen:new({header = "nice boardin'!", levels = player.level_history, score = _boardscore, from_title = true})
       __update = function() victory:update() end
       __draw = function() victory:draw() end
     end
@@ -108,6 +108,15 @@ function init_timers()
     0,
     function(t) 
       anytime_init()
+      __update = _update_title
+      __draw = _draw_title
+    end
+  )
+
+  -- for returning from boardscore screen
+  _timers.show_title2 = new_timer(
+    0,
+    function(t) 
       __update = _update_title
       __draw = _draw_title
     end

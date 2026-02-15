@@ -21,7 +21,7 @@ function anytime_init()
 
   player:reset()
 
-  _level_index = 2
+  _level_index = 6
   _game_timer.clock = 0
   _game_timer.expired = false
 
@@ -52,7 +52,7 @@ function anytime_init()
   __update = _update_title
   __draw = _draw_title
 
-  -- music(17)
+  music(17)
 end
 
 function _init()
