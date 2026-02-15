@@ -21,7 +21,7 @@ function anytime_init()
 
   player:reset()
 
-  _level_index = 6
+  _level_index = 1
   _game_timer.clock = 0
   _game_timer.expired = false
 
@@ -39,15 +39,16 @@ function anytime_init()
     speedo = new_meter(3,121,32,4,_PLAYER_DX_MAX,10,my_f),
     snow = {},
     notifs = {},
+    headsup = {},
   }
 
   _q = qico()
   _q.add_topics("expr_boost|obs_coll|timeover|playerstop|pregameover_expr")
-  _q.add_subs("expr_boost", {player.handle_expr_boost})
-  _q.add_subs("obs_coll", {player.handle_obs_coll})
-  _q.add_subs("timeover", {player.handle_timeover})
-  _q.add_subs("playerstop", {_timermgr.handle_playerstop})
-  _q.add_subs("pregameover_expr", {_gamemgr.handle_pregameover_expr})
+  _q.add_sub("expr_boost", player.handle_expr_boost)
+  _q.add_sub("obs_coll", player.handle_obs_coll)
+  _q.add_sub("timeover", player.handle_timeover)
+  _q.add_sub("playerstop", _timermgr.handle_playerstop)
+  _q.add_sub("pregameover_expr", _gamemgr.handle_pregameover_expr)
 
   __update = _update_title
   __draw = _draw_title

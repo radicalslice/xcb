@@ -77,18 +77,25 @@ function _update_game(dt)
    _timers.pregameover.ttl = 0
 
    local boosttime = player.boosting_time / (_now - _level.started_at)
-   printh("Boosttime: "..boosttime)
    if boosttime > 0.75 then
-      _boardscore:update(_level.name, "boosttime", true)
+     add(_FX.headsup, new_headsup("boostlord!"))
+     _boardscore:update(_level.name, "boosttime", true)
+   end
+
+   if _level.score.nomiss.val then
+    if #_FX.headsup == 0 then
+      add(_FX.headsup, new_headsup("no biffs!"))
+    else
+      _timers.addlheadsup:init(0.8, _now)
+    end
    end
 
    if _level_index == 5 or _level_index == 6 then
-     -- music(-1, 200)
-     -- music(14, 100)
-     -- show boardscore a couple seconds after finishing
-     _timers.show_boardscore2:init(3,_now)
-      _savedboardscore:merge(_boardscore)
-      _savedboardscore:save()
+     music(-1, 100)
+     music(14, 50)
+     _timers.show_boardscore2:init(5.5,_now)
+     _savedboardscore:merge(_boardscore)
+     _savedboardscore:save()
    end
 
    __update = _update_interlevel
@@ -133,9 +140,15 @@ function _update_game(dt)
     end
   end)
 
+  foreach(_FX.headsup, function(n) 
+    n:update(dt)
+    if n.ttl <= 0 then
+      del(_FX.notifs, c)
+    end
+  end)
+
   player:update(dt, y_ground, angle)
 
-  -- check for collision between player and obstacles
   local pbb = player:get_bb()
   foreach(_obsman.obstacles, function(obs)
     if player.plane == obs.plane then
@@ -147,11 +160,11 @@ function _update_game(dt)
     end
   end)
 
-  -- check for collision between player and item
   if _itemmgr.visible == true and collides_new(player:get_big_bb(), _itemmgr:get_bb()) then
     _itemmgr.visible = false
     sfx(3, 3)
     _boardscore:update(_level.name, "juicebox", true)
+     add(_FX.headsup, new_headsup("juicebox!"))
   end
 end
 
@@ -160,8 +173,8 @@ _last_camera_y_offset = 0
 _camera_x = 0
 function align_camera(player_x)
   local y_ground = Y_BASE
-  -- Look ahead to try and prep camera, this is based on the ground a little bit ahead
-  -- Changed this from 24 to 48 and it made it better, somehow, on the downward slopes
+  -- Look ahead to try and prep camera
+  -- Changed this from 24 to 48 and it made it better on the downward slopes
   local range = find_range(player_x + 48, _level)
   if range != nil then
     y_ground, _ = range.f(player_x + 48)
@@ -221,7 +234,6 @@ end
 function _draw_game()
   cls()
 
-  -- add in the shake, if any
   local shakex = (4 - rnd(8)) * _shake
   local shakey = (4 - rnd(8)) * _shake
 
@@ -307,7 +319,6 @@ function _draw_game()
     end
   end)
 
-  -- player over background
   player:draw()
 
   foreach(_FX.parts, function(p)
@@ -316,18 +327,22 @@ function _draw_game()
     end
   end)
 
+  foreach(_FX.headsup, function(n)
+    n:draw()
+  end)
+
   camera()
 
   foreach(_FX.notifs, function(n)
     n:draw()
   end)
 
+
   basepal()
   foreach(_FX.snow, function(c) 
     spr(118, c.x, c.y)
   end)
 
-  -- draw menu over everything
   for i=1,3 do
     spr(82, 1, 82 - (i*6))
   end
@@ -353,10 +368,6 @@ function _draw_game()
   -- end menu draw
  
   if _debug.msgs then
-    -- print("\^o7ffnomiss: "..(_level.score.nomiss and "true" or "false"), 0, 0, 9)
-    -- print("\^o7ffboosting t: "..player.boosting_time, 0, 6, 9)
-    -- print("\^o7ffjuice: "..(_level.score.juicebox and "true" or "false"), 0, 12, 9)
-    -- print("\^o7ffvis: "..(_itemmgr.visible and "true" or "false"), 0, 18, 9)
-    print("\^o7ffPXY: "..flr(player.x)..","..flr(player.y), 0, 24, 9)
+    -- print("\^o7ffPXY: "..flr(player.x)..","..flr(player.y), 0, 24, 9)
   end
 end

@@ -56,7 +56,7 @@ function init_timers()
   sakurai_f_ext = compose(
     sakurai_f_base,
     function(t)
-      -- music(1)
+      music(1)
     end
   )
 
@@ -89,7 +89,7 @@ function init_timers()
   _timers.show_boardscore = new_timer(
     0,
     function(t) 
-      local victory = VictoryScreen:new({header = "all boardscore", levels = _level_names, score = _savedboardscore, from_title=false})
+      local victory = VictoryScreen:new({header = "all boardscore", levels = _level_names, score = _savedboardscore, from_title=true})
       __update = function() victory:update() end
       __draw = function() victory:draw() end
     end
@@ -98,7 +98,7 @@ function init_timers()
   _timers.show_boardscore2 = new_timer(
     0,
     function(t) 
-      local victory = VictoryScreen:new({header = "nice boardin'!", levels = player.level_history, score = _boardscore, from_title = true})
+      local victory = VictoryScreen:new({header = "nice boardin'!", levels = player.level_history, score = _boardscore, from_title = false})
       __update = function() victory:update() end
       __draw = function() victory:draw() end
     end
@@ -159,7 +159,7 @@ function init_timers()
       }
 
       -- assume true for the nomiss score
-      _level.score.nomiss = true
+      _level.score.nomiss.val = true
 
 
       add(_FX.notifs, new_notif(_level.name))
@@ -192,11 +192,18 @@ function init_timers()
       _q.add_event("pregameover_expr")
     end
   )
+
+  _timers.addlheadsup = new_timer(
+    0,
+    function(t)
+      add(_FX.headsup, new_headsup("no biffs!"))
+    end
+  )
 end
 
 _timermgr = {
   handle_playerstop = function()
-    -- music(-1, 1000)
+    music(-1, 1000)
     _timers.pregameover:init(2,time())
   end
 }

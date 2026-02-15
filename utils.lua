@@ -40,7 +40,6 @@ function new_cycler(cycle_ttl, colors)
   }
 end
 
--- type BoundingBox = [float, float, float, float]
 -- As in: [x0,y0,x1,y1], the corners of the bounding box
 -- collides_new :: BoundingBox -> BoundingBox -> Bool
 function collides_new(s1,s2)
@@ -80,8 +79,25 @@ function new_notif(msg)
   }
 end
 
--- using this to reset sensible defaults
--- after I jack up the pal for other things
+function new_headsup(msg)
+  return {
+    init_ttl = 1.5,
+    ttl = 1.5,
+    draw = function(self)
+      if self.ttl > 0 then
+        local x = player.x
+        for char in all(msg) do
+          y = player.y - 16 + sin(time() - x / 40)*2
+          x = print("\^o9ff"..char, x, y - (16 * (self.init_ttl - self.ttl) / self.init_ttl), 7)
+        end
+      end
+    end,
+    update = function(self, dt)
+      self.ttl -= dt
+    end,
+  }
+end
+
 function basepal()
     pal() 
     palt(11, true)

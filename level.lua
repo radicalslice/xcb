@@ -15,7 +15,7 @@ _level_names = {
 }
 
 -- how much time to add to the remaining time at each interlevel
-_checkpoints = {40,35,45,35,35,25}
+_checkpoints = {40,35,45,35,35,22}
 
 _level_configs = {
   {
@@ -55,7 +55,7 @@ _level_configs = {
   {
     name = _level_names[2],
     tiles = {17,1,24,30,21,24,27,7},
-    item_pos = {1040, 130},
+    item_pos = {1452, 130},
     branches = {3, 4},
     tree_tileheight = 3,
     notif_f0 = function()
@@ -109,7 +109,7 @@ _level_configs = {
   {
     name = _level_names[4],
     tiles = { 13,3,28,40,21,24,27,7},
-    item_pos = {2440, 465},
+    item_pos = {1768, 160},
     branches = {5, 6},
     tree_tileheight = 2,
     notif_f0 = function()
@@ -733,11 +733,10 @@ flat,96
 bdown,128]],
 -- scoopsylvania
 [[
-bdown,136
+bdown,96
 flat,96
 bup,8,-2
-bdown,16
-bdown,96
+bdown,112
 flat,80
 bup,8,-2
 bdown,8
@@ -752,12 +751,11 @@ flat,64
 bup,16,-2
 flat,64
 bup,16,-2.5
-bdown,8
-bdown,48
+bdown,56
 bup,8,-2
 bdown,8
 bdown,96
-flat,96
+flat,80
 bup,8,-2
 bdown,8
 bup,32,-2
@@ -778,18 +776,27 @@ bup,16,-2.5
 bdown,48
 flat,8
 bup,16,-2.5
-bdown,16
-bdown,56
+bdown,72
 bup,16,-2.5
-bdown,16
-bdown,96
+bdown,112
 bup,16,-2.5
-bdown,16
-bdown,56
+bdown,72
 flat,64
 bup,16,-2.5
 bdown,16
-flat,256
+flat,64
+bup,8,-2
+bdown,8
+flat,64
+bup,16,-2.5
+bdown,72
+bup,16,-2.5
+bdown,112
+bup,16,-2.5
+bdown,72
+bup,16,-2.5
+bdown,72
+flat,64
 bdown,128]]
 }
 

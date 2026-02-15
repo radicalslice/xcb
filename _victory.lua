@@ -26,9 +26,7 @@ function VictoryScreen:draw()
     print_boardscore(self.score:lookup(level), x, y+6)
   end
 
-  -- if _timers.input_freeze.ttl == 0 then
   print("\^o9ff"..BUTTON_X.."/"..BUTTON_O..": return to title", 20, 120, 7)
-  -- end
 end
 
 function VictoryScreen:update()
@@ -46,11 +44,13 @@ function VictoryScreen:update()
 end
 
 function print_boardscore(score, x, y)
-  for t, v in pairs(score) do
-    if t != "name" then 
-      spr((v and 158 or 174), x+2, y)
-      print(t, x+12, y + 3, (v and 7 or 5))
-      y+=9
+  for outerkey, innertable in pairs(score) do
+    if outerkey != "name" then
+      if t != "name" then 
+        spr((innertable.val and 158 or 174), x+2, y)
+        print(innertable.label, x+12, y + 3, (innertable.val and 7 or 5))
+        y+=9
+      end
     end
   end
 end

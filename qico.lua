@@ -32,12 +32,6 @@ function qico()
     add(t[event], fn)
   end
 
-  function add_subs(event, fns)
-    for i=1,#fns do
-      add(t[event], fns[i])
-    end
-  end
-
   function proc()
     for k,v in pairs(q) do
       if t[v.name] != nil then

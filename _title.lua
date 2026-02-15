@@ -7,10 +7,10 @@ function _draw_title()
   -- sky
   rectfill(0, 0, 128, 128, 12)
   -- clouds
-  local cloudheight = 4
+  local cloudheight = 5
   local gapheight = 3
   local next_y = 0
-  while cloudheight > 0 do
+  while cloudheight > 1 do
     rectfill(0, next_y, 128, next_y + cloudheight, 7) 
     next_y = next_y + cloudheight + gapheight
     cloudheight -= 1
@@ -69,8 +69,8 @@ function _update_title()
     anytime_init()
     _timers.interlevel:init(0.2, _now)
     _init_wipe(0.4)
-    -- music(-1,100)
-    -- music(0,300)
+    music(-1,100)
+    music(0,300)
     star_mode_off()
   end
 end

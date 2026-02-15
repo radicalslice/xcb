@@ -17,7 +17,7 @@ function _draw_interlevel()
     down_arrow_x += rnd(2) - 1
   end
 
-  if _level_config.branches != nil then
+  if _level_config.branches != nil and #_FX.headsup == 0 then
     print("\^o9ffHOLD",63,78,7)
     spr(114,up_arrow_x,69 - (_up_charge * 4))
     spr(114,down_arrow_x,85 + (_down_charge * 4),1,1,false,true)
@@ -54,6 +54,13 @@ function _update_interlevel(dt)
     end
   end)
 
+  foreach(_FX.headsup, function(h) 
+    h:update(dt)
+    if h.ttl <= 0 then
+      del(_FX.headsup, h)
+    end
+  end)
+
   _timers.input_freeze:update()
   if _level_index == 1 then
     foreach(_FX.snow, function(c) 
@@ -65,6 +72,8 @@ function _update_interlevel(dt)
     end)
     _timers.snow:update()
   end
+
+  _timers.addlheadsup:update()
 
   if _level_config.branches != nil then
     -- play or stop arrow charing sfx
@@ -95,7 +104,7 @@ function _update_interlevel(dt)
     return
   end
 
-  if (_up_charge > 1.2 or _down_charge > 1.2 or _level_config.branches == nil) and _wipe_ttl == 0 then
+  if (_up_charge > 1.2 or _down_charge > 1.2 or _level_config.branches == nil) and _wipe_ttl == 0 and #_FX.headsup == 0 then
     _timers.interlevel:init(0.2, _now)
     sfx(5, -2)
     _init_wipe(0.4)
