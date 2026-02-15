@@ -140,7 +140,7 @@ _level_configs = {
   {
     name = _level_names[5],
     tiles = { 13,3,28,40,21,24,27,7},
-    item_pos = {1350, 40},
+    item_pos = {1300, 38},
     tree_tileheight = 2,
     foreground = true,
     trailcolor = 5,
@@ -542,20 +542,20 @@ flat,16
 bdown,128]],
 -- half-light
 [[
-bdown,144
-flat,128
+bdown,112
+flat,96
 bup,8,-2
 bdown,8
 flat,32
 bup,8,-2
 bdown,8
-flat,152
+flat,112
 bup,16,-2.5
 bdown,16
 flat,8
 bup,16,-2.5
 bdown,16
-flat,152
+flat,112
 bup,8,-2
 bdown,8
 flat,32
@@ -571,6 +571,7 @@ bdown,16
 flat,8
 bup,16,-2.5
 bdown,16
+--,pairs end
 flat,72
 obs,0,181
 flat,112
@@ -578,36 +579,32 @@ bup,8,-2
 bdown,8
 flat,48
 bdown,32
-flat,16
+flat,64
 bup,8,-2
 bdown,8
-flat,8
+flat,32
+bup,8,-2
+bdown,8
+flat,16
 bdown,48
-flat,88
+flat,64
 obs,6,181
 flat,56
 obs,0,181
 flat,32
 bup,16,-2.5
 flat,48
-bdown,72
-bup,8,-2
-bdown,8
-bdown,72
-flat,32
-bup,8,-2
-bdown,64
-flat,64
-obs,0,181
-flat,96
-obs,6,181
 bdown,32
-flat,8
+flat,64
+bup,16,-2.5
+flat,48
+bdown,32
+flat,48
 bup,8,-2
 bdown,8
 flat,16
 bup,8,-2
-bdown,72
+bdown,32
 flat,96
 bup,16,-2.5
 flat,96
