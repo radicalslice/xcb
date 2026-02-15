@@ -22,7 +22,7 @@ _level_configs = {
     name = _level_names[1],
     -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x,ramp left start,ramp right end,fill color for under course
     tiles = {17,1,24,30,21,24,27,7},
-    item_pos = {1750, 270},
+    item_pos = {1828, 240},
     tree_tileheight = 3,
     foreground = false,
     notif_f0 = function()
