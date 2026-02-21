@@ -4,15 +4,13 @@
 --  () -> InitialVX :: Float  -> 
 --  () -> InitialVY :: Float ->
 --  []Color -> 
---  []Color ->
 --  InitSize :: Int ->
 --  Ttl :: Float ->
 --  Shrink :: Bool ->
 --  Gravity :: Float 
-function new_part(x, y, fvx, fvy, fillcolors, colorf, edgecolor, start_size, ttl, shrink, gravity)
+function new_part(x, y, fvx, fvy, fillcolors, edgecolor, start_size, ttl, shrink, gravity)
   local newP = {
     colors = fillcolors,
-    colorf = colorf,
     edgecolor = edgecolor,
     x = x,
     y = y,
@@ -34,10 +32,10 @@ function new_part(x, y, fvx, fvy, fillcolors, colorf, edgecolor, start_size, ttl
     if idx >= #p.colors then idx = #p.colors - 1 end
 
     local color = nil
-    if colorf == nil then
-      color = p.colors[idx + 1]
+    if #p.colors > 1 then
+      color = rnd(p.colors)
     else 
-      color = colorf()
+      color = p.colors[1]
     end 
 
     circfill(

@@ -39,10 +39,19 @@ function _update_interlevel(dt)
   if player.boosting then
     player.boosting = false
   end
-  if player.x >= _level.x_max + 144 then 
+  if player.x >= _level.x_max + 128 then 
+    foreach(_FX.trails, function(t) 
+      for crc in all(t) do 
+        crc.x -= player.x - _level.x_max
+        crc.y -= player.y - _last_y_drawn
+      end
+    end)
+    foreach(_FX.parts, function(part) 
+        part.x -= player.x - _level.x_max
+        part.y -= player.y - _last_y_drawn
+    end)
     player.x = _level.x_max
     player.y = _last_y_drawn
-    _FX.trails = {}
   end
   player:update(dt, player.y+player.dx, 1, true)
   align_camera(player.x)

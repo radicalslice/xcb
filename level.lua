@@ -15,7 +15,7 @@ _level_names = {
 }
 
 -- how much time to add to the remaining time at each interlevel
-_checkpoints = {40,35,45,35,35,22}
+_checkpoints = {30,33,45,30,32,25}
 
 _level_configs = {
   {
@@ -532,14 +532,9 @@ obs,6,97
 obs,6,115
 obs,6,96
 obs,6,115
-flat,64
-
---,final leap
-bup,8,-2
-bdown,8
-flat,16
-
-bdown,128]],
+flat,96
+bdown,96
+bdown,96]],
 -- half-light
 [[
 bdown,112
@@ -730,7 +725,8 @@ obs,6
 flat,40
 obs,0
 flat,96
-bdown,128]],
+bdown,96
+bdown,96]],
 -- scoopsylvania
 [[
 bdown,96

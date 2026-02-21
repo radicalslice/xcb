@@ -33,7 +33,7 @@ function _draw_title()
   -- dude
   spr(128, 50, 80, 2, 2)
 
-  print("v1.0-alpha", 1, 1, 6)
+  print("v1.0", 1, 1, 6)
   print("game by @kitasuna", 4, 115, 6)
   print("music by @mabbees", 4, 122, 6)
 

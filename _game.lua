@@ -143,7 +143,7 @@ function _update_game(dt)
   foreach(_FX.headsup, function(n) 
     n:update(dt)
     if n.ttl <= 0 then
-      del(_FX.notifs, c)
+      del(_FX.headsup, n)
     end
   end)
 

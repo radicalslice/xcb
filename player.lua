@@ -202,7 +202,7 @@ player_state_funcs = {
       p.plane += p.planedy
     end
     add(_FX.trails, {})
-    add(_FX.trails[#_FX.trails], {x=player.x, y=player.y+player.plane+4, rad=flr(rnd(2))+2, ttl=1})
+    add(_FX.trails[#_FX.trails], {x=player.x, y=player.y+player.plane+4, rad=flr(rnd(2))+2, ttl=0.5})
 
     if p.plane <= 0 or p.plane >= 6 then
       p.planedy = 0
@@ -216,8 +216,7 @@ player_state_funcs = {
           p.y + p.plane + 8 - rnd(2),
           function() return sin(rnd()) * -1 end,
           function() return cos(rnd()) end,
-          {7}, -- regular color
-          _timers.okami.ttl > 0 and f or nil, -- colorf
+          _timers.okami.ttl > 0 and {9, 10, 12} or {7}, -- regular color
           nil,
           flr(rnd(2)) + 3,
           0.4,
@@ -303,7 +302,6 @@ player_state_funcs = {
               function() return sin(rnd()) * 3 end,
               function() return -rnd(7) end,
               {7},
-              nil,
               rnd() > 0.8 and 6 or nil,
               3 + rnd(3),
               0.5 + rnd(0.5),

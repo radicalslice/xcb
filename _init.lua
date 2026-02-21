@@ -3,7 +3,6 @@ _now = 0
 _last_ts = 0
 
 -- anytime_init resets all our globals and game state
--- used when first starting the game, and when restarting after game over or victory state
 -- NOT used during interlevel changes
 function anytime_init()
   _now = time()

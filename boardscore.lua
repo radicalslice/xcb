@@ -70,7 +70,6 @@ end
 -- for adding current run to previous runs
 function BoardScore:merge(run)
   for i=1,#run do
-    -- printh("Got run level: "..run[i].name)
     local self_level = self:lookup(run[i].name)
     for score_name, val in pairs(run[i]) do
       if score_name != "name" then
