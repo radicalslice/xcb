@@ -1,6 +1,7 @@
 _PLAYER_DX_MAX = 2.0 -- when on the ground
 _PLAYER_DDX = 0.02
 _PLAYER_DX_MAX_BOOSTED = 3.2
+_PLAYER_DX_INIT_BOOSTED = 5
 _PLAYER_DY_MAX = 3
 _PLAYER_STATE_ONGROUND = "on_ground"
 _PLAYER_STATE_SKYUP = "skyup"
@@ -11,8 +12,9 @@ _PLAYER_GRAVITY = 0.15
 _PLAYER_JUICE_ADD = 0.5
 _PLAYER_JUICE_MAX = 3
 _PLAYER_AIRTIMER_0 = 0.2
-_PLAYER_BOOST_BONUS = 1 --seconds, extra time for a successful boost landing
+_PLAYER_BOOST_BONUS = 1.2 --seconds, extra time for a successful boost landing
 _PLAYER_HOP_PENALTY = 0.7
+_PLAYER_DECEL = 0.05
 _airres = 0.99
 player = {
   reset = function(p)
@@ -34,12 +36,12 @@ player = {
     p.airtimer = 0
     p.pose = false
     p.pinned = false
-    p.frame_timer = 0
     p.plane = 0
     p.planedy = 0
+    p.boosting_time = 0
+    p.level_history = {}
   end,
   change_state = function(p, state)
-    -- printh("State change: "..p.state.."->"..state)
     p.state = state
   end,
   draw = function(p)
@@ -48,7 +50,7 @@ player = {
     if p.boosting then
       pal(8, p.board_cycler:get_color())
     end
-    if p.pinned and _debug.pinflash then
+    if p.pinned then
       pal(0, p.speedpin_cycler:get_color())
     end
     local base_sprite = 11 + 2*p.angle
@@ -61,7 +63,7 @@ player = {
       end
     end
 
-    if player.pose and _debug.pose then base_sprite = 34 + 2*p.angle end
+    if player.pose then base_sprite = 34 + 2*p.angle end
 
     local draw_y = p.y - 10
     draw_y += p.plane
@@ -71,7 +73,7 @@ player = {
     p.last_sprite = base_sprite
 
     -- draw bb
-    -- local bb = p:get_bb()
+    -- local bb = p:get_big_bb()
     -- rect(bb[1],bb[2],bb[3],bb[4],11)
 
     pal()
@@ -80,29 +82,36 @@ player = {
   get_bb = function(p)
     return {flr(p.x - 8), flr(p.y+2+p.plane), flr(p.x+4), flr(p.y+6+p.plane)}
   end,
-  start_jump = function(p, boosted_dy)
-    p.dy = mid(-1, boosted_dy, (p.dx / p.dx_max) * boosted_dy)
+  get_big_bb = function(p)
+    return {flr(p.x - 8), flr(p.y+p.plane-12), flr(p.x+4), flr(p.y+8+p.plane)}
+  end,
+  -- added_dy comes from the ramp definition
+  start_jump = function(p, added_dy)
+    if p.boosting then
+      added_dy *= 1.3
+    end
+    p.dy = mid(-1, added_dy, (p.dx / p.dx_max) * added_dy)
     -- make sure we're just above ground level first
     p.y = p.y - 0.1
     p.dx -= p.dx * 0.1
     p.airtimer = 0
+    p.angle = -1
     p:change_state(_PLAYER_STATE_SKYUP)
+    sfx(6,3)
   end,
   near_ground = function(p, y_ground)
    return abs(p.y - y_ground) < 1 or p.y > y_ground
   end,
   update = function(p, dt, y_ground, ground_angle, block_input)
 
+    if p.boosting or _timers.sakurai.ttl > 0 then
+      p.boosting_time += dt
+    end
     -- sound hack, disable sparkle sound
     -- after we reach the next part of the song
     if stat(49) == 44 and stat(54) != _last_music_idx then
       _last_music_idx = -1
       sfx(-1, 3)
-      printh("stopped the sfx!")
-    end
-    p.frame_timer += dt
-    if p.frame_timer >= 2 then
-      p.frame_timer = 0
     end
 
     -- update board cycler
@@ -134,7 +143,13 @@ player_state_funcs = {
   on_ground = function(p, dt, y_ground, ground_angle, block_input)
     p.angle = ground_angle
 
-    p.dx = min(p.dx_max, p.dx + p.ddx)
+    p.dx = p.dx + p.ddx
+    -- p.dx = min(p.dx_max, p.dx + p.ddx)
+    if p.boosting and p.dx > p.dx_max then
+      p.dx -= _PLAYER_DECEL
+    else 
+      p.dx = min(p.dx_max, p.dx + p.ddx)
+    end
     if p.ddx < 0 and p.dx < 0.05 and p.dx > 0 then
       p.dx = 0
       p.ddx = 0
@@ -176,8 +191,10 @@ player_state_funcs = {
     end
 
     if btnp(3) and p.plane == 0 then
+      sfx(48,3)
       p.planedy = 0.5
     elseif btnp(2) and p.plane == 6 then
+      sfx(48,3)
       p.planedy = -0.5
     end
 
@@ -185,7 +202,7 @@ player_state_funcs = {
       p.plane += p.planedy
     end
     add(_FX.trails, {})
-    add(_FX.trails[#_FX.trails], {x=player.x, y=player.y+player.plane+4, rad=flr(rnd(2))+2})
+    add(_FX.trails[#_FX.trails], {x=player.x, y=player.y+player.plane+4, rad=flr(rnd(2))+2, ttl=0.5})
 
     if p.plane <= 0 or p.plane >= 6 then
       p.planedy = 0
@@ -199,8 +216,7 @@ player_state_funcs = {
           p.y + p.plane + 8 - rnd(2),
           function() return sin(rnd()) * -1 end,
           function() return cos(rnd()) end,
-          {7}, -- regular color
-          _timers.okami.ttl > 0 and f or nil, -- colorf
+          _timers.okami.ttl > 0 and {9, 10, 12} or {7}, -- regular color
           nil,
           flr(rnd(2)) + 3,
           0.4,
@@ -222,8 +238,8 @@ player_state_funcs = {
 
     -- tweak angle 
     if btnp(1) then
-        p.angle = min(1, p.angle + 1)
-        p.airtimer = 0
+      p.angle = min(1, p.angle + 1)
+      p.airtimer = 0
     elseif btnp(0) then
       p.angle = max(-1, p.angle - 1)
       p.airtimer = 0
@@ -264,6 +280,7 @@ player_state_funcs = {
 
       -- we missed the landing! so we'll hop
       if flr(p.angle) != ground_angle then
+        _boardscore:update(_level.name, "nomiss", false)
         p.dy = -2
         -- make sure we're just above ground level first
         p.y = p.y - 0.1
@@ -274,6 +291,7 @@ player_state_funcs = {
           p.handle_expr_boost()
           _timers.boost.ttl = 0
         end
+        sfx(0,3)
         -- do the shake
         _shake = 1
         for i=0,10 do 
@@ -284,7 +302,6 @@ player_state_funcs = {
               function() return sin(rnd()) * 3 end,
               function() return -rnd(7) end,
               {7},
-              nil,
               rnd() > 0.8 and 6 or nil,
               3 + rnd(3),
               0.5 + rnd(0.5),
@@ -301,7 +318,7 @@ player_state_funcs = {
         if not p.boosting then
           p.juice = min(_PLAYER_JUICE_MAX, p.juice + _PLAYER_JUICE_ADD)
         end
-        if p.boosting and _debug.pinparticles then
+        if p.boosting then
           _timers.boost:add(_PLAYER_BOOST_BONUS)
           _timers.okami:init(0.2,time())
         end
@@ -314,6 +331,9 @@ player_state_funcs = {
           -- for stopping the speed pin cycler
           p.pinned = true
           _timers.speedpin:init(0.2,time())
+          sfx(1,3)
+        else
+          sfx(2,3)
         end
 
         -- for stopping the pose

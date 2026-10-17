@@ -3,56 +3,61 @@ _now = 0
 _last_ts = 0
 
 -- anytime_init resets all our globals and game state
--- used when first starting the game, and when restarting after game over or victory state
 -- NOT used during interlevel changes
 function anytime_init()
-    _now = time()
-    _last_ts = _now
+  _now = time()
+  _last_ts = _now
 
-    init_timers()
-    _timers.input_freeze:init(0.2, _last_ts)
-    _timers.snow:init(0.05, _last_ts)
+  init_timers()
+  _timers.input_freeze:init(0.2, _last_ts)
+  _timers.snow:init(0.05, _last_ts)
 
-    player:reset()
+  _boardscore = BoardScore:new()
+  _savedboardscore = BoardScore:new()
+  _savedboardscore:load()
+  _itemmgr = ItemMgr:new()
+  _maptrails = MapTrails:new()
 
-    _level_index = 1
-    _game_timer.clock = 0
-    _game_timer.expired = false
+  player:reset()
 
-    -- little extra code to draw the split in
-    -- the speedometer
-    local my_f = function(m)
-      rect(2,121,43,126,6)
-      line(32,121,32,126,6)
-    end
-    -- FX setup
-    _FX = {
-      parts = {},
-      trails = {},
-      -- x,y, width,height, max_val, color, draw_frame_f
-      speedo = new_meter(3,121,32,4,_PLAYER_DX_MAX,10,my_f),
-      snow = {},
-      notifs = {},
-    }
+  _level_index = 1
+  _game_timer.clock = 0
+  _game_timer.expired = false
 
-    _q = qico()
-    _q.add_topics("expr_boost|obs_coll|timeover|playerstop|pregameover_expr")
-    _q.add_subs("expr_boost", {player.handle_expr_boost})
-    _q.add_subs("obs_coll", {player.handle_obs_coll})
-    _q.add_subs("timeover", {player.handle_timeover})
-    _q.add_subs("playerstop", {_timermgr.handle_playerstop})
-    _q.add_subs("pregameover_expr", {_gamemgr.handle_pregameover_expr})
+  -- little extra code to draw the split in
+  -- the speedometer
+  local my_f = function(m)
+    rect(2,121,43,126,6)
+    line(32,121,32,126,6)
+  end
+  -- FX setup
+  _FX = {
+    parts = {},
+    trails = {},
+    -- x,y, width,height, max_val, color, draw_frame_f
+    speedo = new_meter(3,121,32,4,_PLAYER_DX_MAX,10,my_f),
+    snow = {},
+    notifs = {},
+    headsup = {},
+  }
 
-    __update = _update_title
-    __draw = _draw_title
+  _q = qico()
+  _q.add_topics("expr_boost|obs_coll|timeover|playerstop|pregameover_expr")
+  _q.add_sub("expr_boost", player.handle_expr_boost)
+  _q.add_sub("obs_coll", player.handle_obs_coll)
+  _q.add_sub("timeover", player.handle_timeover)
+  _q.add_sub("playerstop", _timermgr.handle_playerstop)
+  _q.add_sub("pregameover_expr", _gamemgr.handle_pregameover_expr)
 
-    if _debug.music then
-      music(17)
-    end
+  __update = _update_title
+  __draw = _draw_title
+
+  music(17)
 end
 
 function _init()
   printh("--init")
+  cartdata("xcb_kitasuna_v1_0")
   anytime_init()
 end
 
@@ -60,8 +65,6 @@ function gen_flat_tile(x, y)
   return {x=x,y=y,map_x=21 + ((x / 8) % 3),map_y=0}
 end
 
--- Indexes into the map data and returns:
---
 function load_level_map_data()
   local map_table = {}
   local elevations = {}

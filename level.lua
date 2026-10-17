@@ -1,23 +1,39 @@
 _level = {}
 _level_index = 1
-_level_count = 6
 _level_config = {}
 -- Map[XPos][mapx, mapy, sprnum]
 _map_table = {}
 -- []{x_pos, y_elevation}
 _elevations = {}
+_level_names = {
+"lOFT lADDER",
+"cOINFLIP",
+"iN tHE wEEDS",
+"hALF-lIGHT",
+"iMPROBABLE",
+"sCOOPSYLVANIA",
+}
 
 -- how much time to add to the remaining time at each interlevel
-_checkpoints = {40,35,45,35,35,25}
+_checkpoints = {30,33,45,30,32,25}
 
 _level_configs = {
   {
-    name = "lOFT lADDER",
+    name = _level_names[1],
     -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x,ramp left start,ramp right end,fill color for under course
-    tiles = { 17,1,24,30,21,24,27,7},
+    tiles = {17,1,24,30,21,24,27,7},
+    item_pos = {1828, 240},
     tree_tileheight = 3,
     foreground = false,
-    branches = {2, 3},
+    notif_f0 = function()
+      rectfill(69, 111, 70, 113, 9)
+    end,
+    notif_f1 = function()
+      rectfill(69, 111, 70, 113, 9)
+      for x=72,78,2 do
+        pset(x, 112, 9)
+      end
+    end,
     draw_f = function()
       rectfill(0, 0, 128, 128, 12)
       local cloudheight = 6
@@ -37,13 +53,23 @@ _level_configs = {
     end,
   },
   {
-    name = "cOINFLIP",
-    -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x
+    name = _level_names[2],
     tiles = {17,1,24,30,21,24,27,7},
-    branches = {4, 5},
+    item_pos = {1452, 130},
+    branches = {3, 4},
     tree_tileheight = 3,
+    notif_f0 = function()
+      rectfill(80, 111, 81, 113, 9)
+    end,
+    notif_f1up = function()
+      rectfill(80, 111, 81, 113, 9)
+      spr(177, 77, 109, 2, 1)
+    end,
+    notif_f1down = function()
+      rectfill(80, 111, 81, 113, 9)
+      spr(193, 77, 109, 2, 1)
+    end,
     foreground = false,
-    mtn_f = function() end,
     sky_f = function()
       rectfill(-16,0,144,63,12)
     end,
@@ -52,12 +78,25 @@ _level_configs = {
     end,
   },
   {
-    name = "iN tHE wEEDS",
+    name = _level_names[3],
     tiles = { 17,1,24,30,29,32,35,4},
-    branches = {4, 5},
+    item_pos = {2342, 320},
+    branches = {5, 6},
     tree_tileheight = 3,
     trailcolor = 3,
     foreground = false,
+    notif_f0 = function()
+      rectfill(93, 109, 94, 111, 9)
+    end,
+    notif_f1up = function()
+      rectfill(93, 109, 94, 111, 9)
+      spr(179, 93, 109, 2, 1)
+    end,
+    notif_f1down = function()
+      rectfill(93, 109, 94, 111, 9)
+      spr(179, 93, 109, 2, 1)
+      spr(196, 101, 109, 2, 1)
+    end,
     draw_f = function()
       rectfill(0, 0, 128, 128, 12)
       line(0,1,128,1,1)
@@ -68,11 +107,23 @@ _level_configs = {
     end,
   },
   {
-    name = "hALF-lIGHT",
-    -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x
+    name = _level_names[4],
     tiles = { 13,3,28,40,21,24,27,7},
-    branches = {6, 6},
+    item_pos = {1768, 160},
+    branches = {5, 6},
     tree_tileheight = 2,
+    notif_f0 = function()
+      rectfill(93, 113, 94, 115, 9)
+    end,
+    notif_f1up = function()
+      rectfill(93, 113, 94, 115, 9)
+      spr(180, 101, 109)
+      spr(195, 93, 109)
+    end,
+    notif_f1down = function()
+      rectfill(93, 113, 94, 115, 9)
+      spr(195, 93, 109, 2, 1)
+    end,
     foreground = true,
     mtn_f = function()
       pal(6, 5)
@@ -87,13 +138,15 @@ _level_configs = {
     end,
   },
   {
-    name = "iMPROBABLE",
-    -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x
+    name = _level_names[5],
     tiles = { 13,3,28,40,21,24,27,7},
-    branches = {6, 6},
+    item_pos = {1300, 38},
     tree_tileheight = 2,
     foreground = true,
     trailcolor = 5,
+    notif_f0 = function()
+      rectfill(107, 109, 108, 111, 9)
+    end,
     mtn_f = function()
       pal(6, 0)
       pal(7, 6)
@@ -116,12 +169,15 @@ _level_configs = {
     end,
   },
   {
-    name = "sCOOPSYLVANIA",
-    -- mountain tile x, mountain tile y, mountain pos y, tree pos y, flat map x
+    name = _level_names[6],
     tiles = { 13,3,28,40,21,24,27,7},
+    item_pos = {364, 140},
     tree_tileheight = 2,
     foreground = true,
     trailcolor = 5,
+    notif_f0 = function()
+      rectfill(107, 113, 108, 115, 9)
+    end,
     mtn_f = function()
       pal(6, 0)
       pal(7, 6)
@@ -144,117 +200,71 @@ _level_configs = {
   },
 }
 
--- ramps
---[[
--- one star --
-- mini -
-bup,8,-2
-bdown,8
-- normie -
-bup,16,-2.5
-bdown,16
-- normie x2 -
-bup,16,-2.5
-bdown,16
-flat,16
-bup,16,-2.5
-bdown,16
-- flat -
-bup,16,-2.5
-flat,16
--- two star --
-- mini -
-bup,8,-2
-bdown,8
-flat,32
-bup,8,-2
-bdown,8
-- normie -
-bup,16,-2.5
-bdown,16
-flat,8
-bup,16,-2.5
-bdown,16
-- flat -
-bup,16,-2.5
-flat,16
-bup,16,-2.5
-flat,16
--- three star --
-- mini -
-bdown,8
-flat,32
-bup,8,-2
-bdown,8
-flat,16
-bup,8,-2
-bdown,8
-- normie -
-bup,16,-2.5
-bdown,16
-flat,8
-bup,16,-2.5
-bdown,24
-flat,16
-bup,8,-2
-bdown,32
---]]
 _levels = {
 -- loft ladder
 [[
-ddown,512
+bdown,192
 bup,8,-2
 bdown,8
-ddown,32
-flat,256
+bdown,32
+flat,128
 bup,16,-2.5
 bdown,16
-flat,256
-obs,6,160
-flat,112
+flat,96
+obs,6,181
 bup,16,-2.5
 bdown,16
-flat,256
-obs,0,160
+flat,96
+bup,16,-2.5
+bdown,16
+flat,128
+obs,0,181
 flat,176
-obs,0,160
-flat,256
+obs,0,181
+flat,128
+bup,16,-2.5
+bdown,16
+flat,96
 bup,16,-2.5
 bdown,16
 flat,112
 bup,8,-2
 bdown,8
 flat,96
-ddown,24
-flat,176
-ddown,24
+bdown,24
+flat,112
+bdown,24
 flat,24
 bup,16,-2.5
 bdown,16
-flat,112
+flat,96
 bup,16,-2.5
 bdown,16
 flat,80
 bup,16,-2.5
 bdown,16
-flat,112
+flat,96
+obs,6,181
+flat,64
+obs,0,181
+flat,64
 bup,16,-2.5
 bdown,16
 flat,32
-ddown,32
-flat,176
-obs,0,160
+bdown,32
+flat,112
+obs,0,181
 flat,80
-obs,6,160
+obs,6,181
 flat,64
-ddown,128]],
+bdown,128]],
 -- coinflip
 [[
-ddown,144
+bdown,144
 flat,88
-obs,0,160
+obs,0,181
 flat,64
-obs,6,160
+obs,6,181
 flat,32
 bup,16,-2.5
 bdown,16
@@ -262,34 +272,34 @@ flat,112
 bup,16,-2.5
 bdown,16
 flat,56
-obs,0,160
+obs,0,181
 flat,112
 bup,8,-2
 bdown,8
 flat,72
-obs,0,160
+obs,0,181
 flat,96
 bup,16,-2.5
 bdown,16
-flat,64
+flat,96
 bup,8,-2
 bdown,8
 flat,88
-obs,0,160
-ddown,24
+obs,0,181
+bdown,24
 flat,56
-obs,6,160
+obs,6,181
 flat,64
 bup,8,-2
 bdown,8
 flat,96
 bup,16,-2.5
 flat,112
-obs,0,160
+obs,0,181
 flat,48
-obs,6,160
+obs,6,181
 flat,48
-obs,0,160
+obs,0,181
 bup,16,-2.5
 bdown,16
 flat,128
@@ -299,7 +309,7 @@ flat,48
 bup,16,-2.5
 bdown,16
 flat,112
-obs,6,160
+obs,6,181
 flat,64
 bup,8,-2
 bdown,8
@@ -314,33 +324,37 @@ bdown,8
 flat,64
 bup,16,-2.5
 flat,56
-obs,6,160
+obs,6,181
 flat,56
-obs,0,160
-ddown,64
+obs,0,181
+bdown,64
 flat,64
 bup,8,-2
 bdown,8
 flat,16
 bup,16,-2.5
 flat,96
-ddown,128]],
+bdown,128]],
 -- in the weeds
 [[
-ddown,144
-flat,144
+bdown,144
+flat,64
+bup,8,-2
+bdown,8
 
 --,short weave
 obs,6,115
-flat,48
+flat,64
 obs,0,115
 flat,48
 obs,6,115
 flat,48
 
 --,down into long weave
-ddown,56
-flat,56
+bup,8,-2
+bdown,8
+bdown,56
+flat,48
 obs,0,115
 obs,0,96
 obs,0,97
@@ -349,7 +363,11 @@ flat,32
 obs,6,115
 obs,6,96
 obs,6,115
-flat,96
+bup,8,-2
+bdown,8
+flat,80
+bup,8,-2
+bdown,8
 
 
 --,short weave
@@ -374,13 +392,13 @@ obs,0,115
 flat,48
 
 --,down into ramp into long weave
-ddown,48
+bdown,48
 flat,32
 bup,8,-2
 bdown,8
 flat,72
 obs,6,115
-flat,48
+flat,96
 obs,0,115
 flat,96
 bup,8,-2
@@ -390,18 +408,22 @@ obs,0,96
 obs,0,115
 obs,0,115
 obs,0,97
-flat,32
+bup,8,-2
+bdown,8
+flat,64
 obs,6,115
 obs,6,97
 obs,6,115
-flat,128
+flat,64
 
---,down into nothing, down time
-ddown,64
-flat,96
+--,short hop then down into nothing, down time
+bdown,48
+flat,32
 
 --,down into long weave
-ddown,56
+bup,8,-2
+bdown,8
+bdown,48
 flat,56
 obs,0,115
 obs,0,97
@@ -411,22 +433,23 @@ flat,32
 obs,6,115
 obs,6,115
 obs,6,97
-flat,96
+flat,80
 
 --,first obs ramp
 bup,8,-2,obs
 bdown,8
+--,10
 flat,96
 
 --,down into long weave
-ddown,56
+bup,8,-2
+bdown,8
+flat,16
+bdown,56
 flat,56
 obs,6,115
-obs,6,96
 obs,6,115
-obs,6,115
-flat,32
-obs,0,115
+flat,56
 obs,0,97
 obs,0,115
 flat,48
@@ -436,11 +459,11 @@ bup,8,-2,obs
 bdown,8
 flat,96
 obs,6,115
-flat,96
+flat,64
 
 
---,ddown into obsramp into short weave
-ddown,96
+--,bdown into obsramp into short weave
+bdown,32
 flat,48
 bup,8,-2,obs
 bdown,8
@@ -450,10 +473,12 @@ flat,48
 obs,0,115
 flat,48
 obs,6,115
-flat,96
+flat,64
+bup,8,-2
+bdown,8
 
 --,down into short weave
-ddown,96
+bdown,96
 flat,48
 obs,0,115
 obs,0,115
@@ -471,7 +496,7 @@ flat,32
 
 
 --,down into coda weave
-ddown,48
+bdown,48
 flat,96
 obs,6,115
 flat,32
@@ -488,7 +513,7 @@ bdown,8
 flat,32
 
 --,coda ramps
-ddown,96
+bdown,96
 flat,48
 bup,8,-2
 bdown,8
@@ -507,82 +532,74 @@ obs,6,97
 obs,6,115
 obs,6,96
 obs,6,115
-flat,64
-
---,final leap
-bup,8,-2
-bdown,8
-flat,16
-
-ddown,128]],
+flat,96
+bdown,96
+bdown,96]],
 -- half-light
 [[
-ddown,144
-flat,128
+bdown,112
+flat,96
 bup,8,-2
 bdown,8
 flat,32
 bup,8,-2
 bdown,8
-flat,152
+flat,112
 bup,16,-2.5
 bdown,16
 flat,8
 bup,16,-2.5
 bdown,16
-flat,152
+flat,112
 bup,8,-2
 bdown,8
 flat,32
 bup,8,-2
 bdown,8
 flat,64
-obs,6,160
+obs,6,181
 flat,64
-obs,6,160
+obs,6,181
 flat,64
 bup,16,-2.5
 bdown,16
 flat,8
 bup,16,-2.5
 bdown,16
+--,pairs end
 flat,72
-obs,0,160
+obs,0,181
 flat,112
 bup,8,-2
 bdown,8
 flat,48
-ddown,32
-flat,16
+bdown,32
+flat,64
 bup,8,-2
 bdown,8
-flat,8
-ddown,48
-flat,88
-obs,6,160
+flat,32
+bup,8,-2
+bdown,8
+flat,16
+bdown,48
+flat,64
+obs,6,181
 flat,56
-obs,0,160
+obs,0,181
 flat,32
 bup,16,-2.5
 flat,48
-ddown,72
-bup,8,-2
-bdown,8
-ddown,72
-flat,32
-bup,8,-2
-ddown,64
+bdown,32
 flat,64
-obs,0,160
-flat,96
-obs,6,160
-ddown,32
-flat,8
+bup,16,-2.5
+flat,48
+bdown,32
+flat,48
 bup,8,-2
 bdown,8
 flat,16
 bup,8,-2
-ddown,72
+bdown,32
 flat,96
 bup,16,-2.5
 flat,96
@@ -593,21 +610,21 @@ bup,8,-2
 bdown,8
 flat,16
 bup,16,-2.5
-ddown,64
+bdown,64
 flat,96
 bup,16,-2.5
 bdown,16
 flat,8
 bup,16,-2.5
-ddown,24
+bdown,24
 flat,16
 bup,8,-2
-ddown,32
+bdown,32
 flat,96
-ddown,128]],
+bdown,128]],
 -- improbable
 [[
-ddown,144
+bdown,144
 flat,96
 bup,8,-2
 bdown,8
@@ -635,7 +652,7 @@ obs,6
 bup,8,-2
 bdown,8
 flat,16
-ddown,40
+bdown,40
 flat,128
 obs,0
 --,imp1
@@ -651,10 +668,10 @@ obs,6
 bup,8,-2
 bdown,8
 flat,16
-ddown,40
+bdown,40
 flat,128
 obs,0
-ddown,48
+bdown,48
 flat,128
 --,imp2
 bup,24,-2.5
@@ -669,7 +686,7 @@ obs,6
 bup,8,-2
 bdown,8
 flat,16
-ddown,40
+bdown,40
 flat,128
 obs,0
 flat,32
@@ -707,49 +724,43 @@ flat,40
 obs,6
 flat,40
 obs,0
-flat,64
-bup,8,-2
-bdown,8
-flat,32
-ddown,128]],
--- wulff den
+flat,96
+bdown,96
+bdown,96]],
+-- scoopsylvania
 [[
-ddown,144
+bdown,96
 flat,96
 bup,8,-2
-bdown,16
-ddown,112
-flat,64
+bdown,112
+flat,80
 bup,8,-2
 bdown,8
 flat,48
 bup,16,-2.5
 bdown,16
-ddown,40
+bdown,40
 bup,8,-2
 bdown,8
-ddown,40
+bdown,40
 flat,64
 bup,16,-2
 flat,64
 bup,16,-2.5
-bdown,8
-ddown,48
-flat,16
+bdown,56
 bup,8,-2
 bdown,8
-ddown,96
-flat,112
+bdown,96
+flat,80
 bup,8,-2
 bdown,8
-flat,16
-bup,16,-2
+bup,32,-2
 flat,24
 bup,16,-2
 flat,64
 bup,8,-2
 bdown,8
-ddown,96
+bdown,96
 flat,64
 bup,8,-2
 bdown,8
@@ -758,34 +769,39 @@ bup,8,-2
 bdown,8
 flat,40
 bup,16,-2.5
-bdown,16
-flat,8
-ddown,32
+bdown,48
 flat,8
 bup,16,-2.5
-bdown,16
-ddown,56
-flat,8
+bdown,72
 bup,16,-2.5
-bdown,16
-ddown,96
-flat,8
+bdown,112
 bup,16,-2.5
-bdown,16
-ddown,56
+bdown,72
 flat,64
 bup,16,-2.5
 bdown,16
-flat,96
-ddown,128]]
+flat,64
+bup,8,-2
+bdown,8
+flat,64
+bup,16,-2.5
+bdown,72
+bup,16,-2.5
+bdown,112
+bup,16,-2.5
+bdown,72
+bup,16,-2.5
+bdown,72
+flat,64
+bdown,128]]
 }
 
 -- String -> []Range
-function parse_ranges(str, x_base, y_base)
+function parse_ranges(str)
   local ranges = {}
   local jumps = {}
-  local last_flat = y_base
-  local x_curr = x_base
+  local x_curr = 0
+  local last_flat = 8
   foreach(split(str, "\n"), function(substr)
     local vals = split(substr, ",")
     if substr == "" or vals[1] == "--" then
@@ -817,12 +833,6 @@ function parse_ranges(str, x_base, y_base)
         return my_flat + x_curr - x_start, 1
       end
       last_flat = last_flat + vals[2]
-    elseif ramp_type == "ddown" then
-    -- {ramp_type, x_end, y_value}
-      range.f = function(x_curr)
-        return my_flat + x_curr - x_start, 1
-      end
-      last_flat = last_flat + vals[2]
     elseif ramp_type == "flat" then
     -- {ramp_type, x_end, y_value, new_x_flat}
       range.f = function(x_curr)
@@ -846,7 +856,6 @@ end
 
 -- String -> []Jump
 function parse_jumps(str)
-  -- 96,-4.5
   local jumps = {}
   foreach(split(str, "\n"), function(substr)
     -- {x_start, ramp_type, x_end, y_value}

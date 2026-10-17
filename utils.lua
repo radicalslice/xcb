@@ -1,10 +1,3 @@
-get_tile_from_pos = nil
-function _get_tile_from_pos(start_tile_x, start_tile_y)
-  return function(pos_x, pos_y)
-    return (pos_x \ 8) + start_tile_x, (pos_y \ 8) + start_tile_y
-  end
-end
-
 function exists(e, tbl)
   for i=1,#tbl do
     if tbl[i] == e then
@@ -47,7 +40,6 @@ function new_cycler(cycle_ttl, colors)
   }
 end
 
--- type BoundingBox = [float, float, float, float]
 -- As in: [x0,y0,x1,y1], the corners of the bounding box
 -- collides_new :: BoundingBox -> BoundingBox -> Bool
 function collides_new(s1,s2)
@@ -64,18 +56,21 @@ function collides_new(s1,s2)
 end
 
 function new_notif(msg)
-  -- Count length of string
-  -- Add padding to left and right
-  local charwidth = #msg * 5
   return {
     msg = msg,
     ttl = 2, -- seconds, dawg
     draw = function(self)
       if self.ttl > 0 then
-        rect(128-charwidth-1, 115, 127, 127, 4)
-        rect(128-charwidth, 116, 126, 126, 9)
-        rectfill(128 - charwidth+1, 117, 125, 125, 0)
-        dshad(msg, 132 - charwidth, 119)
+        rect(64-1, 105, 127, 127, 9)
+        rect(64, 106, 126, 126, 7)
+        rectfill(64+1, 107, 125, 125, 0)
+        spr(160, 69, 109, 6, 1)
+        spr(176, 117, 110)
+        print("\^o9ff"..msg, 69, 119, 7)
+        _maptrails:draw()
+        if flr(self.ttl * 60) % 10 < 7 then
+          _level_config.notif_f0()
+        end
       end
     end,
     update = function(self, dt)
@@ -84,31 +79,32 @@ function new_notif(msg)
   }
 end
 
-function dshad(str, x, y, ow)
-  local colors = {4,9}
-  if ow != nil and #ow == 2 then
-    colors = ow
-  end
-  print(str, x+1, y, colors[1])
-  print(str, x, y, colors[2])
+function new_headsup(msg)
+  return {
+    init_ttl = 1.5,
+    ttl = 1.5,
+    draw = function(self)
+      if self.ttl > 0 then
+        local x = player.x
+        for char in all(msg) do
+          y = player.y - 16 + sin(time() - x / 40)*2
+          x = print("\^o9ff"..char, x, y - (16 * (self.init_ttl - self.ttl) / self.init_ttl), 7)
+        end
+      end
+    end,
+    update = function(self, dt)
+      self.ttl -= dt
+    end,
+  }
 end
 
--- using this to reset sensible defaults
--- after I jack up the pal for other things
 function basepal()
     pal() 
     palt(11, true)
     palt(0, false)
 end
 
--- continue playing main level
--- theme, but turn off channel 4
--- so it will be muted when the
--- next pattern starts playing
 function star_mode_off()
-  if not _debug.music then
-    return
-  end
 	local chan_id = 3
 	local bitflag = 1 << 6
 	for sfx_id=0,12 do
@@ -117,14 +113,7 @@ function star_mode_off()
 	end
 end
 
--- play a short power up jingle
--- then segway into the main
--- level theme with channel 4
--- turned on for extra 
 function star_mode_on()
-  if not _debug.music then
-    return
-  end
 	local chan_id = 3
 	local bitflag = 1 << 6
 	for sfx_id=0,12 do

@@ -7,8 +7,8 @@ function _draw_interlevel()
   _draw_game()
 
   palt(0, false)
-  local up_arrow_x = 55
-  local down_arrow_x = 55
+  local up_arrow_x = 66
+  local down_arrow_x = 66
 
   if btn(2) then
     up_arrow_x += rnd(2) - 1
@@ -17,17 +17,12 @@ function _draw_interlevel()
     down_arrow_x += rnd(2) - 1
   end
 
-  if _level_index == _level_count and _timers.interlevel.ttl == 0 then
-    dshad("victory!", 70, 64)
-    if _timers.input_freeze.ttl == 0 then
-      dshad("press "..BUTTON_X.." or "..BUTTON_O, 58, 80)
-      dshad(" to restart", 62, 88)
-    end
-  elseif _level_config.branches != nil then
-    spr(114,up_arrow_x,72 - (_up_charge * 4))
-    spr(114,down_arrow_x,81 + (_down_charge * 4),1,1,false,true)
-    dshad(_level_configs[_level_config.branches[1]].name, 65, 68)
-    dshad(_level_configs[_level_config.branches[2]].name, 65, 88)
+  if _level_config.branches != nil and #_FX.headsup == 0 then
+    print("\^o9ffHOLD",63,78,7)
+    spr(114,up_arrow_x,69 - (_up_charge * 4))
+    spr(114,down_arrow_x,85 + (_down_charge * 4),1,1,false,true)
+    print("\^o9ff".._level_configs[_level_config.branches[1]].name, 76, 67, 7)
+    print("\^o9ff".._level_configs[_level_config.branches[2]].name, 76, 90, 7)
   end
 
   palt(0, true)
@@ -44,10 +39,19 @@ function _update_interlevel(dt)
   if player.boosting then
     player.boosting = false
   end
-  if player.x >= _level.x_max + 144 then 
+  if player.x >= _level.x_max + 128 then 
+    foreach(_FX.trails, function(t) 
+      for crc in all(t) do 
+        crc.x -= player.x - _level.x_max
+        crc.y -= player.y - _last_y_drawn
+      end
+    end)
+    foreach(_FX.parts, function(part) 
+        part.x -= player.x - _level.x_max
+        part.y -= player.y - _last_y_drawn
+    end)
     player.x = _level.x_max
     player.y = _last_y_drawn
-    _FX.trails = {}
   end
   player:update(dt, player.y+player.dx, 1, true)
   align_camera(player.x)
@@ -56,6 +60,13 @@ function _update_interlevel(dt)
     part:update(dt)
     if part.ttl <= 0 then
       del(_FX.parts, part)
+    end
+  end)
+
+  foreach(_FX.headsup, function(h) 
+    h:update(dt)
+    if h.ttl <= 0 then
+      del(_FX.headsup, h)
     end
   end)
 
@@ -71,7 +82,16 @@ function _update_interlevel(dt)
     _timers.snow:update()
   end
 
-  if _level_index != _level_count then
+  _timers.addlheadsup:update()
+
+  if _level_config.branches != nil then
+    -- play or stop arrow charing sfx
+    if not btn(2) and not btn(3) then
+      sfx(5, -2)
+    elseif stat(19) != 5 and _timers.interlevel.ttl == 0 and (btn(2) or btn(3)) then
+      sfx(5, 3)
+    end
+
     if btn(2) then
       _up_charge += dt
     elseif _up_charge > 0 then
@@ -83,20 +103,30 @@ function _update_interlevel(dt)
     elseif _down_charge > 0 then
       _down_charge = max(0, _down_charge - (dt * 3))
     end
-  elseif _timers.input_freeze.ttl == 0 and (btnp(4) or btnp(5)) then
-      anytime_init()
   end
 
   _timers.interlevel:update()
-  if _timers.input_freeze.ttl == 0 and (_up_charge > 1.2 or _down_charge > 1.2) and _timers.interlevel.ttl == 0 then
+
+  if _level_index == 5 or _level_index == 6 then
+    -- do nothing, just wait for victory screen
+    _timers.show_boardscore2:update()
+    return
+  end
+
+  if (_up_charge > 1.2 or _down_charge > 1.2 or _level_config.branches == nil) and _wipe_ttl == 0 and #_FX.headsup == 0 then
     _timers.interlevel:init(0.2, _now)
+    sfx(5, -2)
     _init_wipe(0.4)
-    if _up_charge > 1.2 then
+
+    if _level_config.branches == nil then
+      _level_index += 1
+      _maptrails:add(_level_config.notif_f1)
+    elseif _up_charge > 1.2 then
       _level_index = _level_config.branches[1]
+      _maptrails:add(_level_config.notif_f1up)
     else 
       _level_index = _level_config.branches[2]
+      _maptrails:add(_level_config.notif_f1down)
     end
-
-    _up_charge,_down_charge = 0,0
   end
 end

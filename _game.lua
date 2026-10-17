@@ -8,27 +8,17 @@ _game_timer = {
 }
 _frame_counter = 0
 _last_y_drawn = 0
-_camera_freeze = false
-_game_state = "main"
 _last_music_idx = -1
 Y_BASE = 80
 
-
 _debug = {
   msgs = true,
-  pose = true,
-  pinflash = true,
-  pinparticles = true,
-  sakurai = true,
-  music = true,
 }
-
 
 _timers = {}
 _shake = 0
 
 function _update_game(dt)
-  -- update timers
   _timers.boost:update(_now)
   _timers.pose:update(_now)
   _timers.sakurai:update(_now)
@@ -44,11 +34,9 @@ function _update_game(dt)
   check_spawn(player.x)
   _obsman:update()
 
-  -- update meter color if boosting
   local meter_color = 12
   local meter_width = 28
   if player.boosting then
-  -- else
     meter_color = player.board_cycler:get_color()
     meter_width = 40
   end
@@ -82,23 +70,38 @@ function _update_game(dt)
  if range != nil then
    y_ground, angle = range.f(board_pos_x)
  else
-   cls()
-   if _level_index == _level_count then
-     music(-1, 200)
-     music(14, 100)
-     _timers.input_freeze:init(8,_now)
-    else 
-     _timers.input_freeze:init(0.5,_now)
-   end
    _timers.boost:f()
    star_mode_off()
    player.ddx = _PLAYER_DDX
    -- prevent the gameover time from triggering if the player has already init'd it
    _timers.pregameover.ttl = 0
-   _up_charge,_down_charge = 0,0
+
+   local boosttime = player.boosting_time / (_now - _level.started_at)
+   if boosttime > 0.75 then
+     add(_FX.headsup, new_headsup("boostlord!"))
+     _boardscore:update(_level.name, "boosttime", true)
+   end
+
+   if _level.score.nomiss.val then
+    if #_FX.headsup == 0 then
+      add(_FX.headsup, new_headsup("no biffs!"))
+    else
+      _timers.addlheadsup:init(0.8, _now)
+    end
+   end
+
+   if _level_index == 5 or _level_index == 6 then
+     music(-1, 100)
+     music(14, 50)
+     _timers.show_boardscore2:init(5.5,_now)
+     _savedboardscore:merge(_boardscore)
+     _savedboardscore:save()
+   end
+
    __update = _update_interlevel
    __draw = _draw_interlevel
    return
+
  end
 
   -- Check for any jumps
@@ -116,7 +119,8 @@ function _update_game(dt)
   end)
 
   foreach(_FX.trails, function(t) 
-    if t[1].x < player.x - 32 then
+    t[1].ttl -= dt
+    if t[1].ttl <= 0 then
       del(_FX.trails, t)
     end
   end)
@@ -136,19 +140,32 @@ function _update_game(dt)
     end
   end)
 
+  foreach(_FX.headsup, function(n) 
+    n:update(dt)
+    if n.ttl <= 0 then
+      del(_FX.headsup, n)
+    end
+  end)
+
   player:update(dt, y_ground, angle)
 
-  -- check for collision between player and obstacles
   local pbb = player:get_bb()
   foreach(_obsman.obstacles, function(obs)
     if player.plane == obs.plane then
       local found_collides = collides_new(pbb, obs:get_bb())
       if found_collides then
+        sfx(4, 3)
         _q.add_event("obs_coll")
-        printh("obs:player "..obs.plane..","..player.plane..",".._frame_counter)
       end
     end
   end)
+
+  if _itemmgr.visible == true and collides_new(player:get_big_bb(), _itemmgr:get_bb()) then
+    _itemmgr.visible = false
+    sfx(3, 3)
+    _boardscore:update(_level.name, "juicebox", true)
+     add(_FX.headsup, new_headsup("juicebox!"))
+  end
 end
 
 _camera_y = 0
@@ -156,8 +173,8 @@ _last_camera_y_offset = 0
 _camera_x = 0
 function align_camera(player_x)
   local y_ground = Y_BASE
-  -- Look ahead to try and prep camera, this is based on the ground a little bit ahead
-  -- Changed this from 24 to 48 and it made it better, somehow, on the downward slopes
+  -- Look ahead to try and prep camera
+  -- Changed this from 24 to 48 and it made it better on the downward slopes
   local range = find_range(player_x + 48, _level)
   if range != nil then
     y_ground, _ = range.f(player_x + 48)
@@ -217,7 +234,6 @@ end
 function _draw_game()
   cls()
 
-  -- add in the shake, if any
   local shakex = (4 - rnd(8)) * _shake
   local shakey = (4 - rnd(8)) * _shake
 
@@ -236,10 +252,6 @@ function _draw_game()
 
     basepal()
 
-    -- parallax-y mountain tiles
-    -- sunset_mtns()
-    -- night_mtns()
-    -- sun / moon / etc
     if _level_config.sun_f != nil then
       _level_config.sun_f()
     end
@@ -299,13 +311,14 @@ function _draw_game()
     obs:draw()
   end)
 
+  _itemmgr:draw()
+
   foreach(_FX.trails, function(t)
     for crc in all(t) do 
       circfill(crc.x,crc.y,crc.rad,(_level_config.trailcolor or 6))  
     end
   end)
 
-  -- player over background
   player:draw()
 
   foreach(_FX.parts, function(p)
@@ -314,19 +327,22 @@ function _draw_game()
     end
   end)
 
+  foreach(_FX.headsup, function(n)
+    n:draw()
+  end)
+
   camera()
 
   foreach(_FX.notifs, function(n)
     n:draw()
   end)
 
+
   basepal()
   foreach(_FX.snow, function(c) 
     spr(118, c.x, c.y)
   end)
 
-  -- draw menu over everything
-  -- rectfill(112, 0, 128, 24, 0)
   for i=1,3 do
     spr(82, 1, 82 - (i*6))
   end
@@ -337,7 +353,6 @@ function _draw_game()
     spr(83, 1, 82 - (ceil(player.juice)*6))
   end
 
-  -- rectfill(0,120,128,128,0)
   _FX.speedo:draw()
 
   local text_color, border_color = 12, 1
@@ -346,28 +361,13 @@ function _draw_game()
     text_color, border_color = 8, 2
   end
   circfill(124, 2, 20, 0)
-  -- rectfill(112, 0, 128, 24, 0)
   if c > 5 or c == 0 or c % 1 > 0.5 then
     print("\^w\^t"..flr(max(0, c)), 112, 2, border_color)
     print("\^w\^t"..flr(max(0, c)), 113, 3, text_color)
   end
-  -- print("("..flr(time())..")", 76, 12, 9)
   -- end menu draw
  
   if _debug.msgs then
-    -- draw_ctrls(12, 108, 9)
-    -- player debug stuff
-    -- print("lmi: ".._last_music_idx, 64, 64, 9)
-    -- print("X: "..flr(player.x), 56, 100, 9)
-    -- print("cpu: "..stat(1), 56, 100, 9)
-    -- print("plr: "..flr(player.x)..","..flr(player.y)..","..player.plane, 56, 94, 9)
-    -- print("level: "..level.name, 56, 106, 9)
-    -- if #(_obsman.obstacles) > 0 then
-      -- print("obs[1]: ".._obsman.obstacles[1].y, 56, 114, 9)
-    -- end
-    -- print("dx_max: "..player.dx_max, 56, 112, 9)
-    -- print("juice: "..player.juice, 56, 120, 9)
-    -- print("style: "..player.style, 56, 120, 9)
-    -- print(count(_FX.parts), 56, 120, 9)
+    -- print("\^o7ffPXY: "..flr(player.x)..","..flr(player.y), 0, 24, 9)
   end
 end

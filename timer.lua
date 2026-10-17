@@ -7,7 +7,6 @@ function new_timer(now, f)
       t.ttl = ttl
       t.last_t = last_t
     end,
-    -- add allows us to add some add'l time to the timer
     add = function(t, addl_t)
       t.ttl += addl_t
     end,
@@ -44,14 +43,14 @@ function init_timers()
     )
 
   sakurai_f_base = function(t)
-      __update = _update_game
-      __draw = _draw_game
-      _timers.boost:init(2,time())
-      player.juice -= 1
-      player.dx_max = _PLAYER_DX_MAX_BOOSTED
-      player.dx = _PLAYER_DX_MAX_BOOSTED
-      player.boosting = true
-      return t
+    __update = _update_game
+    __draw = _draw_game
+    _timers.boost:init(2,time())
+    player.juice -= 1
+    player.dx_max = _PLAYER_DX_MAX_BOOSTED
+    player.dx = _PLAYER_DX_INIT_BOOSTED
+    player.boosting = true
+    return t
   end
 
   sakurai_f_ext = compose(
@@ -87,13 +86,48 @@ function init_timers()
     function(t) end
   )
 
+  _timers.show_boardscore = new_timer(
+    0,
+    function(t) 
+      local victory = VictoryScreen:new({header = "all boardscore", levels = _level_names, score = _savedboardscore, from_title=true})
+      __update = function() victory:update() end
+      __draw = function() victory:draw() end
+    end
+  )
+
+  _timers.show_boardscore2 = new_timer(
+    0,
+    function(t) 
+      local victory = VictoryScreen:new({header = "nice boardin'!", levels = player.level_history, score = _boardscore, from_title = false})
+      __update = function() victory:update() end
+      __draw = function() victory:draw() end
+    end
+  )
+
+  _timers.show_title = new_timer(
+    0,
+    function(t) 
+      anytime_init()
+      __update = _update_title
+      __draw = _draw_title
+    end
+  )
+
+  -- for returning from boardscore screen
+  _timers.show_title2 = new_timer(
+    0,
+    function(t) 
+      __update = _update_title
+      __draw = _draw_title
+    end
+  )
+
   -- for emitting snow
   _timers.snow = new_timer(
     0,
     function(t)
       local y = -80 + (flr(rnd(7)) * 10)
       local x = 90 + (flr(rnd(18)) * 8)
-      -- local y, x = 64, 64
       local dx = 1+rnd(1)
       add(_FX.snow, {x=x, y=y, dx=dx})
       t:init(0.05, time())
@@ -106,20 +140,27 @@ function init_timers()
     function(t)
       -- reset player x value
       player.x = 40
+      player.y = Y_BASE
 
       -- pass in last_y_drawn so the level hopefully connects to previous one...
       -- pass in 0 for the player's x position because it doesn't matter here
-      local ranges, jumps, x_max = parse_ranges(_levels[_level_index], 0, _last_y_drawn + 8)
+      local ranges, jumps, x_max = parse_ranges(_levels[_level_index])
 
+      _level_config = _level_configs[_level_index]
+
+      local levelname = _level_config.name
       _level = {
-        name = _level_configs[_level_index].name,
+        name = levelname,
         ranges = ranges,
         jumps = jumps,
         x_max = x_max,
+        score = _boardscore:lookup(levelname),
+        started_at = _last_ts, -- for calculating elapsed time on level
       }
 
-      _level_config = _level_configs[_level_index]
-      printh("Level Name: ".._level_config.name)
+      -- assume true for the nomiss score
+      _level.score.nomiss.val = true
+
 
       add(_FX.notifs, new_notif(_level.name))
 
@@ -129,13 +170,16 @@ function init_timers()
 
       _obsman:init()
       _obsman:parselvl(_levels[_level_index])
+
+      _itemmgr:init(_level_config.item_pos)
       
+      player.boosting_time = 0
       player.ddx = _PLAYER_DDX
       player.dx = _PLAYER_DX_MAX
+      add(player.level_history, _level.name)
 
-      _camera_freeze = false
-      _interlevel_wipego = false
-      _game_state = "main"
+      _up_charge,_down_charge = 0,0
+
       __update = _update_game
       __draw = _draw_game
     end
@@ -146,6 +190,13 @@ function init_timers()
     0,
     function(t)
       _q.add_event("pregameover_expr")
+    end
+  )
+
+  _timers.addlheadsup = new_timer(
+    0,
+    function(t)
+      add(_FX.headsup, new_headsup("no biffs!"))
     end
   )
 end
